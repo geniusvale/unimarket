@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:typed_data';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,7 +14,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('UniMarket'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        titleTextStyle: const TextStyle(color: Colors.blueGrey),
+        title: const Text('UniMarket', style: TextStyle(fontSize: 24)),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'screens/homepage.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'UniMarket',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
       ),
       home: const HomePage(),
     );
