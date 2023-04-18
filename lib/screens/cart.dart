@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+class Cart extends StatefulWidget {
+  const Cart({Key? key}) : super(key: key);
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<Cart> createState() => _CartState();
 }
 
-class _ProfileState extends State<Profile> {
+class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          Center(child: Text('Profile')),
+          Center(child: Text('Cart')),
         ],
       ),
     );

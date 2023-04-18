@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'screens/homepage.dart';
+import 'package:unimarket/screens/homepage.dart';
 
 void main() {
   runApp(

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+class Wishlist extends StatefulWidget {
+  const Wishlist({Key? key}) : super(key: key);
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<Wishlist> createState() => _WishlistState();
 }
 
-class _ProfileState extends State<Profile> {
+class _WishlistState extends State<Wishlist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          Center(child: Text('Profile')),
+          Center(child: Text('Wishlist')),
         ],
       ),
     );
