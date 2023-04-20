@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:unimarket/screens/home.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'cart.dart';
 import 'profile.dart';
@@ -20,12 +20,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     print(_currentIndex);
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   titleTextStyle: const TextStyle(color: Colors.blueGrey),
-      //   title: const Text('UniMarket', style: TextStyle(fontSize: 24)),
-      // ),
+      appBar: AppBar(
+        // backgroundColor: Colors.transparent,
+        // titleTextStyle: const TextStyle(color: Colors.blueGrey),
+        elevation: 0,
+        centerTitle: true,
+        title: const Text('UniMarket', style: TextStyle(fontSize: 24)),
+      ),
       body: PageView(
         controller: controller,
         onPageChanged: (value) {
@@ -85,6 +86,60 @@ class _HomePageState extends State<HomePage> {
             label: 'Profile',
           ),
         ],
+      ),
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final supabase = Supabase.instance.client;
+
+  fetchData() async {
+    final data = await supabase.from('product').select('name');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await supabase.from('product').insert(
+            {
+              'name': 'Source Kode Toko',
+              'price': 50,
+            },
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+        itemCount: 7,
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8),
+              ),
+              boxShadow: [
+                BoxShadow(blurRadius: 2, color: Colors.grey),
+              ],
+              color: Colors.brown,
+            ),
+            margin: const EdgeInsets.all(8),
+            width: 20,
+            height: 25,
+          );
+        },
       ),
     );
   }
