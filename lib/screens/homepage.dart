@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unimarket/controller/product_provider.dart';
+import 'package:unimarket/utilities/constants.dart';
 
 import 'cart.dart';
 import 'profile.dart';
@@ -21,8 +23,6 @@ class _HomePageState extends State<HomePage> {
     print(_currentIndex);
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.transparent,
-        // titleTextStyle: const TextStyle(color: Colors.blueGrey),
         elevation: 0,
         centerTitle: true,
         title: const Text('UniMarket', style: TextStyle(fontSize: 24)),
@@ -100,44 +100,198 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final supabase = Supabase.instance.client;
-
-  fetchData() async {
-    final data = await supabase.from('product').select('name');
-  }
-
+  final _formKey = GlobalKey<FormState>();
+  final nameC = TextEditingController();
+  final priceC = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await supabase.from('product').insert(
-            {
-              'name': 'Source Kode Toko',
-              'price': 50,
-            },
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: GridView.builder(
-        shrinkWrap: true,
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemCount: 7,
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
-              ),
-              boxShadow: [
-                BoxShadow(blurRadius: 2, color: Colors.grey),
-              ],
-              color: Colors.brown,
+          onPressed: () async {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Container(
+                  child: Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: nameC,
+                            decoration: const InputDecoration(
+                              hintText: 'Nama Produk',
+                            ),
+                          ),
+                          formSpacer,
+                          TextFormField(
+                            controller: priceC,
+                            decoration:
+                                const InputDecoration(hintText: 'Harga'),
+                          ),
+                          formSpacer,
+                          ElevatedButton(
+                            onPressed: () async {
+                              ProductProvider().addProduct(
+                                nameC.text,
+                                int.parse(priceC.text),
+                              );
+                              setState(() {
+                                nameC.clear();
+                                priceC.clear();
+                              });
+                              Navigator.pop(context);
+                            },
+                            child: const Text('ADD PRODUCT'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+          child: const Icon(Icons.add)),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: ProductProvider().getProduct(),
+        builder: (context, snapshot) {
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              mainAxisSpacing: 16,
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisExtent: 200,
             ),
-            margin: const EdgeInsets.all(8),
-            width: 20,
-            height: 25,
+            itemCount: snapshot.data?.length ?? 0,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onLongPress: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Hapus?'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              ProductProvider().deleteProduct(
+                                snapshot.data?[index]['id'] ?? 0,
+                              );
+                              setState(() {});
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Oke'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Batal'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        child: Form(
+                          key: _formKey,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: nameC,
+                                  decoration: InputDecoration(
+                                    hintText: snapshot.data![index]['name'],
+                                  ),
+                                  // initialValue: snapshot.data![index]['name'],
+                                ),
+                                formSpacer,
+                                TextFormField(
+                                  controller: priceC,
+                                  decoration: InputDecoration(
+                                    hintText: snapshot.data![index]['price']
+                                        .toString(),
+                                  ),
+                                  // initialValue:
+                                  //     snapshot.data![index]['price'].toString(),
+                                  // decoration: InputDecoration(
+                                  //     hintText: snapshot.data?[index]['price']
+                                  //         .toString()),
+                                ),
+                                formSpacer,
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await ProductProvider().editProduct(
+                                      nameC.text,
+                                      int.parse(priceC.text),
+                                      snapshot.data![index]['name'],
+                                      snapshot.data![index]['price'].toString(),
+                                    );
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      nameC.clear();
+                                      priceC.clear();
+                                    });
+                                  },
+                                  child: const Text('Update'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  // height: 100,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                    boxShadow: [
+                      BoxShadow(blurRadius: 2, color: Colors.grey),
+                    ],
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: 120,
+                        child: Image.network(
+                          'https://picsum.photos/200/300',
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          snapshot.data?[index]['name'] ?? '~Error',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text('Rp ${snapshot.data![index]['price']}'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
