@@ -133,7 +133,7 @@ class _HomeState extends State<Home> {
                           formSpacer,
                           ElevatedButton(
                             onPressed: () async {
-                              ProductProvider().addProduct(
+                              ProductsProvider().addProduct(
                                 nameC.text,
                                 int.parse(priceC.text),
                               );
@@ -155,7 +155,7 @@ class _HomeState extends State<Home> {
           },
           child: const Icon(Icons.add)),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: ProductProvider().getProduct(),
+        future: ProductsProvider().getProduct(),
         builder: (context, snapshot) {
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -176,7 +176,7 @@ class _HomeState extends State<Home> {
                         actions: [
                           ElevatedButton(
                             onPressed: () {
-                              ProductProvider().deleteProduct(
+                              ProductsProvider().deleteProduct(
                                 snapshot.data?[index]['id'] ?? 0,
                               );
                               setState(() {});
@@ -229,7 +229,7 @@ class _HomeState extends State<Home> {
                                 formSpacer,
                                 ElevatedButton(
                                   onPressed: () async {
-                                    await ProductProvider().editProduct(
+                                    await ProductsProvider().editProduct(
                                       nameC.text,
                                       int.parse(priceC.text),
                                       snapshot.data![index]['name'],

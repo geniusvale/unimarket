@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:unimarket/screens/homepage.dart';
+import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/utilities/constants.dart';
 
 import 'controller/product_provider.dart';
+import 'controller/profile_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,13 +27,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => ProductsProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'UniMarket.',
         theme: appTheme,
-        home: const HomePage(),
+        home: const Login(),
       ),
     );
   }

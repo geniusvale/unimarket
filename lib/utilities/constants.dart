@@ -16,8 +16,9 @@ final appTheme = ThemeData(
   ),
 );
 
-const formPadding = EdgeInsets.symmetric(vertical: 20, horizontal: 16);
+const formPadding = EdgeInsets.symmetric(vertical: 0, horizontal: 16);
 const formSpacer = SizedBox(width: 16, height: 16);
+const borderRadiusStd = BorderRadius.all(Radius.circular(8));
 
 // final showDialog = showDialog(context: context, builder: builder)
 
