@@ -21,16 +21,17 @@ class _ProfileState extends State<Profile> {
           const Center(child: Text('Profile')),
           formSpacer,
           ElevatedButton(
-              onPressed: () async {
-                await AuthProvider().logout();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Login(),
-                  ),
-                );
-              },
-              child: const Text('Logout')),
+            onPressed: () async {
+              await AuthProvider().logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Login(),
+                ),
+              );
+            },
+            child: const Text('Logout'),
+          ),
         ],
       ),
     );
