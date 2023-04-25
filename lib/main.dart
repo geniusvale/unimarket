@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/utilities/constants.dart';
 
+import 'controller/home_provider.dart';
 import 'controller/product_provider.dart';
 import 'controller/profile_provider.dart';
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => ProductsProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],

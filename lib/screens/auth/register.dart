@@ -141,30 +141,6 @@ class _RegisterState extends State<Register> {
                     ],
                   ),
                 )
-                // SupaEmailAuth(
-                //   authAction: SupaAuthAction.signUp,
-                //   redirectUrl:
-                //       kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
-                //   onSuccess: (AuthResponse response) {
-                //     // do something, for example: navigate('home');
-                //   },
-                //   onError: (error) {
-                //     // do something, for example: navigate("wait_for_email");
-                //   },
-                //   metadataFields: [
-                //     MetaDataField(
-                //       prefixIcon: const Icon(Icons.person),
-                //       label: 'Username',
-                //       key: 'username',
-                //       validator: (val) {
-                //         if (val == null || val.isEmpty) {
-                //           return 'Please enter something';
-                //         }
-                //         return null;
-                //       },
-                //     ),
-                //   ],
-                // ),
               ],
             ),
           ),

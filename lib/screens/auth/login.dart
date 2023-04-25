@@ -147,33 +147,18 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
-                )
-                // SupaEmailAuth(
-                //   authAction: SupaAuthAction.signIn,
-                //   redirectUrl:
-                //       kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
-                //   onSuccess: (AuthResponse response) {
-                //     // do something, for example: navigate('home');
-                //   },
-                //   onError: (error) {
-                //     // do something, for example: navigate("wait_for_email");
-                //   },
-                // ),
-                // SupaSocialsAuth(
-                //   socialProviders: const [
-                //     SocialProviders.apple,
-                //     SocialProviders.google,
-                //   ],
-                //   colored: true,
-                //   redirectUrl:
-                //       kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
-                //   onSuccess: (Session response) {
-                //     // do something, for example: navigate('home');
-                //   },
-                //   onError: (error) {
-                //     // do something, for example: navigate("wait_for_email");
-                //   },
-                // ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomePage(),
+                      ),
+                    );
+                  },
+                  child: const Text('Masuk Sebagai Tamu'),
+                ),
               ],
             ),
           ),

@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/utilities/constants.dart';
+import 'package:badges/badges.dart' as badges;
 
 import '../controller/auth_provider.dart';
 
@@ -12,27 +15,50 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  int randomNumber = Random().nextInt(999);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Center(child: Text('Profile')),
-          formSpacer,
-          ElevatedButton(
-            onPressed: () async {
-              await AuthProvider().logout();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Login(),
+      body: SingleChildScrollView(
+        child: Column(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            badges.Badge(
+              child: CircleAvatar(
+                radius: 48,
+                backgroundImage: NetworkImage(
+                  'https://picsum.photos/id/$randomNumber/200/200',
                 ),
-              );
-            },
-            child: const Text('Logout'),
-          ),
-        ],
+              ),
+              position: badges.BadgePosition.topEnd(top: 12, end: 1),
+            ),
+            formSpacer,
+            ListTile(
+              leading: const FlutterLogo(),
+              title: const Text('Request Sebagai Penjual'),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const FlutterLogo(),
+              title: const Text('Kelola Toko'),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {},
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await AuthProvider().logout();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ),
+                );
+              },
+              child: const Text('Logout'),
+            ),
+          ],
+        ),
       ),
     );
   }

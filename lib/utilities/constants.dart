@@ -19,6 +19,14 @@ final appTheme = ThemeData(
 const formPadding = EdgeInsets.symmetric(vertical: 0, horizontal: 16);
 const formSpacer = SizedBox(width: 16, height: 16);
 const borderRadiusStd = BorderRadius.all(Radius.circular(8));
+const titleText = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
+
+formDecor({required String hint}) {
+  return InputDecoration(
+    border: const OutlineInputBorder(borderRadius: borderRadiusStd),
+    hintText: hint,
+  );
+}
 
 // final showDialog = showDialog(context: context, builder: builder)
 

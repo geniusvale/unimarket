@@ -1,8 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
 import 'package:unimarket/utilities/constants.dart';
+import 'package:provider/provider.dart' as providers;
 
 import 'cart.dart';
 import 'profile.dart';
@@ -20,12 +25,12 @@ class _HomePageState extends State<HomePage> {
   PageController controller = PageController();
   @override
   Widget build(BuildContext context) {
-    print(_currentIndex);
+    print('Index sekarang $_currentIndex');
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: const Text('UniMarket', style: TextStyle(fontSize: 24)),
+        title: const Text('UniMarket.', style: TextStyle(fontSize: 24)),
       ),
       body: PageView(
         controller: controller,
@@ -54,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           );
         },
         fixedColor: Colors.black,
-        // type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -100,198 +105,97 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final supabase = Supabase.instance.client;
-  final _formKey = GlobalKey<FormState>();
-  final nameC = TextEditingController();
-  final priceC = TextEditingController();
+  int randomNumber = Random().nextInt(999);
+  int randomNumberHeight = Random().nextInt(100);
   @override
   Widget build(BuildContext context) {
+    final homeProvider =
+        providers.Provider.of<HomeProvider>(context, listen: false);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Container(
-                  child: Form(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: nameC,
-                            decoration: const InputDecoration(
-                              hintText: 'Nama Produk',
-                            ),
-                          ),
-                          formSpacer,
-                          TextFormField(
-                            controller: priceC,
-                            decoration:
-                                const InputDecoration(hintText: 'Harga'),
-                          ),
-                          formSpacer,
-                          ElevatedButton(
-                            onPressed: () async {
-                              ProductsProvider().addProduct(
-                                nameC.text,
-                                int.parse(priceC.text),
-                              );
-                              setState(() {
-                                nameC.clear();
-                                priceC.clear();
-                              });
-                              Navigator.pop(context);
-                            },
-                            child: const Text('ADD PRODUCT'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-          child: const Icon(Icons.add)),
-      body: Padding(
-        padding: formPadding,
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: ProductsProvider().getProduct(),
-          builder: (context, snapshot) {
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisSpacing: 16,
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisExtent: 200,
+        onPressed: () async {
+          homeProvider.showAddProduct(context);
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            return;
+          });
+        },
+        child: Padding(
+          padding: formPadding,
+          child: ListView(
+            children: [
+              const Text(
+                'Explore our\ncreation.',
+                textAlign: TextAlign.start,
+                style: titleText,
               ),
-              itemCount: snapshot.data?.length ?? 0,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onLongPress: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Hapus?'),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () {
-                                ProductsProvider().deleteProduct(
-                                  snapshot.data?[index]['id'] ?? 0,
-                                );
-                                setState(() {});
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Oke'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Batal'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return Container(
-                          child: Form(
-                            key: _formKey,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    controller: nameC,
-                                    decoration: InputDecoration(
-                                      hintText: snapshot.data![index]['name'],
-                                    ),
-                                    // initialValue: snapshot.data![index]['name'],
+              formSpacer,
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: ProductsProvider().getProduct(),
+                builder: (context, snapshot) {
+                  return MasonryGridView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    gridDelegate:
+                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (context, index) {
+                      return Card(
+                        elevation: 0.3,
+                        child: InkWell(
+                          onTap: () {
+                            print(randomNumberHeight);
+                            print(index);
+                            homeProvider.showUpdateProduct(
+                              context,
+                              snapshot,
+                              index,
+                            );
+                          },
+                          onLongPress: () {
+                            homeProvider.showDeleteProduct(
+                              context,
+                              snapshot,
+                              index,
+                            );
+                            setState(() {});
+                          },
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                    fit: BoxFit.fill,
+                                    width: 200,
                                   ),
-                                  formSpacer,
-                                  TextFormField(
-                                    controller: priceC,
-                                    decoration: InputDecoration(
-                                      hintText: snapshot.data![index]['price']
-                                          .toString(),
-                                    ),
-                                  ),
-                                  formSpacer,
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      await ProductsProvider().editProduct(
-                                        nameC.text,
-                                        int.parse(priceC.text),
-                                        snapshot.data![index]['name'],
-                                        snapshot.data![index]['price']
-                                            .toString(),
-                                      );
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        nameC.clear();
-                                        priceC.clear();
-                                      });
-                                    },
-                                    child: const Text('Update'),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    // height: 100,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8),
-                      ),
-                      boxShadow: [
-                        BoxShadow(blurRadius: 2, color: Colors.grey),
-                      ],
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          height: 120,
-                          child: Image.network(
-                            'https://picsum.photos/200/300',
-                            fit: BoxFit.fill,
+                              formSpacer,
+                              Text(
+                                snapshot.data?[index]['name'] ?? '~Error',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text('Rp ${snapshot.data![index]['price']}'),
+                              formSpacer
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            snapshot.data?[index]['name'] ?? '~Error',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text('Rp ${snapshot.data![index]['price']}'),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
