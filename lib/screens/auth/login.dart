@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:unimarket/controller/auth_provider.dart';
 import 'package:unimarket/screens/auth/register.dart';
 import 'package:unimarket/screens/homepage.dart';
 import 'package:unimarket/utilities/constants.dart';
@@ -29,9 +30,7 @@ class _LoginState extends State<Login> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Placeholder(
-                  fallbackHeight: 250,
-                ),
+                giantHeader,
                 formSpacer,
                 TextFormField(
                   decoration: const InputDecoration(
@@ -53,8 +52,10 @@ class _LoginState extends State<Login> {
                         });
                       },
                       icon: _passwordVisible
-                          ? SvgPicture.asset('assets/icons/eye.svg')
-                          : SvgPicture.asset('assets/icons/eye-crossed.svg'),
+                          ? SvgPicture.asset('assets/icons/eye.svg',
+                              color: Colors.grey)
+                          : SvgPicture.asset('assets/icons/eye-crossed.svg',
+                              color: Colors.grey),
                     ),
                   ),
                 ),
@@ -73,7 +74,11 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          await AuthProvider().login(
+                            email: emailC.text,
+                            password: passwordC.text,
+                          );
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -96,7 +101,9 @@ class _LoginState extends State<Login> {
                         thickness: 1,
                       ),
                     ),
+                    formSpacer,
                     const Text('Or'),
+                    formSpacer,
                     Expanded(
                       child: Divider(
                         color: Colors.grey[300],

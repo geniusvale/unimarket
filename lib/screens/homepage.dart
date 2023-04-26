@@ -21,23 +21,37 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
-  PageController controller = PageController();
+  // int _currentIndex = 0;
+  // PageController controller = PageController();
   @override
   Widget build(BuildContext context) {
-    print('Index sekarang $_currentIndex');
+    final homeProvider = providers.Provider.of<HomeProvider>(context);
+    print('Index sekarang ${homeProvider.currentIndex}');
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
         title: const Text('UniMarket.', style: TextStyle(fontSize: 24)),
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.search_rounded),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none_rounded),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.shopping_cart_outlined),
+          ),
+        ],
       ),
+      // appBarz,
       body: PageView(
-        controller: controller,
+        controller: homeProvider.pageController,
         onPageChanged: (value) {
-          setState(() {
-            _currentIndex = value;
-          });
+          homeProvider.changePage(value);
         },
         children: const [
           Home(),
@@ -47,12 +61,12 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        unselectedItemColor: Colors.grey,
+        unselectedIconTheme: const IconThemeData(color: Colors.grey),
+        currentIndex: homeProvider.currentIndex,
         onTap: (value) {
-          setState(() {
-            _currentIndex = value;
-          });
-          controller.animateToPage(
+          homeProvider.changePage(value);
+          homeProvider.pageController.animateToPage(
             value,
             duration: const Duration(milliseconds: 3),
             curve: Curves.ease,
@@ -81,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                 width: 20,
                 height: 20,
               ),
-              label: 'Cart'),
+              label: 'Orders'),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               'assets/icons/user.svg',
@@ -137,61 +151,87 @@ class _HomeState extends State<Home> {
               FutureBuilder<List<Map<String, dynamic>>>(
                 future: ProductsProvider().getProduct(),
                 builder: (context, snapshot) {
-                  return MasonryGridView.builder(
-                    shrinkWrap: true,
-                    physics: const ScrollPhysics(),
-                    itemCount: snapshot.data!.length,
-                    gridDelegate:
-                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemBuilder: (context, index) {
-                      return Card(
-                        elevation: 0.3,
-                        child: InkWell(
-                          onTap: () {
-                            print(randomNumberHeight);
-                            print(index);
-                            homeProvider.showUpdateProduct(
-                              context,
-                              snapshot,
-                              index,
-                            );
-                          },
-                          onLongPress: () {
-                            homeProvider.showDeleteProduct(
-                              context,
-                              snapshot,
-                              index,
-                            );
-                            setState(() {});
-                          },
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    'https://picsum.photos/id/${index + randomNumber}/200/200',
-                                    fit: BoxFit.fill,
-                                    width: 200,
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return MasonryGridView.builder(
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      itemCount: snapshot.data?.length ?? 0,
+                      gridDelegate:
+                          const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 0.3,
+                          child: InkWell(
+                            onTap: () {
+                              print(randomNumberHeight);
+                              print(index);
+                              homeProvider.showUpdateProduct(
+                                context,
+                                snapshot,
+                                index,
+                              );
+                            },
+                            onLongPress: () {
+                              homeProvider.showDeleteProduct(
+                                context,
+                                snapshot,
+                                index,
+                              );
+                              setState(() {});
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: SizedBox(
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(8),
+                                          topRight: Radius.circular(8)),
+                                      child: Image.network(
+                                        'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                        fit: BoxFit.fill,
+                                        width: 200,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const SizedBox(
+                                            height: 50,
+                                            child: Icon(
+                                              Icons.broken_image_outlined,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              formSpacer,
-                              Text(
-                                snapshot.data?[index]['name'] ?? '~Error',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text('Rp ${snapshot.data![index]['price']}'),
-                              formSpacer
-                            ],
+                                formSpacer,
+                                Padding(
+                                  padding: formPadding,
+                                  child: Text(
+                                    snapshot.data?[index]['name'] ?? '~Error',
+                                  ),
+                                ),
+                                Padding(
+                                  padding: formPadding,
+                                  child: Text(
+                                    'Rp ${snapshot.data![index]['price']}',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                formSpacer
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
+                        );
+                      },
+                    );
+                  } else {
+                    return loadingIndicator;
+                  }
                 },
               ),
             ],

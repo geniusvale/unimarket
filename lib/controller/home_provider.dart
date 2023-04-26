@@ -7,6 +7,13 @@ class HomeProvider extends ChangeNotifier {
   final _formKey = GlobalKey<FormState>();
   final nameC = TextEditingController();
   final priceC = TextEditingController();
+  int currentIndex = 0;
+  PageController pageController = PageController();
+
+  changePage(int value) {
+    currentIndex = value;
+    notifyListeners();
+  }
 
   void showAddProduct(BuildContext context) {
     showModalBottomSheet(
@@ -20,6 +27,15 @@ class HomeProvider extends ChangeNotifier {
               padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
               child: Column(
                 children: [
+                  Container(
+                    width: 50,
+                    height: 5,
+                    decoration: const BoxDecoration(
+                      borderRadius: borderRadiusStd,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  formSpacer,
                   TextFormField(
                     controller: nameC,
                     decoration: formDecor(hint: 'Nama Produk'),
@@ -69,6 +85,8 @@ class HomeProvider extends ChangeNotifier {
               padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
               child: Column(
                 children: [
+                  handleBar,
+                  formSpacer,
                   TextFormField(
                     controller: nameC,
                     decoration: formDecor(

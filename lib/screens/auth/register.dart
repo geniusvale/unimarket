@@ -2,7 +2,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unimarket/controller/auth_provider.dart';
-import 'package:unimarket/screens/auth/login.dart';
 
 import '../../utilities/constants.dart';
 
@@ -32,9 +31,7 @@ class _RegisterState extends State<Register> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Placeholder(
-                  fallbackHeight: 250,
-                ),
+                giantHeader,
                 formSpacer,
                 formSpacer,
                 TextFormField(
@@ -78,8 +75,10 @@ class _RegisterState extends State<Register> {
                         });
                       },
                       icon: _passwordVisible
-                          ? SvgPicture.asset('assets/icons/eye.svg')
-                          : SvgPicture.asset('assets/icons/eye-crossed.svg'),
+                          ? SvgPicture.asset('assets/icons/eye.svg',
+                              color: Colors.grey)
+                          : SvgPicture.asset('assets/icons/eye-crossed.svg',
+                              color: Colors.grey),
                     ),
                   ),
                   validator: (value) {
@@ -129,15 +128,11 @@ class _RegisterState extends State<Register> {
                     children: [
                       const Text('Sudah punya akun?'),
                       TextButton(
-                          onPressed: () {
-                            Navigator.pop(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Login(),
-                              ),
-                            );
-                          },
-                          child: const Text('Login')),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Login'),
+                      ),
                     ],
                   ),
                 )
