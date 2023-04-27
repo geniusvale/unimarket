@@ -1,14 +1,15 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
 
+import '../controller/store_provider.dart';
 import 'cart.dart';
 import 'profile.dart';
 import 'wishlist.dart';
@@ -21,8 +22,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // int _currentIndex = 0;
-  // PageController controller = PageController();
   @override
   Widget build(BuildContext context) {
     final homeProvider = providers.Provider.of<HomeProvider>(context);
@@ -39,11 +38,19 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_none_rounded),
+            icon: SvgPicture.asset(
+              'assets/icons/bell.svg',
+              width: 20,
+              height: 20,
+            ),
           ),
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.shopping_cart_outlined),
+            icon: SvgPicture.asset(
+              'assets/icons/cart.svg',
+              width: 20,
+              height: 20,
+            ),
           ),
         ],
       ),
@@ -118,20 +125,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final supabase = Supabase.instance.client;
   int randomNumber = Random().nextInt(999);
   int randomNumberHeight = Random().nextInt(100);
   @override
   Widget build(BuildContext context) {
-    final homeProvider =
-        providers.Provider.of<HomeProvider>(context, listen: false);
+    final storeProvider =
+        providers.Provider.of<StoreProvider>(context, listen: false);
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          homeProvider.showAddProduct(context);
-        },
-        child: const Icon(Icons.add),
-      ),
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {
@@ -165,24 +165,7 @@ class _HomeState extends State<Home> {
                           elevation: 0.3,
                           child: InkWell(
                             onTap: () {
-                              print(randomNumberHeight);
-                              print(index);
-                              homeProvider.showUpdateProduct(
-                                context,
-                                snapshot,
-                                index,
-                              );
-                            },
-                            onLongPress: () {
-                              homeProvider.showDeleteProduct(
-                                context,
-                                snapshot,
-                                index,
-                              );
-                              setState(() {});
-                            },
-                            onDoubleTap: () {
-                              homeProvider.showDetailProduct(
+                              storeProvider.showDetailProduct(
                                 context,
                                 snapshot,
                                 index,
@@ -197,17 +180,18 @@ class _HomeState extends State<Home> {
                                       borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(8),
                                           topRight: Radius.circular(8)),
-                                      child: Image.network(
-                                        'https://picsum.photos/id/${index + randomNumber}/200/200',
-                                        fit: BoxFit.fill,
-                                        width: 200,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const SizedBox(
-                                            height: 50,
-                                            child: Icon(
-                                              Icons.broken_image_outlined,
-                                            ),
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) {
+                                          return CircularProgressIndicator(
+                                            value: downloadProgress.progress,
+                                          );
+                                        },
+                                        errorWidget: (context, url, error) {
+                                          return const Icon(
+                                            Icons.broken_image_outlined,
                                           );
                                         },
                                       ),
@@ -226,7 +210,8 @@ class _HomeState extends State<Home> {
                                   child: Text(
                                     'Rp ${snapshot.data![index]['price']}',
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 formSpacer
