@@ -104,14 +104,22 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {
+                          try {
+                            if (formKey.currentState!.validate()) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Akun Berhasil Dibuat!'),
+                                ),
+                              );
+                              AuthProvider().register(
+                                usernameC.text,
+                                emailC.text,
+                                passwordC.text,
+                              );
+                            }
+                          } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')),
-                            );
-                            AuthProvider().register(
-                              usernameC.text,
-                              emailC.text,
-                              passwordC.text,
+                              SnackBar(content: Text(e.toString())),
                             );
                           }
                         },

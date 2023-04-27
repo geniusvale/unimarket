@@ -75,16 +75,22 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         onPressed: () async {
-                          await AuthProvider().login(
-                            email: emailC.text,
-                            password: passwordC.text,
-                          );
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const HomePage(),
-                            ),
-                          );
+                          try {
+                            await AuthProvider().login(
+                              email: emailC.text,
+                              password: passwordC.text,
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HomePage(),
+                              ),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
                         },
                         child: const Text('Login'),
                       ),

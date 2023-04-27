@@ -4,15 +4,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utilities/constants.dart';
 
 class ProductsProvider extends ChangeNotifier {
-  void addProduct(String name, int price) async {
+  void addProduct({String? name, desc, int? price}) async {
     await supabase.from('products').insert(
       {
         'name': name,
         'price': price,
+        'desc': desc,
       },
     );
     notifyListeners();
-    //WORKING GOOD, Not Tested With Form
+    //WORKING GOOD
   }
 
   Future<List<Map<String, dynamic>>> getProduct() async {
@@ -30,14 +31,22 @@ class ProductsProvider extends ChangeNotifier {
     //WORKING GOOD
   }
 
-  editProduct(
-      String name, int price, String currentName, String currentPrice) async {
+  editProduct({
+    String? name,
+    desc,
+    int? price,
+    String? currentName,
+    currentDesc,
+    currentPrice,
+  }) async {
     await supabase.from('products').update({
       'name': name,
       'price': price,
+      'desc': desc,
     }).match({
       'name': currentName,
       'price': currentPrice,
+      'desc': currentDesc,
     });
     notifyListeners();
     //WORKING GOOD

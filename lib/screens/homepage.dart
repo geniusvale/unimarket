@@ -181,6 +181,13 @@ class _HomeState extends State<Home> {
                               );
                               setState(() {});
                             },
+                            onDoubleTap: () {
+                              homeProvider.showDetailProduct(
+                                context,
+                                snapshot,
+                                index,
+                              );
+                            },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
