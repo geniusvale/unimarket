@@ -9,6 +9,7 @@ import 'package:unimarket/controller/product_provider.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
 
+import '../controller/profile_provider.dart';
 import '../controller/store_provider.dart';
 import 'cart.dart';
 import 'profile.dart';
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final homeProvider = providers.Provider.of<HomeProvider>(context);
+    final profileProvider = providers.Provider.of<ProfileProvider>(context);
     print('Index sekarang ${homeProvider.currentIndex}');
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +39,9 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              profileProvider.getProfileDataFromAuth();
+            },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',
               width: 20,

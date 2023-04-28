@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/screens/store/store.dart';
 import 'package:unimarket/utilities/constants.dart';
@@ -18,8 +20,15 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   int randomNumber = Random().nextInt(999);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final profileProvider = Provider.of<ProfileProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -34,9 +43,6 @@ class _ProfileState extends State<Profile> {
                     backgroundImage: CachedNetworkImageProvider(
                       'https://picsum.photos/id/$randomNumber/200/200',
                     ),
-                    // NetworkImage(
-                    //   'https://picsum.photos/id/$randomNumber/200/200',
-                    // ),
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: Icon(
@@ -53,13 +59,14 @@ class _ProfileState extends State<Profile> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
-                            'NAMAMU DISINI',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            profileProvider.loggedUserData.username.toString(),
+                            // 'Nama',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Text('contoh@gmail.com'),
-                          Text('STATUS'),
+                          Text(profileProvider.loggedUserData.email.toString()),
+                          const Text('STATUS'),
                         ],
                       ),
                     ),

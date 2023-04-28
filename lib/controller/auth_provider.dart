@@ -4,6 +4,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utilities/constants.dart';
 
 class AuthProvider extends ChangeNotifier {
+  // bool _passwordVisible = true;
+  bool kIsWeb = true;
+  final formKey = GlobalKey<FormState>();
+  final emailC = TextEditingController();
+  final passwordC = TextEditingController();
+
   register(String username, email, password) async {
     try {
       final AuthResponse res = await supabase.auth.signUp(
@@ -30,6 +36,7 @@ class AuthProvider extends ChangeNotifier {
       );
       final Session? session = res.session;
       final User? user = res.user;
+      listenAuthEvents().toString();
     } catch (e) {
       rethrow;
     }
@@ -66,5 +73,14 @@ class AuthProvider extends ChangeNotifier {
     } catch (error) {
       print('Ini error insert user ke profiles ${error.toString()}');
     }
+  }
+
+  listenAuthEvents() {
+    final authSubscription = supabase.auth.onAuthStateChange.listen((data) {
+      final AuthChangeEvent event = data.event;
+      final Session? session = data.session;
+    });
+
+    print(authSubscription);
   }
 }

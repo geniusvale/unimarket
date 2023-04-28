@@ -2,6 +2,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unimarket/controller/auth_provider.dart';
+import 'package:unimarket/screens/homepage.dart';
 
 import '../../utilities/constants.dart';
 
@@ -106,15 +107,21 @@ class _RegisterState extends State<Register> {
                         onPressed: () {
                           try {
                             if (formKey.currentState!.validate()) {
+                              AuthProvider().register(
+                                usernameC.text,
+                                emailC.text,
+                                passwordC.text,
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Akun Berhasil Dibuat!'),
                                 ),
                               );
-                              AuthProvider().register(
-                                usernameC.text,
-                                emailC.text,
-                                passwordC.text,
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomePage(),
+                                ),
                               );
                             }
                           } catch (e) {

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:unimarket/controller/auth_provider.dart';
 import 'package:unimarket/screens/auth/register.dart';
 import 'package:unimarket/screens/homepage.dart';
 import 'package:unimarket/utilities/constants.dart';
+
+import '../../controller/profile_provider.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -15,24 +18,25 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool _passwordVisible = true;
   bool kIsWeb = true;
-  final formKey = GlobalKey<FormState>();
-  final emailC = TextEditingController();
-  final passwordC = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: formPadding,
           child: Form(
-            key: formKey,
+            key: authProvider.formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 giantHeader,
                 formSpacer,
                 TextFormField(
+                  controller: authProvider.emailC,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(borderRadius: borderRadiusStd),
                     hintText: 'Email',
@@ -40,6 +44,7 @@ class _LoginState extends State<Login> {
                 ),
                 formSpacer,
                 TextFormField(
+                  controller: authProvider.passwordC,
                   obscureText: _passwordVisible,
                   decoration: InputDecoration(
                     border:
@@ -77,9 +82,12 @@ class _LoginState extends State<Login> {
                         onPressed: () async {
                           try {
                             await AuthProvider().login(
-                              email: emailC.text,
-                              password: passwordC.text,
+                              email: authProvider.emailC.text,
+                              password: authProvider.passwordC.text,
                             );
+                            authProvider.emailC.clear();
+                            authProvider.passwordC.clear();
+                            profileProvider.getProfileDataFromAuth();
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
