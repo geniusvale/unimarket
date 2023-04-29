@@ -23,6 +23,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
+    // ProfileProvider().blockUnauthorized(context);
     super.initState();
   }
 
@@ -30,101 +31,97 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     final profileProvider = Provider.of<ProfileProvider>(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: formPadding,
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 48,
-                    backgroundImage: CachedNetworkImageProvider(
-                      'https://picsum.photos/id/$randomNumber/200/200',
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: Icon(
-                        Icons.photo_camera_rounded,
-                        color: Colors.grey[800],
-                      ),
+        body: SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: formPadding,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 48,
+                  backgroundImage: CachedNetworkImageProvider(
+                    'https://picsum.photos/id/$randomNumber/200/200',
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Icon(
+                      Icons.photo_camera_rounded,
+                      color: Colors.grey[800],
                     ),
                   ),
-                  formSpacer,
-                  Expanded(
-                    child: SizedBox(
-                      height: 100,
-                      // color: Colors.blueGrey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            profileProvider.loggedUserData.username.toString(),
-                            // 'Nama',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(profileProvider.loggedUserData.email.toString()),
-                          const Text('STATUS'),
-                        ],
-                      ),
+                ),
+                formSpacer,
+                Expanded(
+                  child: SizedBox(
+                    height: 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          profileProvider.loggedUserData.username.toString(),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(profileProvider.loggedUserData.email.toString()),
+                        const Text('STATUS'),
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ),
-            formSpacer,
-            const Divider(),
-            ListTile(
-              leading: SvgPicture.asset(
-                'assets/icons/edit.svg',
-                width: 20,
-                height: 20,
-              ),
-              title: const Text('Request Sebagai Penjual'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: SvgPicture.asset(
-                'assets/icons/shop.svg',
-                width: 20,
-                height: 20,
-              ),
-              title: const Text('Kelola Toko (\'Tokomu\')'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Store(),
                   ),
-                );
-              },
+                )
+              ],
             ),
-            ListTile(
-              leading: SvgPicture.asset(
-                'assets/icons/exit.svg',
-                width: 20,
-                height: 20,
-                color: Colors.red[900],
-              ),
-              title: const Text('Logout'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () async {
-                await AuthProvider().logout();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Login(),
-                  ),
-                );
-              },
+          ),
+          formSpacer,
+          const Divider(),
+          ListTile(
+            leading: SvgPicture.asset(
+              'assets/icons/edit.svg',
+              width: 20,
+              height: 20,
             ),
-          ],
-        ),
+            title: const Text('Request Sebagai Penjual'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: SvgPicture.asset(
+              'assets/icons/shop.svg',
+              width: 20,
+              height: 20,
+            ),
+            title: const Text('Kelola Toko (\'Tokomu\')'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Store(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: SvgPicture.asset(
+              'assets/icons/exit.svg',
+              width: 20,
+              height: 20,
+              color: Colors.red[900],
+            ),
+            title: const Text('Logout'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () async {
+              await AuthProvider().logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Login(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-    );
+    ));
   }
 }

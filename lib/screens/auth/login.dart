@@ -16,6 +16,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  @override
+  void initState() {
+    AuthProvider().checkIsLoggedIn(context);
+    super.initState();
+  }
+
   bool _passwordVisible = true;
   bool kIsWeb = true;
   @override
@@ -81,13 +87,13 @@ class _LoginState extends State<Login> {
                         ),
                         onPressed: () async {
                           try {
-                            await AuthProvider().login(
+                            await authProvider.login(
                               email: authProvider.emailC.text,
                               password: authProvider.passwordC.text,
                             );
                             authProvider.emailC.clear();
                             authProvider.passwordC.clear();
-                            profileProvider.getProfileDataFromAuth();
+                            await profileProvider.getProfileDataFromAuth(context);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -136,7 +142,8 @@ class _LoginState extends State<Login> {
                           shape: const RoundedRectangleBorder(
                               borderRadius: borderRadiusStd),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                        },
                         icon: SvgPicture.asset(
                           'assets/icons/google.svg',
                           height: 16,

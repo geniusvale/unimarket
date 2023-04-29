@@ -14,6 +14,7 @@ class StoreProvider extends ChangeNotifier {
   int randomNumber = Random().nextInt(999);
   int tabIndex = 0;
 
+  //WIDGET Menampilkan Detail Produk Di Toko, dengan BottomSheet
   void showDetailProduct(
       BuildContext context, AsyncSnapshot snapshot, int index) {
     showModalBottomSheet(
@@ -50,9 +51,6 @@ class StoreProvider extends ChangeNotifier {
                       );
                     },
                   ),
-                  // Image.network(
-                  //   'https://picsum.photos/id/${index + randomNumber}/200/200',
-                  // ),
                 ),
                 formSpacer,
                 Text(
@@ -98,6 +96,7 @@ class StoreProvider extends ChangeNotifier {
     );
   }
 
+  //WIDGET Menampilkan Tambah Produk di Toko, dengan BottomSheet
   void showAddProduct(BuildContext context) {
     showModalBottomSheet(
       isScrollControlled: true,
@@ -165,6 +164,7 @@ class StoreProvider extends ChangeNotifier {
     );
   }
 
+  //WIDGET Menampilkan Update Produk di Toko, dengan BottomSheets
   void showUpdateProduct(
       BuildContext context, AsyncSnapshot snapshot, int index) {
     showModalBottomSheet(
@@ -236,6 +236,7 @@ class StoreProvider extends ChangeNotifier {
     );
   }
 
+  //WIDGET Menampilkan Dialog Hapus Produk di Toko
   showDeleteProduct(BuildContext context, AsyncSnapshot snapshot, int index) {
     showDialog(
       context: context,
@@ -264,4 +265,5 @@ class StoreProvider extends ChangeNotifier {
       },
     );
   }
+  
 }

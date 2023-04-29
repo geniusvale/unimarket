@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final homeProvider = providers.Provider.of<HomeProvider>(context);
     final profileProvider = providers.Provider.of<ProfileProvider>(context);
-    print('Index sekarang ${homeProvider.currentIndex}');
+    
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              profileProvider.getProfileDataFromAuth();
+              profileProvider.getProfileDataFromAuth(context);
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',

@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../utilities/constants.dart';
 
 class ProductsProvider extends ChangeNotifier {
+  //Tambah Produk Ke DB
   void addProduct({String? name, desc, int? price}) async {
     await supabase.from('products').insert(
       {
@@ -16,6 +17,7 @@ class ProductsProvider extends ChangeNotifier {
     //WORKING GOOD
   }
 
+  //Menampilkan Seluruh Produk Dari Tabel di DB
   Future<List<Map<String, dynamic>>> getProduct() async {
     final supabase = Supabase.instance.client;
     final allProducts =
@@ -25,12 +27,14 @@ class ProductsProvider extends ChangeNotifier {
     //WORKING GOOD
   }
 
+  //Hapus Produk
   deleteProduct(int productId) async {
     await supabase.from('products').delete().match({'id': productId});
     notifyListeners();
     //WORKING GOOD
   }
 
+  //Edit Produk
   editProduct({
     String? name,
     desc,
