@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:unimarket/controller/auth_provider.dart';
+import 'package:unimarket/screens/auth/login.dart';
 
 import '../utilities/constants.dart';
 import 'product_provider.dart';
@@ -69,6 +72,33 @@ class StoreProvider extends ChangeNotifier {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      OutlinedButton.icon(
+                        onPressed: () async {
+                          try {
+                            if (AuthProvider().unAuthorized == true) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Login(),
+                                ),
+                              );
+                            } else {
+                              final user = supabase.auth.currentUser;
+                              ProductsProvider().addToWishlist(
+                                usersId: user!.id,
+                                productId: snapshot.data[index]['id'],
+                              );
+                            }
+                          } catch (e) {
+                            print(e);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.toString())));
+                          }
+                        },
+                        icon: SvgPicture.asset('assets/icons/heart.svg'),
+                        label: const Text('Save'),
+                      ),
+                      formSpacer,
                       Expanded(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -81,7 +111,18 @@ class StoreProvider extends ChangeNotifier {
                               ),
                             ),
                           ),
-                          onPressed: () async {},
+                          onPressed: () async {
+                            if (AuthProvider().unAuthorized == true) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Login(),
+                                ),
+                              );
+                            } else {
+                              return;
+                            }
+                          },
                           child: const Text('Tambah Ke Cart'),
                         ),
                       ),
@@ -265,5 +306,4 @@ class StoreProvider extends ChangeNotifier {
       },
     );
   }
-  
 }

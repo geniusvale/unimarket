@@ -29,28 +29,4 @@ class ProfileProvider extends ChangeNotifier {
       rethrow;
     }
   }
-
-  blockUnauthorized(BuildContext context) {
-    final User? user = supabase.auth.currentUser;
-    if (user == null) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Harus Login'),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Kembali')),
-            ],
-          );
-        },
-      );
-    }
-    notifyListeners();
-  }
-
-  //Next Coba Block Unauthorized Dengan VISIBILITY WIDGET
 }

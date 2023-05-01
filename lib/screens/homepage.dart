@@ -6,9 +6,11 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
+import 'package:unimarket/controller/wishlist_provider.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
 
+import '../controller/auth_provider.dart';
 import '../controller/profile_provider.dart';
 import '../controller/store_provider.dart';
 import 'cart.dart';
@@ -24,10 +26,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final homeProvider = providers.Provider.of<HomeProvider>(context);
     final profileProvider = providers.Provider.of<ProfileProvider>(context);
-    
+    final authProvider =
+        providers.Provider.of<AuthProvider>(context, listen: false);
+    print('Status unAuthorized ${authProvider.unAuthorized.toString()}');
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -40,7 +49,8 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              profileProvider.getProfileDataFromAuth(context);
+              // profileProvider.getProfileDataFromAuth(context);
+              WishlistProvider().getWishlist();
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',
@@ -49,7 +59,14 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Cart(),
+                ),
+              );
+            },
             icon: SvgPicture.asset(
               'assets/icons/cart.svg',
               width: 20,
@@ -77,6 +94,7 @@ class _HomePageState extends State<HomePage> {
         currentIndex: homeProvider.currentIndex,
         onTap: (value) {
           homeProvider.changePage(value);
+          // homeProvider.pageController.jumpTo(value.toDouble());
           homeProvider.pageController.animateToPage(
             value,
             duration: const Duration(milliseconds: 3),

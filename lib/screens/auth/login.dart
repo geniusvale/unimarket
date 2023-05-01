@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unimarket/controller/auth_provider.dart';
 import 'package:unimarket/screens/auth/register.dart';
 import 'package:unimarket/screens/homepage.dart';
@@ -16,10 +17,46 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    AuthProvider().checkIsLoggedIn(context);
+    // WidgetsBinding.instance.addPostFrameCallback(
+    //   (_) {},
+    // );
+    checkIsLoggedIn(context);
     super.initState();
+  }
+
+  checkIsLoggedIn(BuildContext context) async {
+    final loginState = await SharedPreferences.getInstance();
+    final isLoggedIn = loginState.getBool('isLoggedIn') ?? false;
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    print('Status isLoggedIn ${isLoggedIn.toString()}');
+    //Kalau Ada Sesi Login, Auto Ke Halaman HomePage
+    if (isLoggedIn == true) {
+      //INIT dan Ambil Data Profil
+      await profileProvider.getProfileDataFromAuth(context);
+      authProvider.unAuthorized = false;
+      //Redirect Ke HomePage
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => const HomePage(),
+      //   ),
+      //   (route) => false,
+      // );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+      // notifyListeners();
+    } else {
+      null;
+    }
   }
 
   bool _passwordVisible = true;
@@ -35,7 +72,7 @@ class _LoginState extends State<Login> {
         child: Padding(
           padding: formPadding,
           child: Form(
-            key: authProvider.formKey,
+            key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -93,7 +130,8 @@ class _LoginState extends State<Login> {
                             );
                             authProvider.emailC.clear();
                             authProvider.passwordC.clear();
-                            await profileProvider.getProfileDataFromAuth(context);
+                            await profileProvider
+                                .getProfileDataFromAuth(context);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -142,8 +180,7 @@ class _LoginState extends State<Login> {
                           shape: const RoundedRectangleBorder(
                               borderRadius: borderRadiusStd),
                         ),
-                        onPressed: () async {
-                        },
+                        onPressed: () async {},
                         icon: SvgPicture.asset(
                           'assets/icons/google.svg',
                           height: 16,

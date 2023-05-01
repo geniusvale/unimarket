@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart' as provider;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:unimarket/controller/profile_provider.dart';
-import 'package:unimarket/screens/homepage.dart';
+import 'package:unimarket/controller/home_provider.dart';
 
 import '../utilities/constants.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool kIsWeb = true;
-  final formKey = GlobalKey<FormState>();
+
   final emailC = TextEditingController();
   final passwordC = TextEditingController();
+
+  bool unAuthorized = true;
 
   //Register dengan Email
   register(String username, email, password) async {
@@ -27,6 +27,7 @@ class AuthProvider extends ChangeNotifier {
       final User? user = res.user;
       //Memanggil Function Masukkan Data Ke Tabel Profiles(Public)
       insertToProfilesTable(username);
+      unAuthorized = false;
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -47,6 +48,7 @@ class AuthProvider extends ChangeNotifier {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       //Menyimpan Status Login
       await prefs.setBool('isLoggedIn', true);
+      unAuthorized = false;
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -61,6 +63,10 @@ class AuthProvider extends ChangeNotifier {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       //Menghapus Status Login
       await prefs.remove('isLoggedIn');
+      unAuthorized = true;
+      HomeProvider().pageController.dispose();
+      HomeProvider().currentIndex = 0;
+      notifyListeners();
     } catch (e) {
       rethrow;
     }
@@ -93,39 +99,29 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  //Mengambil Info Dari Autentikasi (JANGAN DIPAKE!!)
-  // listenAuthEvents() {
-  //   final authSubscription = supabase.auth.onAuthStateChange.listen((data) {
-  //     final AuthChangeEvent event = data.event;
-  //     final Session? session = data.session;
-  //   });
-  //   authSubscription.cancel();
-  //   notifyListeners();
-  //   print(authSubscription);
-  // }
-
   //Cek Kondisi Login/Tidak
-  void checkIsLoggedIn(BuildContext context) async {
-    final loginState = await SharedPreferences.getInstance();
-    final isLoggedIn = loginState.getBool('isLoggedIn') ?? false;
-    final profileProvider =
-        provider.Provider.of<ProfileProvider>(context, listen: false);
-    print(isLoggedIn.toString());
-    //Kalau Ada Sesi Login, Auto Ke Halaman HomePage
-    if (isLoggedIn == true) {
-      //INIT dan Ambil Data Profil
-      await profileProvider.getProfileDataFromAuth(context);
-      //Redirect Ke HomePage
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-        (route) => false,
-      );
-    } else {
-      null;
-    }
-    notifyListeners();
-  }
+  // checkIsLoggedIn(BuildContext context) async {
+  //   final loginState = await SharedPreferences.getInstance();
+  //   final isLoggedIn = loginState.getBool('isLoggedIn') ?? false;
+  //   final profileProvider =
+  //       provider.Provider.of<ProfileProvider>(context, listen: false);
+  //   print('Status isLoggedIn ${isLoggedIn.toString()}');
+  //   //Kalau Ada Sesi Login, Auto Ke Halaman HomePage
+  //   if (isLoggedIn == true) {
+  //     //INIT dan Ambil Data Profil
+  //     await profileProvider.getProfileDataFromAuth(context);
+  //     unAuthorized = false;
+  //     //Redirect Ke HomePage
+  //     Navigator.pushAndRemoveUntil(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => const HomePage(),
+  //       ),
+  //       (route) => false,
+  //     );
+  //     notifyListeners();
+  //   } else {
+  //     null;
+  //   }
+  // }
 }

@@ -55,4 +55,17 @@ class ProductsProvider extends ChangeNotifier {
     notifyListeners();
     //WORKING GOOD
   }
+
+  addToWishlist({String? usersId, int? productId}) async {
+    try {
+      await supabase.from('wishlist').insert({
+        'users_id': usersId,
+        'products_id': productId,
+      });
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+    notifyListeners();
+  }
 }

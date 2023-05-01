@@ -9,6 +9,7 @@ import 'controller/home_provider.dart';
 import 'controller/product_provider.dart';
 import 'controller/profile_provider.dart';
 import 'controller/store_provider.dart';
+import 'controller/wishlist_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => StoreProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => WishlistProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

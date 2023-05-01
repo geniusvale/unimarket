@@ -10,12 +10,17 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
+    //Future Builder Sementara Untuk Wishlist, Nanti Diganti Get Ke Tabel Cart
+    //Kasih Blocked Action Jika Unauthenticated
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Center(child: Text('Cart')),
-        ],
+      appBar: AppBar(
+        title: const Text('Orders'),
+      ),
+      body: FutureBuilder(
+        future: null,
+        builder: (context, snapshot) {
+          return const ListTile();
+        },
       ),
     );
   }
