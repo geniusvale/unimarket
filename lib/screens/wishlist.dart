@@ -91,13 +91,16 @@ class _WishlistState extends State<Wishlist> {
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    snapshot.data?[index]['name'] ?? '~Error',
+                                    snapshot.data?[index]['products']['name'] ??
+                                        '~Error',
+                                    // '',
                                   ),
                                 ),
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    'Rp ${snapshot.data![index]['price']}',
+                                    'Rp ${snapshot.data![index]['products']['price']}',
+                                    // '',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),

@@ -8,7 +8,7 @@ class WishlistProvider extends ChangeNotifier {
     try {
       final allWishlist = await supabase
           .from('wishlist')
-          .select<List<Map<String, dynamic>>>('*, products!inner(*)')
+          .select<List<Map<String, dynamic>>>('products_id, products!inner(*)')
           .eq('users_id', user?.id);
       // final allWishlist = await supabase
       //     .from('products')
