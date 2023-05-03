@@ -32,86 +32,89 @@ class _WishlistState extends State<Wishlist> {
           ? const Center(
               child: Text('Wishlist Kosong'),
             )
-          : FutureBuilder<List<Map<String, dynamic>>>(
-              future: wishlistProvider.getWishlist(),
-              builder: (context, snapshot) {
-                print('status unAuthorized ${authProvider.unAuthorized}');
-                if (snapshot.connectionState == ConnectionState.done &&
-                    authProvider.unAuthorized == false) {
-                  return MasonryGridView.builder(
-                    primary: false,
-                    shrinkWrap: true,
-                    physics: const ScrollPhysics(),
-                    itemCount: snapshot.data?.length ?? 0,
-                    gridDelegate:
-                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemBuilder: (context, index) {
-                      return Card(
-                        elevation: 0.3,
-                        child: InkWell(
-                          onTap: () {
-                            storeProvider.showDetailProduct(
-                              context,
-                              snapshot,
-                              index,
-                            );
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: SizedBox(
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(8),
-                                        topRight: Radius.circular(8)),
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          'https://picsum.photos/id/${index + randomNumber}/200/200',
-                                      progressIndicatorBuilder:
-                                          (context, url, downloadProgress) {
-                                        return CircularProgressIndicator(
-                                          value: downloadProgress.progress,
-                                        );
-                                      },
-                                      errorWidget: (context, url, error) {
-                                        return const Icon(
-                                          Icons.broken_image_outlined,
-                                        );
-                                      },
+          : Padding(
+              padding: formPadding,
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: wishlistProvider.getWishlist(),
+                builder: (context, snapshot) {
+                  print('status unAuthorized ${authProvider.unAuthorized}');
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      authProvider.unAuthorized == false) {
+                    return MasonryGridView.builder(
+                      primary: false,
+                      shrinkWrap: true,
+                      physics: const ScrollPhysics(),
+                      itemCount: snapshot.data?.length ?? 0,
+                      gridDelegate:
+                          const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 0.3,
+                          child: InkWell(
+                            onTap: () {
+                              storeProvider.showDetailProduct(
+                                context,
+                                snapshot,
+                                index,
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: SizedBox(
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(8),
+                                          topRight: Radius.circular(8)),
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) {
+                                          return CircularProgressIndicator(
+                                            value: downloadProgress.progress,
+                                          );
+                                        },
+                                        errorWidget: (context, url, error) {
+                                          return const Icon(
+                                            Icons.broken_image_outlined,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              formSpacer,
-                              Padding(
-                                padding: formPadding,
-                                child: Text(
-                                  snapshot.data?[index]['name'] ?? '~Error',
-                                ),
-                              ),
-                              Padding(
-                                padding: formPadding,
-                                child: Text(
-                                  'Rp ${snapshot.data![index]['price']}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                formSpacer,
+                                Padding(
+                                  padding: formPadding,
+                                  child: Text(
+                                    snapshot.data?[index]['name'] ?? '~Error',
                                   ),
                                 ),
-                              ),
-                              formSpacer
-                            ],
+                                Padding(
+                                  padding: formPadding,
+                                  child: Text(
+                                    'Rp ${snapshot.data![index]['price']}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                formSpacer
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return loadingIndicator;
-                }
-              },
+                        );
+                      },
+                    );
+                  } else {
+                    return loadingIndicator;
+                  }
+                },
+              ),
             ),
     );
   }

@@ -13,9 +13,7 @@ import 'package:provider/provider.dart' as providers;
 import '../controller/auth_provider.dart';
 import '../controller/profile_provider.dart';
 import '../controller/store_provider.dart';
-import 'cart.dart';
-import 'profile.dart';
-import 'wishlist.dart';
+import 'orders.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -63,7 +61,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Cart(),
+                  builder: (context) => const Orders(),
                 ),
               );
             },
@@ -76,18 +74,19 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       // appBarz,
-      body: PageView(
-        controller: homeProvider.pageController,
-        onPageChanged: (value) {
-          homeProvider.changePage(value);
-        },
-        children: const [
-          Home(),
-          Wishlist(),
-          Cart(),
-          Profile(),
-        ],
-      ),
+      body: homeProvider.pages[homeProvider.currentIndex],
+      // PageView(
+      //   controller: homeProvider.pageController,
+      //   onPageChanged: (value) {
+      //     homeProvider.changePage(value);
+      //   },
+      //   children: const [
+      //     Home(),
+      //     Wishlist(),
+      //     Orders(),
+      //     Profile(),
+      //   ],
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey,
         unselectedIconTheme: const IconThemeData(color: Colors.grey),
@@ -95,11 +94,11 @@ class _HomePageState extends State<HomePage> {
         onTap: (value) {
           homeProvider.changePage(value);
           // homeProvider.pageController.jumpTo(value.toDouble());
-          homeProvider.pageController.animateToPage(
-            value,
-            duration: const Duration(milliseconds: 3),
-            curve: Curves.ease,
-          );
+          // homeProvider.pageController.animateToPage(
+          //   value,
+          //   duration: const Duration(milliseconds: 3),
+          //   curve: Curves.ease,
+          // );
         },
         fixedColor: Colors.black,
         type: BottomNavigationBarType.fixed,
