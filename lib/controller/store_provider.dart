@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:unimarket/controller/auth_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
 
@@ -20,6 +21,9 @@ class StoreProvider extends ChangeNotifier {
   //WIDGET Menampilkan Detail Produk Di Toko, dengan BottomSheet
   void showDetailProduct(
       BuildContext context, AsyncSnapshot snapshot, int index) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final productProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -75,18 +79,18 @@ class StoreProvider extends ChangeNotifier {
                       OutlinedButton.icon(
                         onPressed: () async {
                           try {
-                            if (AuthProvider().unAuthorized == true) {
+                            if (authProvider.unAuthorized == false) {
+                              final user = supabase.auth.currentUser;
+                              productProvider.addToWishlist(
+                                usersId: user!.id,
+                                productId: snapshot.data[index]['id'],
+                              );
+                            } else {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const Login(),
                                 ),
-                              );
-                            } else {
-                              final user = supabase.auth.currentUser;
-                              ProductsProvider().addToWishlist(
-                                usersId: user!.id,
-                                productId: snapshot.data[index]['id'],
                               );
                             }
                           } catch (e) {
@@ -112,7 +116,7 @@ class StoreProvider extends ChangeNotifier {
                             ),
                           ),
                           onPressed: () async {
-                            if (AuthProvider().unAuthorized == true) {
+                            if (authProvider.unAuthorized == true) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

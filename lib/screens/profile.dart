@@ -165,7 +165,6 @@ class _ProfileState extends State<Profile> {
           ),
           //Kalau Tidak Ada Login, Hide Widgetnya
           Visibility(
-            //Benerin Lagi Nanti Disini
             visible:
                 authProvider.unAuthorized ? false : !authProvider.unAuthorized,
             child: ListTile(

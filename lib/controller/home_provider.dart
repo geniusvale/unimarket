@@ -10,10 +10,10 @@ class HomeProvider extends ChangeNotifier {
   PageController pageController = PageController();
 
   List pages = [
-    Home(),
-    Wishlist(),
-    Orders(),
-    Profile(),
+    const Home(),
+    const Wishlist(),
+    const Orders(),
+    const Profile(),
   ];
 
   //Function Pindah Halaman di PageView

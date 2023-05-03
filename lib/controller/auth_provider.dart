@@ -98,30 +98,4 @@ class AuthProvider extends ChangeNotifier {
       print('Ini error insert user ke profiles ${error.toString()}');
     }
   }
-
-  //Cek Kondisi Login/Tidak
-  // checkIsLoggedIn(BuildContext context) async {
-  //   final loginState = await SharedPreferences.getInstance();
-  //   final isLoggedIn = loginState.getBool('isLoggedIn') ?? false;
-  //   final profileProvider =
-  //       provider.Provider.of<ProfileProvider>(context, listen: false);
-  //   print('Status isLoggedIn ${isLoggedIn.toString()}');
-  //   //Kalau Ada Sesi Login, Auto Ke Halaman HomePage
-  //   if (isLoggedIn == true) {
-  //     //INIT dan Ambil Data Profil
-  //     await profileProvider.getProfileDataFromAuth(context);
-  //     unAuthorized = false;
-  //     //Redirect Ke HomePage
-  //     Navigator.pushAndRemoveUntil(
-  //       context,
-  //       MaterialPageRoute(
-  //         builder: (context) => const HomePage(),
-  //       ),
-  //       (route) => false,
-  //     );
-  //     notifyListeners();
-  //   } else {
-  //     null;
-  //   }
-  // }
 }

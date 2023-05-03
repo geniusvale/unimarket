@@ -39,14 +39,6 @@ class _LoginState extends State<Login> {
       //INIT dan Ambil Data Profil
       await profileProvider.getProfileDataFromAuth(context);
       authProvider.unAuthorized = false;
-      //Redirect Ke HomePage
-      // Navigator.pushAndRemoveUntil(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const HomePage(),
-      //   ),
-      //   (route) => false,
-      // );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
