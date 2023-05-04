@@ -18,6 +18,9 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
+  bool _passwordVisible = true;
+  bool kIsWeb = true;
+  
   @override
   void initState() {
     // WidgetsBinding.instance.addPostFrameCallback(
@@ -45,14 +48,11 @@ class _LoginState extends State<Login> {
           builder: (context) => const HomePage(),
         ),
       );
-      // notifyListeners();
     } else {
       null;
     }
   }
 
-  bool _passwordVisible = true;
-  bool kIsWeb = true;
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);

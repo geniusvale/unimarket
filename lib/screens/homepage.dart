@@ -7,13 +7,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
 import 'package:unimarket/controller/wishlist_provider.dart';
+import 'package:unimarket/screens/product/detail_product.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
 
 import '../controller/auth_provider.dart';
 import '../controller/profile_provider.dart';
 import '../controller/store_provider.dart';
-import 'orders.dart';
+import 'cart.dart';
+import 'search.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -34,6 +36,8 @@ class _HomePageState extends State<HomePage> {
     final profileProvider = providers.Provider.of<ProfileProvider>(context);
     final authProvider =
         providers.Provider.of<AuthProvider>(context, listen: false);
+    final wishlistProvider =
+        providers.Provider.of<WishlistProvider>(context, listen: false);
     print('Status unAuthorized ${authProvider.unAuthorized.toString()}');
     return Scaffold(
       appBar: AppBar(
@@ -41,14 +45,19 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         title: const Text('UniMarket.', style: TextStyle(fontSize: 24)),
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            showSearch(
+              context: context,
+              delegate: CustomSearchDelegate(),
+            );
+          },
           icon: const Icon(Icons.search_rounded),
         ),
         actions: [
           IconButton(
             onPressed: () {
               // profileProvider.getProfileDataFromAuth(context);
-              WishlistProvider().getWishlist();
+              wishlistProvider.getWishlist();
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',
@@ -61,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Orders(),
+                  builder: (context) => const Cart(),
                 ),
               );
             },
@@ -75,30 +84,12 @@ class _HomePageState extends State<HomePage> {
       ),
       // appBarz,
       body: homeProvider.pages[homeProvider.currentIndex],
-      // PageView(
-      //   controller: homeProvider.pageController,
-      //   onPageChanged: (value) {
-      //     homeProvider.changePage(value);
-      //   },
-      //   children: const [
-      //     Home(),
-      //     Wishlist(),
-      //     Orders(),
-      //     Profile(),
-      //   ],
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey,
         unselectedIconTheme: const IconThemeData(color: Colors.grey),
         currentIndex: homeProvider.currentIndex,
         onTap: (value) {
           homeProvider.changePage(value);
-          // homeProvider.pageController.jumpTo(value.toDouble());
-          // homeProvider.pageController.animateToPage(
-          //   value,
-          //   duration: const Duration(milliseconds: 3),
-          //   curve: Curves.ease,
-          // );
         },
         fixedColor: Colors.black,
         type: BottomNavigationBarType.fixed,
@@ -119,11 +110,11 @@ class _HomePageState extends State<HomePage> {
               label: 'Wishlist'),
           BottomNavigationBarItem(
               icon: SvgPicture.asset(
-                'assets/icons/shopping-bag.svg',
+                'assets/icons/receipt.svg',
                 width: 20,
                 height: 20,
               ),
-              label: 'Orders'),
+              label: 'Transactions'),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               'assets/icons/user.svg',
@@ -152,6 +143,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final storeProvider =
         providers.Provider.of<StoreProvider>(context, listen: false);
+    final productsProvider =
+        providers.Provider.of<ProductsProvider>(context, listen: false);
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
@@ -170,7 +163,7 @@ class _HomeState extends State<Home> {
               ),
               formSpacer,
               FutureBuilder<List<Map<String, dynamic>>>(
-                future: ProductsProvider().getProduct(),
+                future: productsProvider.getProduct(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return MasonryGridView.builder(
@@ -186,10 +179,21 @@ class _HomeState extends State<Home> {
                           elevation: 0.3,
                           child: InkWell(
                             onTap: () {
-                              storeProvider.showDetailProduct(
+                              // storeProvider.showDetailProduct(
+                              //   context,
+                              //   snapshot,
+                              //   index,
+                              // );
+                              Navigator.push(
                                 context,
-                                snapshot,
-                                index,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return DetailProduct(
+                                      index: index,
+                                      snapshot: snapshot,
+                                    );
+                                  },
+                                ),
                               );
                             },
                             child: Column(

@@ -10,9 +10,6 @@ class WishlistProvider extends ChangeNotifier {
           .from('wishlist')
           .select<List<Map<String, dynamic>>>('products_id, products!inner(*)')
           .eq('users_id', user?.id);
-      // final allWishlist = await supabase
-      //     .from('products')
-      //     .select<List<dynamic>>('*, wishlist!inner(*)');
       print(allWishlist);
       notifyListeners();
       return allWishlist;

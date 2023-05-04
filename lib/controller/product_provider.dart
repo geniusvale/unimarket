@@ -34,6 +34,35 @@ class ProductsProvider extends ChangeNotifier {
     //WORKING GOOD
   }
 
+  showDeleteProduct(BuildContext context, AsyncSnapshot snapshot, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Hapus?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                ProductsProvider().deleteProduct(
+                  snapshot.data?[index]['id'] ?? 0,
+                );
+                Navigator.pop(context);
+                // setState(() {});
+              },
+              child: const Text('Oke'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Batal'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   //Edit Produk
   editProduct({
     String? name,

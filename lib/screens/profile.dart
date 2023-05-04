@@ -136,6 +136,30 @@ class _ProfileState extends State<Profile> {
               }
             },
           ),
+          formSpacer,
+          //Untuk Admin, Perbaiki dan Implementasi Nanti!
+          ListTile(
+            leading: SvgPicture.asset(
+              'assets/icons/list-check.svg',
+              width: 20,
+              height: 20,
+            ),
+            title: const Text('Konfirmasi Request Sebagai Penjual'),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () {
+              // if (authProvider.unAuthorized == true) {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => const Login(),
+              //     ),
+              //   );
+              // } else {
+              //   return;
+              // }
+            },
+          ),
+          formSpacer,
           //Kalau Tidak Ada Login, Redirect Ke Login Page
           ListTile(
             leading: SvgPicture.asset(
@@ -143,7 +167,7 @@ class _ProfileState extends State<Profile> {
               width: 20,
               height: 20,
             ),
-            title: const Text('Kelola Toko (\'Tokomu\')'),
+            title: const Text('Kelola Toko'),
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () {
               if (authProvider.unAuthorized == true) {

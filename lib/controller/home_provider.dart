@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/homepage.dart';
-import '../screens/orders.dart';
+import '../screens/transactions.dart';
 import '../screens/profile.dart';
 import '../screens/wishlist.dart';
 
@@ -12,7 +12,7 @@ class HomeProvider extends ChangeNotifier {
   List pages = [
     const Home(),
     const Wishlist(),
-    const Orders(),
+    const Transactions(),
     const Profile(),
   ];
 

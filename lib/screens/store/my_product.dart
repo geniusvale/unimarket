@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:unimarket/screens/product/add_product.dart';
 
-import '../../controller/home_provider.dart';
 import '../../controller/product_provider.dart';
-import '../../controller/store_provider.dart';
 import '../../utilities/constants.dart';
+import '../product/detail_product.dart';
+import '../product/update_product.dart';
 
 class MyProduct extends StatefulWidget {
   const MyProduct({Key? key}) : super(key: key);
@@ -23,12 +24,19 @@ class _MyProductState extends State<MyProduct> {
   int randomNumberHeight = Random().nextInt(100);
   @override
   Widget build(BuildContext context) {
-    final storeProvider =
-        providers.Provider.of<StoreProvider>(context, listen: false);
+    final productProvider =
+        providers.Provider.of<ProductsProvider>(context, listen: false);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          storeProvider.showAddProduct(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const AddProduct();
+              },
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
@@ -39,7 +47,7 @@ class _MyProductState extends State<MyProduct> {
           });
         },
         child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: ProductsProvider().getProduct(),
+          future: productProvider.getProduct(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return MasonryGridView.builder(
@@ -55,14 +63,20 @@ class _MyProductState extends State<MyProduct> {
                     elevation: 0.3,
                     child: InkWell(
                       onTap: () {
-                        storeProvider.showDetailProduct(
+                        Navigator.push(
                           context,
-                          snapshot,
-                          index,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return DetailProduct(
+                                index: index,
+                                snapshot: snapshot,
+                              );
+                            },
+                          ),
                         );
                       },
                       onLongPress: () {
-                        storeProvider.showDeleteProduct(
+                        productProvider.showDeleteProduct(
                           context,
                           snapshot,
                           index,
@@ -71,10 +85,16 @@ class _MyProductState extends State<MyProduct> {
                       onDoubleTap: () {
                         print(randomNumberHeight);
                         print(index);
-                        storeProvider.showUpdateProduct(
+                        Navigator.push(
                           context,
-                          snapshot,
-                          index,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return UpdateProduct(
+                                index: index,
+                                snapshot: snapshot,
+                              );
+                            },
+                          ),
                         );
                       },
                       child: Column(

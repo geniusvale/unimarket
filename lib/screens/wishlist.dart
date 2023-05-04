@@ -9,6 +9,7 @@ import 'package:unimarket/controller/wishlist_provider.dart';
 import '../controller/auth_provider.dart';
 import '../controller/store_provider.dart';
 import '../utilities/constants.dart';
+import 'product/detail_product.dart';
 
 class Wishlist extends StatefulWidget {
   const Wishlist({Key? key}) : super(key: key);
@@ -54,10 +55,16 @@ class _WishlistState extends State<Wishlist> {
                           elevation: 0.3,
                           child: InkWell(
                             onTap: () {
-                              storeProvider.showDetailProduct(
+                              Navigator.push(
                                 context,
-                                snapshot,
-                                index,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return DetailProduct(
+                                      index: index,
+                                      snapshot: snapshot,
+                                    );
+                                  },
+                                ),
                               );
                             },
                             child: Column(
