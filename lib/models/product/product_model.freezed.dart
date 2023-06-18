@@ -20,12 +20,13 @@ ProductModel _$ProductModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ProductModel {
-  String get id => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   int? get price => throw _privateConstructorUsedError;
   String? get img_url => throw _privateConstructorUsedError;
   String? get desc => throw _privateConstructorUsedError;
   String? get seller_id => throw _privateConstructorUsedError;
+  String? get category => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -40,12 +41,13 @@ abstract class $ProductModelCopyWith<$Res> {
       _$ProductModelCopyWithImpl<$Res, ProductModel>;
   @useResult
   $Res call(
-      {String id,
+      {int? id,
       String? name,
       int? price,
       String? img_url,
       String? desc,
-      String? seller_id});
+      String? seller_id,
+      String? category});
 }
 
 /// @nodoc
@@ -61,18 +63,19 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = freezed,
     Object? price = freezed,
     Object? img_url = freezed,
     Object? desc = freezed,
     Object? seller_id = freezed,
+    Object? category = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -92,6 +95,10 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
       seller_id: freezed == seller_id
           ? _value.seller_id
           : seller_id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      category: freezed == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -106,12 +113,13 @@ abstract class _$$_ProductModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {int? id,
       String? name,
       int? price,
       String? img_url,
       String? desc,
-      String? seller_id});
+      String? seller_id,
+      String? category});
 }
 
 /// @nodoc
@@ -125,18 +133,19 @@ class __$$_ProductModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = freezed,
     Object? price = freezed,
     Object? img_url = freezed,
     Object? desc = freezed,
     Object? seller_id = freezed,
+    Object? category = freezed,
   }) {
     return _then(_$_ProductModel(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int?,
       name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -157,6 +166,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
           ? _value.seller_id
           : seller_id // ignore: cast_nullable_to_non_nullable
               as String?,
+      category: freezed == category
+          ? _value.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -170,13 +183,14 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
       this.price,
       this.img_url,
       this.desc,
-      this.seller_id});
+      this.seller_id,
+      this.category});
 
   factory _$_ProductModel.fromJson(Map<String, dynamic> json) =>
       _$$_ProductModelFromJson(json);
 
   @override
-  final String id;
+  final int? id;
   @override
   final String? name;
   @override
@@ -187,10 +201,12 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
   final String? desc;
   @override
   final String? seller_id;
+  @override
+  final String? category;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProductModel(id: $id, name: $name, price: $price, img_url: $img_url, desc: $desc, seller_id: $seller_id)';
+    return 'ProductModel(id: $id, name: $name, price: $price, img_url: $img_url, desc: $desc, seller_id: $seller_id, category: $category)';
   }
 
   @override
@@ -203,7 +219,8 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
       ..add(DiagnosticsProperty('price', price))
       ..add(DiagnosticsProperty('img_url', img_url))
       ..add(DiagnosticsProperty('desc', desc))
-      ..add(DiagnosticsProperty('seller_id', seller_id));
+      ..add(DiagnosticsProperty('seller_id', seller_id))
+      ..add(DiagnosticsProperty('category', category));
   }
 
   @override
@@ -217,13 +234,15 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
             (identical(other.img_url, img_url) || other.img_url == img_url) &&
             (identical(other.desc, desc) || other.desc == desc) &&
             (identical(other.seller_id, seller_id) ||
-                other.seller_id == seller_id));
+                other.seller_id == seller_id) &&
+            (identical(other.category, category) ||
+                other.category == category));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, price, img_url, desc, seller_id);
+  int get hashCode => Object.hash(
+      runtimeType, id, name, price, img_url, desc, seller_id, category);
 
   @JsonKey(ignore: true)
   @override
@@ -241,18 +260,19 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
 
 abstract class _ProductModel implements ProductModel {
   const factory _ProductModel(
-      {required final String id,
+      {required final int? id,
       final String? name,
       final int? price,
       final String? img_url,
       final String? desc,
-      final String? seller_id}) = _$_ProductModel;
+      final String? seller_id,
+      final String? category}) = _$_ProductModel;
 
   factory _ProductModel.fromJson(Map<String, dynamic> json) =
       _$_ProductModel.fromJson;
 
   @override
-  String get id;
+  int? get id;
   @override
   String? get name;
   @override
@@ -263,6 +283,8 @@ abstract class _ProductModel implements ProductModel {
   String? get desc;
   @override
   String? get seller_id;
+  @override
+  String? get category;
   @override
   @JsonKey(ignore: true)
   _$$_ProductModelCopyWith<_$_ProductModel> get copyWith =>

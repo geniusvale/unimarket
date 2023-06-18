@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
 import 'package:unimarket/controller/wishlist_provider.dart';
+import 'package:unimarket/models/product/product_model.dart';
 import 'package:unimarket/screens/product/detail_product.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
@@ -38,6 +39,8 @@ class _HomePageState extends State<HomePage> {
         providers.Provider.of<AuthProvider>(context, listen: false);
     final wishlistProvider =
         providers.Provider.of<WishlistProvider>(context, listen: false);
+    final productsProvider =
+        providers.Provider.of<ProductsProvider>(context, listen: false);
     print('Status unAuthorized ${authProvider.unAuthorized.toString()}');
     return Scaffold(
       appBar: AppBar(
@@ -57,7 +60,8 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () {
               // profileProvider.getProfileDataFromAuth(context);
-              wishlistProvider.getWishlist();
+              // wishlistProvider.getWishlist();
+              productsProvider.getProduct();
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',
@@ -157,12 +161,12 @@ class _HomeState extends State<Home> {
           child: ListView(
             children: [
               const Text(
-                'Explore our\ncreation.',
+                'Jelajahi \nkarya kami.',
                 textAlign: TextAlign.start,
                 style: titleText,
               ),
               formSpacer,
-              FutureBuilder<List<Map<String, dynamic>>>(
+              FutureBuilder<List<ProductModel>>(
                 future: productsProvider.getProduct(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -227,13 +231,13 @@ class _HomeState extends State<Home> {
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    snapshot.data?[index]['name'] ?? '~Error',
+                                    snapshot.data?[index].name ?? '~Error',
                                   ),
                                 ),
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    'Rp ${snapshot.data![index]['price']}',
+                                    'Rp ${snapshot.data![index].price}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),

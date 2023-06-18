@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/product_provider.dart';
+import '../../models/product/product_model.dart';
 import '../../utilities/constants.dart';
 
 class UpdateProduct extends StatefulWidget {
-  UpdateProduct({Key? key, required this.index, this.snapshot})
+  UpdateProduct({Key? key, required this.index, required this.snapshot})
       : super(key: key);
   int index;
-  AsyncSnapshot? snapshot;
+  AsyncSnapshot<List<ProductModel>> snapshot;
+  // ProductModel? snapshot;
 
   @override
   State<UpdateProduct> createState() => _UpdateProductState();
@@ -43,15 +45,14 @@ class _UpdateProductState extends State<UpdateProduct> {
                 TextFormField(
                   controller: nameC,
                   decoration: formDecor(
-                    hint: widget.snapshot!.data![widget.index]['name'],
+                    hint: widget.snapshot.data![widget.index].name ?? '',
                   ),
                 ),
                 formSpacer,
                 TextFormField(
                   controller: priceC,
                   decoration: formDecor(
-                    hint: widget.snapshot!.data![widget.index]['price']
-                        .toString(),
+                    hint: widget.snapshot.data![widget.index].price.toString(),
                   ),
                 ),
                 formSpacer,
@@ -61,7 +62,7 @@ class _UpdateProductState extends State<UpdateProduct> {
                   minLines: 5,
                   maxLines: null,
                   decoration: formDecor(
-                    hint: widget.snapshot!.data?[widget.index]['desc'] ??
+                    hint: widget.snapshot.data![widget.index].desc ??
                         'Tidak Ada Deskripsi',
                   ),
                 ),
@@ -72,11 +73,10 @@ class _UpdateProductState extends State<UpdateProduct> {
                       name: nameC.text,
                       price: int.parse(priceC.text),
                       desc: descC.text,
-                      currentName: widget.snapshot!.data![widget.index]['name'],
-                      currentPrice: widget
-                          .snapshot!.data![widget.index]['price']
-                          .toString(),
-                      currentDesc: widget.snapshot!.data![widget.index]['desc'],
+                      currentName: widget.snapshot.data![widget.index].name,
+                      currentPrice:
+                          widget.snapshot.data![widget.index].price.toString(),
+                      currentDesc: widget.snapshot.data![widget.index].desc,
                     );
                     nameC.clear();
                     priceC.clear();

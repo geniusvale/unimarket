@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:unimarket/controller/wishlist_provider.dart';
+import 'package:unimarket/models/product/product_model.dart';
 
 import '../controller/auth_provider.dart';
 import '../controller/store_provider.dart';
@@ -35,7 +36,7 @@ class _WishlistState extends State<Wishlist> {
             )
           : Padding(
               padding: formPadding,
-              child: FutureBuilder<List<Map<String, dynamic>>>(
+              child: FutureBuilder<List<ProductModel>>(
                 future: wishlistProvider.getWishlist(),
                 builder: (context, snapshot) {
                   print('status unAuthorized ${authProvider.unAuthorized}');
@@ -98,15 +99,14 @@ class _WishlistState extends State<Wishlist> {
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    snapshot.data?[index]['products']['name'] ??
-                                        '~Error',
+                                    snapshot.data?[index].name ?? '~Error',
                                     // '',
                                   ),
                                 ),
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    'Rp ${snapshot.data![index]['products']['price']}',
+                                    'Rp ${snapshot.data![index].price}',
                                     // '',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,

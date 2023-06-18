@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/product/product_model.dart';
 import '../utilities/constants.dart';
 
 class ProductsProvider extends ChangeNotifier {
+  List<ProductModel>? allProducts;
+  ProductModel? productData;
+
   //Tambah Produk Ke DB
   void addProduct({String? name, desc, int? price}) async {
     await supabase.from('products').insert(
@@ -18,10 +22,14 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   //Menampilkan Seluruh Produk Dari Tabel di DB
-  Future<List<Map<String, dynamic>>> getProduct() async {
+  Future<List<ProductModel>> getProduct() async {
     final supabase = Supabase.instance.client;
-    final allProducts =
-        await supabase.from('products').select<List<Map<String, dynamic>>>();
+    final allProductsList = await supabase.from('products').select();
+    final allProducts = allProductsList
+        .map<ProductModel>(
+          (e) => ProductModel.fromJson(e),
+        )
+        .toList();
     notifyListeners();
     return allProducts;
     //WORKING GOOD

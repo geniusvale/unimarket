@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../controller/auth_provider.dart';
 import '../../controller/product_provider.dart';
+import '../../models/product/product_model.dart';
 import '../../utilities/constants.dart';
 import '../auth/login.dart';
 
@@ -14,7 +15,7 @@ class DetailProduct extends StatefulWidget {
   DetailProduct({Key? key, required this.index, required this.snapshot})
       : super(key: key);
   int index;
-  AsyncSnapshot<List<Map<String, dynamic>>> snapshot;
+  AsyncSnapshot<List<ProductModel>> snapshot;
 
   @override
   State<DetailProduct> createState() => _DetailProductState();
@@ -41,9 +42,11 @@ class _DetailProductState extends State<DetailProduct> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Center(
+            SizedBox(
+              height: 300,
+              width: double.infinity,
               child: CachedNetworkImage(
-                fit: BoxFit.fill,
+                fit: BoxFit.fitHeight,
                 imageUrl:
                     'https://picsum.photos/id/${widget.index + randomNumber}/200/200',
                 progressIndicatorBuilder: (context, url, downloadProgress) {
@@ -63,19 +66,25 @@ class _DetailProductState extends State<DetailProduct> {
             ),
             formSpacer,
             Text(
-              widget.snapshot.data![widget.index]['name'] ??
-                  widget.snapshot.data![widget.index]['products']['name'],
-              style: const TextStyle(fontSize: 16),
+              widget.snapshot.data![widget.index].name ?? 'Tak Ada Data',
+              style: const TextStyle(fontSize: 24),
             ),
+            formSpacer,
             Text(
-              widget.snapshot.data![widget.index]['price'].toString(),
+              'Rp ' + widget.snapshot.data![widget.index].price.toString(),
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            formSpacer,
+            const Text(
+              'Informasi Produk',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             Text(
-              widget.snapshot.data![widget.index]['desc'] ?? 'No Deskripsi',
+              widget.snapshot.data![widget.index].desc ?? 'No Deskripsi',
+              style: const TextStyle(fontSize: 18),
             ),
             Expanded(
               child: Row(
@@ -88,8 +97,7 @@ class _DetailProductState extends State<DetailProduct> {
                           final user = supabase.auth.currentUser;
                           productProvider.addToWishlist(
                             usersId: user!.id,
-                            productId: widget.snapshot.data?[widget.index]
-                                ['id'],
+                            productId: widget.snapshot.data![widget.index].id,
                           );
                         } else {
                           Navigator.push(
@@ -102,11 +110,22 @@ class _DetailProductState extends State<DetailProduct> {
                       } catch (e) {
                         print(e);
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(e.toString())));
+                          SnackBar(
+                            content: Text(e.toString()),
+                          ),
+                        );
                       }
                     },
-                    icon: SvgPicture.asset('assets/icons/heart.svg'),
-                    label: const Text('Save'),
+                    icon: SvgPicture.asset(
+                      'assets/icons/heart.svg',
+                      color: Colors.grey[800],
+                    ),
+                    label: Text(
+                      'Save',
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                      ),
+                    ),
                   ),
                   formSpacer,
                   Expanded(
@@ -117,7 +136,7 @@ class _DetailProductState extends State<DetailProduct> {
                         textStyle: const TextStyle(color: Colors.white),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
-                            Radius.circular(8),
+                            Radius.circular(16),
                           ),
                         ),
                       ),
@@ -133,7 +152,7 @@ class _DetailProductState extends State<DetailProduct> {
                           return;
                         }
                       },
-                      child: const Text('Tambah Ke Cart'),
+                      child: const Text('Tambah Ke Keranjang'),
                     ),
                   ),
                 ],

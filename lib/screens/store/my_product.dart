@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:unimarket/models/product/product_model.dart';
 import 'package:unimarket/screens/product/add_product.dart';
 
 import '../../controller/product_provider.dart';
@@ -19,7 +20,6 @@ class MyProduct extends StatefulWidget {
 }
 
 class _MyProductState extends State<MyProduct> {
-  // final supabase = Supabase.instance.client;
   int randomNumber = Random().nextInt(999);
   int randomNumberHeight = Random().nextInt(100);
   @override
@@ -46,7 +46,7 @@ class _MyProductState extends State<MyProduct> {
             return;
           });
         },
-        child: FutureBuilder<List<Map<String, dynamic>>>(
+        child: FutureBuilder<List<ProductModel>>(
           future: productProvider.getProduct(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
@@ -132,13 +132,13 @@ class _MyProductState extends State<MyProduct> {
                           Padding(
                             padding: formPadding,
                             child: Text(
-                              snapshot.data?[index]['name'] ?? '~Error',
+                              snapshot.data?[index].name ?? '~Error',
                             ),
                           ),
                           Padding(
                             padding: formPadding,
                             child: Text(
-                              'Rp ${snapshot.data![index]['price']}',
+                              'Rp ${snapshot.data![index].price}',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
