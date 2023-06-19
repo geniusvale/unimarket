@@ -6,6 +6,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
+import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/controller/wishlist_provider.dart';
 import 'package:unimarket/models/product/product_model.dart';
 import 'package:unimarket/screens/product/detail_product.dart';
@@ -41,6 +42,8 @@ class _HomePageState extends State<HomePage> {
         providers.Provider.of<WishlistProvider>(context, listen: false);
     final productsProvider =
         providers.Provider.of<ProductsProvider>(context, listen: false);
+    final sellerRequestProvider =
+        providers.Provider.of<SellerRequestProvider>(context, listen: false);
     print('Status unAuthorized ${authProvider.unAuthorized.toString()}');
     return Scaffold(
       appBar: AppBar(
@@ -61,7 +64,8 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               // profileProvider.getProfileDataFromAuth(context);
               // wishlistProvider.getWishlist();
-              productsProvider.getProduct();
+              // productsProvider.getProduct();
+              sellerRequestProvider.getSellerRequestList();
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',

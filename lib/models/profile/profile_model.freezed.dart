@@ -25,6 +25,8 @@ mixin _$ProfileModel {
   String? get email => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
   bool? get isSeller => throw _privateConstructorUsedError;
+  bool? get isAdmin => throw _privateConstructorUsedError;
+  String? get nim => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +45,9 @@ abstract class $ProfileModelCopyWith<$Res> {
       String? username,
       String? email,
       String? avatar_url,
-      bool? isSeller});
+      bool? isSeller,
+      bool? isAdmin,
+      String? nim});
 }
 
 /// @nodoc
@@ -64,6 +68,8 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
     Object? email = freezed,
     Object? avatar_url = freezed,
     Object? isSeller = freezed,
+    Object? isAdmin = freezed,
+    Object? nim = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -86,6 +92,14 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
           ? _value.isSeller
           : isSeller // ignore: cast_nullable_to_non_nullable
               as bool?,
+      isAdmin: freezed == isAdmin
+          ? _value.isAdmin
+          : isAdmin // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      nim: freezed == nim
+          ? _value.nim
+          : nim // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -103,7 +117,9 @@ abstract class _$$_ProfileModelCopyWith<$Res>
       String? username,
       String? email,
       String? avatar_url,
-      bool? isSeller});
+      bool? isSeller,
+      bool? isAdmin,
+      String? nim});
 }
 
 /// @nodoc
@@ -122,6 +138,8 @@ class __$$_ProfileModelCopyWithImpl<$Res>
     Object? email = freezed,
     Object? avatar_url = freezed,
     Object? isSeller = freezed,
+    Object? isAdmin = freezed,
+    Object? nim = freezed,
   }) {
     return _then(_$_ProfileModel(
       id: null == id
@@ -144,6 +162,14 @@ class __$$_ProfileModelCopyWithImpl<$Res>
           ? _value.isSeller
           : isSeller // ignore: cast_nullable_to_non_nullable
               as bool?,
+      isAdmin: freezed == isAdmin
+          ? _value.isAdmin
+          : isAdmin // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      nim: freezed == nim
+          ? _value.nim
+          : nim // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -156,7 +182,9 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       this.username,
       this.email,
       this.avatar_url,
-      this.isSeller});
+      this.isSeller,
+      this.isAdmin,
+      this.nim});
 
   factory _$_ProfileModel.fromJson(Map<String, dynamic> json) =>
       _$$_ProfileModelFromJson(json);
@@ -171,10 +199,14 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
   final String? avatar_url;
   @override
   final bool? isSeller;
+  @override
+  final bool? isAdmin;
+  @override
+  final String? nim;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProfileModel(id: $id, username: $username, email: $email, avatar_url: $avatar_url, isSeller: $isSeller)';
+    return 'ProfileModel(id: $id, username: $username, email: $email, avatar_url: $avatar_url, isSeller: $isSeller, isAdmin: $isAdmin, nim: $nim)';
   }
 
   @override
@@ -186,7 +218,9 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       ..add(DiagnosticsProperty('username', username))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('avatar_url', avatar_url))
-      ..add(DiagnosticsProperty('isSeller', isSeller));
+      ..add(DiagnosticsProperty('isSeller', isSeller))
+      ..add(DiagnosticsProperty('isAdmin', isAdmin))
+      ..add(DiagnosticsProperty('nim', nim));
   }
 
   @override
@@ -201,13 +235,15 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
             (identical(other.avatar_url, avatar_url) ||
                 other.avatar_url == avatar_url) &&
             (identical(other.isSeller, isSeller) ||
-                other.isSeller == isSeller));
+                other.isSeller == isSeller) &&
+            (identical(other.isAdmin, isAdmin) || other.isAdmin == isAdmin) &&
+            (identical(other.nim, nim) || other.nim == nim));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, username, email, avatar_url, isSeller);
+  int get hashCode => Object.hash(
+      runtimeType, id, username, email, avatar_url, isSeller, isAdmin, nim);
 
   @JsonKey(ignore: true)
   @override
@@ -229,7 +265,9 @@ abstract class _ProfileModel implements ProfileModel {
       final String? username,
       final String? email,
       final String? avatar_url,
-      final bool? isSeller}) = _$_ProfileModel;
+      final bool? isSeller,
+      final bool? isAdmin,
+      final String? nim}) = _$_ProfileModel;
 
   factory _ProfileModel.fromJson(Map<String, dynamic> json) =
       _$_ProfileModel.fromJson;
@@ -244,6 +282,10 @@ abstract class _ProfileModel implements ProfileModel {
   String? get avatar_url;
   @override
   bool? get isSeller;
+  @override
+  bool? get isAdmin;
+  @override
+  String? get nim;
   @override
   @JsonKey(ignore: true)
   _$$_ProfileModelCopyWith<_$_ProfileModel> get copyWith =>

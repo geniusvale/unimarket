@@ -1,7 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:unimarket/controller/auth_provider.dart';
+import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/screens/homepage.dart';
 
 import '../../utilities/constants.dart';
@@ -22,6 +24,9 @@ class _RegisterState extends State<Register> {
   final passwordC = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -104,17 +109,21 @@ class _RegisterState extends State<Register> {
                             ),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           try {
                             if (formKey.currentState!.validate()) {
-                              AuthProvider().register(
+                              authProvider.register(
                                 usernameC.text,
                                 emailC.text,
                                 passwordC.text,
                               );
+                              await profileProvider
+                                  .getProfileDataFromAuth(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Akun Berhasil Dibuat!'),
+                                  content: Text(
+                                    'Akun Berhasil Dibuat!',
+                                  ),
                                 ),
                               );
                               Navigator.pushReplacement(

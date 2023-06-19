@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/controller/profile_provider.dart';
+import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/screens/auth/register.dart';
+import 'package:unimarket/screens/confirm_request.dart';
 import 'package:unimarket/screens/store/store.dart';
 import 'package:unimarket/utilities/constants.dart';
 
@@ -21,15 +22,9 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  int randomNumber = Random().nextInt(999);
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   File? foto;
   bool isNoPic = true;
+  bool hideWidget = true;
 
   uploadFoto() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -45,11 +40,33 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  //CEK NANTI, BELUM DIIMPLEMENT!
+  checkIfHasRequestedForSeller(BuildContext context) async {
+    final sellerRequestProvider =
+        Provider.of<SellerRequestProvider>(context, listen: false);
+    await sellerRequestProvider.getSellerRequestList();
+    if (sellerRequestProvider.allRequest!
+        .contains(supabase.auth.currentUser!.id)) {
+      return hideWidget;
+    } else {
+      return !hideWidget;
+    }
+  }
+
+  @override
+  void initState() {
+    checkIfHasRequestedForSeller(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final sellerRequestProvider =
+        Provider.of<SellerRequestProvider>(context, listen: false);
+    // print(sellerRequestProvider.getSellerRequestList());
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -164,81 +181,135 @@ class _ProfileState extends State<Profile> {
                 }
               },
             ),
-            formSpacer,
-            //Kalau Tidak Ada Login, Redirect Ke Login Page
-            ListTile(
-              leading: SvgPicture.asset(
-                'assets/icons/edit.svg',
-                width: 20,
-                height: 20,
+            Visibility(
+              visible: profileProvider.loggedUserData.isSeller == false &&
+                  profileProvider.loggedUserData.isAdmin == false,
+              child: ListTile(
+                leading: SvgPicture.asset(
+                  'assets/icons/edit.svg',
+                  width: 20,
+                  height: 20,
+                ),
+                title: const Text('Request Sebagai Penjual'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () {
+                  //Kalau Tidak Ada Login, Redirect Ke Login Page
+                  if (authProvider.unAuthorized == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Login(),
+                      ),
+                    );
+                  } else {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: ((context) {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: sellerRequestProvider.nimC,
+                                decoration: formDecor(hint: 'Masukkan NIM'),
+                              ),
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          try {
+                                            sellerRequestProvider.sumbitRequest(
+                                              user_id:
+                                                  supabase.auth.currentUser!.id,
+                                              nim: sellerRequestProvider
+                                                  .nimC.text,
+                                            );
+                                          } catch (e) {
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(e.toString()),
+                                            ));
+                                          }
+                                        },
+                                        child: const Text('Kirim Request'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                    );
+                  }
+                },
               ),
-              title: const Text('Request Sebagai Penjual'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () {
-                if (authProvider.unAuthorized == true) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Login(),
-                    ),
-                  );
-                } else {
-                  return;
-                }
-              },
             ),
-            formSpacer,
             //Untuk Admin, Perbaiki dan Implementasi Nanti!
-            ListTile(
-              leading: SvgPicture.asset(
-                'assets/icons/list-check.svg',
-                width: 20,
-                height: 20,
+            Visibility(
+              visible: profileProvider.loggedUserData.isAdmin == true,
+              child: ListTile(
+                leading: SvgPicture.asset(
+                  'assets/icons/list-check.svg',
+                  width: 20,
+                  height: 20,
+                ),
+                title: const Text('Konfirmasi Request Sebagai Penjual'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () {
+                  if (authProvider.unAuthorized == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Login(),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ConfirmSellerRequest(),
+                      ),
+                    );
+                  }
+                },
               ),
-              title: const Text('Konfirmasi Request Sebagai Penjual'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () {
-                // if (authProvider.unAuthorized == true) {
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => const Login(),
-                //     ),
-                //   );
-                // } else {
-                //   return;
-                // }
-              },
             ),
-            formSpacer,
             //Kalau Tidak Ada Login, Redirect Ke Login Page
-            ListTile(
-              leading: SvgPicture.asset(
-                'assets/icons/shop.svg',
-                width: 20,
-                height: 20,
+            Visibility(
+              visible: profileProvider.loggedUserData.isSeller == true,
+              child: ListTile(
+                leading: SvgPicture.asset(
+                  'assets/icons/shop.svg',
+                  width: 20,
+                  height: 20,
+                ),
+                title: const Text('Kelola Toko'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () {
+                  if (authProvider.unAuthorized == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Login(),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Store(),
+                      ),
+                    );
+                  }
+                },
               ),
-              title: const Text('Kelola Toko'),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () {
-                if (authProvider.unAuthorized == true) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Login(),
-                    ),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Store(),
-                    ),
-                  );
-                }
-              },
             ),
-            formSpacer,
             //Kalau Tidak Ada Login, Hide Widgetnya
             Visibility(
               visible: authProvider.unAuthorized
