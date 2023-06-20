@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,13 +46,17 @@ class _AddProductState extends State<AddProduct> {
                   Row(
                     children: [
                       //Bisa Dikasih Gesture Detector
-                      Container(
-                        height: 120,
-                        width: 120,
-                        color: Colors.grey,
-                        child: IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {},
+                      DottedBorder(
+                        strokeWidth: 2,
+                        dashPattern: const [6, 3, 6, 3],
+                        child: Container(
+                          height: 120,
+                          width: 120,
+                          color: Colors.grey,
+                          child: IconButton(
+                            icon: const Icon(Icons.camera_alt_outlined),
+                            onPressed: () {},
+                          ),
                         ),
                       ),
                       formSpacer,
@@ -93,19 +98,27 @@ class _AddProductState extends State<AddProduct> {
                     decoration: formDecor(hint: 'Deskripsi'),
                   ),
                   formSpacer,
-                  ElevatedButton(
-                    onPressed: () async {
-                      productProvider.addProduct(
-                        name: nameC.text,
-                        desc: descC.text,
-                        price: int.parse(priceC.text),
-                      );
-                      nameC.clear();
-                      priceC.clear();
-                      descC.clear();
-                      Navigator.pop(context);
-                    },
-                    child: const Text('ADD PRODUCT'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            productProvider.addProduct(
+                              name: nameC.text,
+                              desc: descC.text,
+                              price: int.parse(priceC.text),
+                              category: selKategori,
+                              userId: supabase.auth.currentUser!.id,
+                            );
+                            nameC.clear();
+                            priceC.clear();
+                            descC.clear();
+                            Navigator.pop(context);
+                          },
+                          child: const Text('ADD PRODUCT'),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

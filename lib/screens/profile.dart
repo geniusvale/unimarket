@@ -27,14 +27,24 @@ class _ProfileState extends State<Profile> {
   bool hideWidget = true;
 
   uploadFoto() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'png', 'webp'],
+    FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
     );
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      foto = file.path as File?;
-      // setState(() {});
+    if (pickedFile != null) {
+      File filePath = File(pickedFile.files.single.path!);
+      String fileName = File(pickedFile.files.single.name).toString();
+      try {
+        final String uploadPath = await supabase.storage
+            .from('profile-pic')
+            .upload('${supabase.auth.currentUser!.id}/$fileName', filePath);
+      } catch (e) {
+        rethrow;
+      }
+      setState(() {
+        foto = filePath;
+        // print(fileName);
+      });
     } else {
       // User canceled the picker
     }
@@ -77,10 +87,17 @@ class _ProfileState extends State<Profile> {
                 children: [
                   //Kalau Tidak Ada Login, Gambar Harus Ada Replacement
                   ClipOval(
-                    child: SizedBox(
-                      height: 100,
-                      width: 100,
-                      child: SvgPicture.asset('assets/images/blankpp.svg'),
+                    child: GestureDetector(
+                      onTap: () {
+                        uploadFoto();
+                      },
+                      child: SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: foto == null
+                            ? SvgPicture.asset('assets/images/blankpp.svg')
+                            : Image.file(foto!),
+                      ),
                     ),
                     // NetworkImage(
                     //     'https://picsum.photos/id/$randomNumber/200/200'),

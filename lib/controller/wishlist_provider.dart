@@ -7,14 +7,14 @@ class WishlistProvider extends ChangeNotifier {
   Future<List<ProductModel>> getWishlist() async {
     final user = supabase.auth.currentUser;
     try {
-      final allWishlistList = await supabase
+      final result = await supabase
           .from('wishlist')
-          .select('products_id, products!inner(*)')
+          .select('products!inner(*)') //Inner Join Langsung Ke ForeignKey Table
           .eq('users_id', user?.id);
-      final allWishlist = allWishlistList
-          .map<ProductModel>((e) => ProductModel.fromJson(e))
+      final allWishlist = result
+          .map<ProductModel>((e) => ProductModel.fromJson(e['products']))
           .toList();
-      print(allWishlist);
+      // print(result);
       notifyListeners();
       return allWishlist;
       //WORKING GOOD

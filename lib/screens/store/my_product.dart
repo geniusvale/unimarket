@@ -47,7 +47,7 @@ class _MyProductState extends State<MyProduct> {
           });
         },
         child: FutureBuilder<List<ProductModel>>(
-          future: productProvider.getProduct(),
+          future: productProvider.getMyStoreProduct(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return MasonryGridView.builder(
@@ -83,8 +83,6 @@ class _MyProductState extends State<MyProduct> {
                         );
                       },
                       onDoubleTap: () {
-                        print(randomNumberHeight);
-                        print(index);
                         Navigator.push(
                           context,
                           MaterialPageRoute(

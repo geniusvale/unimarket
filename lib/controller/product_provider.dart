@@ -5,16 +5,19 @@ import '../models/product/product_model.dart';
 import '../utilities/constants.dart';
 
 class ProductsProvider extends ChangeNotifier {
-  List<ProductModel>? allProducts;
-  ProductModel? productData;
+  List<ProductModel>? allProducts; //Masuh Kosong, harus ada operasi add
+  List<ProductModel>? allMyProducts; //Masuh Kosong, harus ada operasi add
+  ProductModel? productData; //Masuh Kosong, harus ada operasi add
 
   //Tambah Produk Ke DB
-  void addProduct({String? name, desc, int? price}) async {
+  void addProduct({String? name, desc, category, userId, int? price}) async {
     await supabase.from('products').insert(
       {
         'name': name,
         'price': price,
         'desc': desc,
+        'category': category,
+        'seller_id': userId
       },
     );
     notifyListeners();
@@ -24,14 +27,32 @@ class ProductsProvider extends ChangeNotifier {
   //Menampilkan Seluruh Produk Dari Tabel di DB
   Future<List<ProductModel>> getProduct() async {
     final supabase = Supabase.instance.client;
-    final allProductsList = await supabase.from('products').select();
-    final allProducts = allProductsList
+    final result = await supabase.from('products').select();
+    final allProducts = result
         .map<ProductModel>(
           (e) => ProductModel.fromJson(e),
         )
         .toList();
     notifyListeners();
     return allProducts;
+    //WORKING GOOD
+  }
+
+  //Menampilkan Seluruh Produk Dari Toko Saya
+  Future<List<ProductModel>> getMyStoreProduct() async {
+    final supabase = Supabase.instance.client;
+    final result = await supabase
+        .from('products')
+        .select()
+        .eq('seller_id', supabase.auth.currentUser!.id);
+    final semuaProdukSaya = result
+        .map<ProductModel>(
+          (e) => ProductModel.fromJson(e),
+        )
+        .toList();
+    // allMyProducts?.add(semuaProduk);
+    notifyListeners();
+    return semuaProdukSaya;
     //WORKING GOOD
   }
 
@@ -79,15 +100,18 @@ class ProductsProvider extends ChangeNotifier {
     String? currentName,
     currentDesc,
     currentPrice,
+    currentCategory,
   }) async {
     await supabase.from('products').update({
       'name': name,
       'price': price,
       'desc': desc,
+      'category': currentCategory,
     }).match({
       'name': currentName,
       'price': currentPrice,
       'desc': currentDesc,
+      'category': currentCategory,
     });
     notifyListeners();
     //WORKING GOOD

@@ -19,7 +19,7 @@ class _StoreState extends State<Store> {
         endDrawer: const Drawer(),
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Nama TokoMu'),
+          title: const Text('Toko Anda'),
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Produkmu'),
