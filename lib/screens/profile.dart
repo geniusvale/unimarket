@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -25,30 +24,6 @@ class _ProfileState extends State<Profile> {
   File? foto;
   bool isNoPic = true;
   bool hideWidget = true;
-
-  uploadFoto() async {
-    FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-    );
-    if (pickedFile != null) {
-      File filePath = File(pickedFile.files.single.path!);
-      String fileName = File(pickedFile.files.single.name).toString();
-      try {
-        final String uploadPath = await supabase.storage
-            .from('profile-pic')
-            .upload('${supabase.auth.currentUser!.id}/$fileName', filePath);
-      } catch (e) {
-        rethrow;
-      }
-      setState(() {
-        foto = filePath;
-        // print(fileName);
-      });
-    } else {
-      // User canceled the picker
-    }
-  }
 
   //CEK NANTI, BELUM DIIMPLEMENT!
   checkIfHasRequestedForSeller(BuildContext context) async {
@@ -86,34 +61,29 @@ class _ProfileState extends State<Profile> {
               child: Row(
                 children: [
                   //Kalau Tidak Ada Login, Gambar Harus Ada Replacement
-                  ClipOval(
-                    child: GestureDetector(
-                      onTap: () {
-                        uploadFoto();
-                      },
+                  GestureDetector(
+                    onTap: () async {
+                      if (profileProvider.loggedUserData.avatar_url == null) {
+                        await profileProvider.uploadFotoProfil();
+                        setState(() {});
+                      } else {
+                        await profileProvider.updateFotoProfil();
+                        setState(() {});
+                      }
+                    },
+                    child: ClipOval(
                       child: SizedBox(
                         height: 100,
                         width: 100,
-                        child: foto == null
+                        child: profileProvider.loggedUserData.avatar_url == null
                             ? SvgPicture.asset('assets/images/blankpp.svg')
-                            : Image.file(foto!),
+                            : Image.network(
+                                profileProvider.loggedUserData.avatar_url!),
+                        // CachedNetworkImage(
+                        //     imageUrl:
+                        //         profileProvider.loggedUserData.avatar_url!),
                       ),
                     ),
-                    // NetworkImage(
-                    //     'https://picsum.photos/id/$randomNumber/200/200'),
-                    // child: Align(
-                    //   alignment: Alignment.bottomRight,
-                    //   child: IconButton(
-                    //     onPressed: () {
-                    //       uploadFoto();
-                    //     },
-                    //     icon: const Icon(Icons.photo_camera_rounded),
-                    //     color: Colors.grey[800],
-                    //   ),
-                    // ),
-                    // CircleAvatar(
-                    //   child: Image.file(foto!),
-                    // ),
                   ),
                   formSpacer,
                   //Kalau Tidak Ada Login, Diganti Tombol Atau Blank Text

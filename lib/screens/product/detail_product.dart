@@ -99,6 +99,7 @@ class _DetailProductState extends State<DetailProduct> {
           Padding(
             padding: const EdgeInsets.all(8),
             child: Visibility(
+              //Error Saat Masuk Sebagai Tamu
               visible: widget.snapshot.data![widget.index].seller_id ==
                       supabase.auth.currentUser!.id
                   ? isOwnProduct
@@ -126,7 +127,6 @@ class _DetailProductState extends State<DetailProduct> {
                             );
                           }
                         } catch (e) {
-                          print(e);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(e.toString()),

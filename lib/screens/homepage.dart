@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
 import 'package:unimarket/controller/seller_request_provider.dart';
@@ -61,11 +62,15 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               // profileProvider.getProfileDataFromAuth(context);
               // wishlistProvider.getWishlist();
               // productsProvider.getProduct();
-              sellerRequestProvider.getSellerRequestList();
+              // sellerRequestProvider.getSellerRequestList();
+              final List<FileObject> object =
+                  await supabase.storage.from('profile-pic').list();
+              String currentFileName = object.single.toString();
+              print(object.first.buckets);
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',
