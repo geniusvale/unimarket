@@ -26,6 +26,7 @@ class _DetailProductState extends State<DetailProduct> {
   int tabIndex = 0;
   bool isNull = true;
   bool isOwnProduct = false;
+  bool showWidget = true;
 
   @override
   Widget build(BuildContext context) {
@@ -100,10 +101,12 @@ class _DetailProductState extends State<DetailProduct> {
             padding: const EdgeInsets.all(8),
             child: Visibility(
               //Error Saat Masuk Sebagai Tamu
-              visible: widget.snapshot.data![widget.index].seller_id ==
-                      supabase.auth.currentUser!.id
-                  ? isOwnProduct
-                  : true,
+              visible: showWidget,
+
+              // widget.snapshot.data![widget.index].seller_id ==
+              //         supabase.auth.currentUser!.id
+              //     ? isOwnProduct
+              //     : true,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -118,6 +121,19 @@ class _DetailProductState extends State<DetailProduct> {
                               usersId: user!.id,
                               productId: widget.snapshot.data![widget.index].id,
                             );
+                          } else if (authProvider.unAuthorized == true) {
+                            showWidget = true;
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Login(),
+                              ),
+                            );
+                          } else if (widget
+                                      .snapshot.data![widget.index].seller_id ==
+                                  supabase.auth.currentUser!.id &&
+                              authProvider.unAuthorized == false) {
+                            showWidget = false;
                           } else {
                             Navigator.push(
                               context,

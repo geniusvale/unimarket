@@ -84,6 +84,7 @@ class _AddProductState extends State<AddProduct> {
                         });
                       }),
                   formSpacer,
+                  
                   TextFormField(
                     controller: priceC,
                     keyboardType: TextInputType.number,
