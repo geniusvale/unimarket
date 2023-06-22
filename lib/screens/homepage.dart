@@ -65,16 +65,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () async {
-              // profileProvider.getProfileDataFromAuth(context);
-              // wishlistProvider.getWishlist();
-              // productsProvider.getProduct();
-              // sellerRequestProvider.getSellerRequestList();
-              // final List<FileObject> object =
-              //     await supabase.storage.from('profile-pic').list();
-              // String currentFileName = object.single.toString();
-              // print(object.first.buckets);
-              // cartProvider.checkIfHasCart();
-              cartProvider.getMyCart();
+              // cartProvider.checkIfHasSameCartItems(17);
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',

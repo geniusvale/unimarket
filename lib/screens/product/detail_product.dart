@@ -187,12 +187,35 @@ class _DetailProductState extends State<DetailProduct> {
                             ),
                           );
                         } else {
-                          cartProvider.addToCart(
-                            supabase.auth.currentUser!.id,
-                            0,
-                            0,
-                            widget.snapshot.data![widget.index].id!,
-                          );
+                          try {
+                            final checkDuplicate =
+                                await cartProvider.checkIfHasSameCartItems(
+                              widget.snapshot.data![widget.index].id!,
+                            );
+                            if (checkDuplicate == true) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text('Sudah Ada di Keranjang!'),
+                                ),
+                              );
+                            } else {
+                              cartProvider.addToCart(
+                                supabase.auth.currentUser!.id,
+                                0,
+                                0,
+                                widget.snapshot.data![widget.index].id!,
+                              );
+                            }
+                          } catch (e) {
+                            rethrow;
+                          }
+                          // cartProvider.addToCart(
+                          //   supabase.auth.currentUser!.id,
+                          //   0,
+                          //   0,
+                          //   widget.snapshot.data![widget.index].id!,
+                          // );
                         }
                       },
                       child: const Text('Tambah Ke Keranjang'),
