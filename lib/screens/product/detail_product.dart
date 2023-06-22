@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:unimarket/controller/cart_provider.dart';
 
 import '../../controller/auth_provider.dart';
 import '../../controller/product_provider.dart';
@@ -33,6 +34,7 @@ class _DetailProductState extends State<DetailProduct> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final productProvider =
         Provider.of<ProductsProvider>(context, listen: false);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     // print(widget.snapshot);
     return Scaffold(
       appBar: AppBar(
@@ -185,7 +187,12 @@ class _DetailProductState extends State<DetailProduct> {
                             ),
                           );
                         } else {
-                          return;
+                          cartProvider.addToCart(
+                            supabase.auth.currentUser!.id,
+                            0,
+                            0,
+                            widget.snapshot.data![widget.index].id!,
+                          );
                         }
                       },
                       child: const Text('Tambah Ke Keranjang'),

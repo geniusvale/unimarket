@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
@@ -24,6 +25,8 @@ const borderRadiusStd = BorderRadius.all(Radius.circular(8));
 const titleText = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
 
 const loadingIndicator = Center(child: CircularProgressIndicator());
+
+final numberCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
 
 final handleBar = Container(
   width: 50,
