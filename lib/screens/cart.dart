@@ -14,7 +14,10 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  int sum = 0; //Pakai double 0.0 (?)
+  // int sum = 0; //Pakai double 0.0 (?)
+  int subtotal = 0;
+  int newSubtotal = 0;
+
   @override
   Widget build(BuildContext context) {
     final cartProvider =
@@ -27,6 +30,9 @@ class _CartState extends State<Cart> {
         future: cartProvider.getMyCart(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            List<Map<String, dynamic>> data = snapshot.data!;
+            int newSubtotal = cartProvider.jumlahkanSubtotal(data);
+            subtotal = newSubtotal;
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -43,11 +49,6 @@ class _CartState extends State<Cart> {
                         //Buat Model CartItems(?)
                         final harga = snapshot.data?[index]['products']['price']
                             .toString();
-                        // for (var i = 0; i < count; i++) {}
-                        // cartProvider.jumlahkanSubtotal(harga!, sum);
-                        sum += int.parse(harga!); //Pakai double.parse (?)
-                        print(sum);
-                        // setState(() {});
                         return Slidable(
                           endActionPane: ActionPane(
                             motion: const ScrollMotion(),
@@ -71,7 +72,10 @@ class _CartState extends State<Cart> {
                             leading: const CircleAvatar(),
                             title:
                                 Text(snapshot.data?[index]['products']['name']),
-                            subtitle: Text(harga),
+                            subtitle: Text(
+                              numberCurrency.format(
+                                  snapshot.data?[index]['products']['price']),
+                            ),
                           ),
                         );
                       },
@@ -83,7 +87,8 @@ class _CartState extends State<Cart> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Subtotal : ${numberCurrency.format(sum)}',
+                          // 'Subtotal : ${numberCurrency.format(sum)}',
+                          'Subtotal : ${numberCurrency.format(subtotal)}',
                           // sum.toString(),
                           style: const TextStyle(
                             fontSize: 24,

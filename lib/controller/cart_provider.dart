@@ -57,9 +57,14 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  jumlahkanSubtotal(String harga, sum) {
-    sum += int.parse(harga);
-    // notifyListeners();
+  int jumlahkanSubtotal(List<Map<String, dynamic>> data) {
+    int newSubtotal = 0;
+    for (var i = 0; i < data.length; i++) {
+      int value = data[i]['products']['price'];
+      newSubtotal += value;
+    }
+    notifyListeners();
+    return newSubtotal;
   }
 
   Future<List<Map<String, dynamic>>> getMyCart() async {
