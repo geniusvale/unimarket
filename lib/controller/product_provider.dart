@@ -117,13 +117,13 @@ class ProductsProvider extends ChangeNotifier {
     //WORKING GOOD
   }
 
-  addToWishlist({String? usersId, int? productId}) async {
+  addToWishlist(
+      {String? usersId, int? productId, required BuildContext context}) async {
     try {
       await supabase.from('wishlist').insert({
         'users_id': usersId,
         'products_id': productId,
       });
-      notifyListeners();
     } catch (e) {
       rethrow;
     }

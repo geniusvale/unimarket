@@ -3,56 +3,77 @@ import 'package:flutter/material.dart';
 import '../utilities/constants.dart';
 
 class CartProvider extends ChangeNotifier {
+  int? currentCartId;
+
   //Cek user sudah punya keranjang atau belum
-  Future<bool> checkIfHasCart() async {
-    final result = await supabase
-        .from('cart')
-        .select('users_id')
-        .match({'users_id': supabase.auth.currentUser!.id}).single();
-    if (result == null) {
-      return false;
-    } else {
-      return true;
+  Future<bool> checkIfHasCart(BuildContext context) async {
+    bool? hasCart;
+    //Jika belum, add keranjang ke DB Cart
+    try {
+      final result = await supabase
+          .from('cart')
+          .select<List<Map>>('users_id')
+          .match({'users_id': supabase.auth.currentUser!.id});
+      print('hasil cek Cart $result');
+      if (result.isEmpty) {
+        await supabase
+            .from('cart')
+            .insert({'users_id': supabase.auth.currentUser!.id});
+        hasCart = true;
+        notifyListeners();
+      } else {
+        print('Sudah Punya Cart!');
+      }
+    } catch (e) {
+      print(e);
     }
+    return hasCart = true;
   }
 
-  Future<bool> checkIfHasSameCartItems(int productId) async {
-    final result =
-        await supabase.from('cart_items').select<List<Map>>('product_id').match(
+  Future<bool> checkIfHasSameCartItems({required int productId}) async {
+    final getCartId = await supabase.from('cart').select<List<Map>>('id').match(
+      {'users_id': supabase.auth.currentUser!.id},
+    );
+    print('cekcek $getCartId');
+    final cartId = getCartId[0]['id'];
+    currentCartId = cartId;
+    notifyListeners();
+    final result = await supabase
+        .from('cart_items')
+        .select<List<Map>>('cart_id, product_id')
+        .match(
       {
+        'cart_id': cartId,
         'product_id': productId,
       },
     );
-
-    print('Hasil Cek Data Duplikasi $result');
-    // notifyListeners();
+    print('same cartItem result $result');
     if (result.isEmpty) {
+      print('Tidak ada cartItem yang sama');
       return false;
     } else {
       return true;
     }
   }
 
-  addToCart(String usersId, totalPrice, quantity, int productId) async {
-    //Jika belum, add keranjang ke DB Cart
-    final checkCart = await checkIfHasCart();
-    if (checkCart == false) {
-      supabase.from('cart').insert({'users_id': usersId});
-    } else {
-      //Jika sudah, setiap menambah produk ke keranjang, simpan data ke Table CartItems di DB dengan cartId sebelumnya
-      final getCartId = await supabase.from('cart').select('id').match(
-        {'users_id': supabase.auth.currentUser!.id},
-      ).single();
-      int cartId = getCartId['id'];
-
-      final addToCartItems = await supabase.from('cart_items').insert(
+  addToCart({required String usersId, required int productId}) async {
+    //Jika sudah, setiap menambah produk ke keranjang, simpan data ke Table CartItems di DB dengan cartId sebelumnya
+    // final getCartId = await supabase.from('cart').select<List>('id').match(
+    //   {'users_id': supabase.auth.currentUser!.id},
+    // );
+    // print('Hasil getCartId $getCartId');
+    // int cartId = getCartId[0]['id'];
+    print(currentCartId);
+    try {
+      await supabase.from('cart_items').insert(
         {
-          'cart_id': cartId,
+          'cart_id': currentCartId,
           'user_id': usersId,
           'product_id': productId,
-          'quantity': quantity,
         },
       );
+    } catch (e) {
+      rethrow;
     }
     notifyListeners();
   }
@@ -63,7 +84,7 @@ class CartProvider extends ChangeNotifier {
       int value = data[i]['products']['price'];
       newSubtotal += value;
     }
-    notifyListeners();
+    // notifyListeners();
     return newSubtotal;
   }
 
@@ -78,7 +99,6 @@ class CartProvider extends ChangeNotifier {
         'user_id': supabase.auth.currentUser!.id,
       },
     );
-    // final count = result;
     notifyListeners();
     print(result);
     return result;

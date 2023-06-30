@@ -22,4 +22,23 @@ class WishlistProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<bool> checkIfHasSameWishlistItems({required int productId}) async {
+    final result = await supabase
+        .from('wishlist')
+        .select<List<Map>>('users_id, products_id')
+        .match(
+      {
+        'users_id': supabase.auth.currentUser!.id,
+        'products_id': productId,
+      },
+    );
+    print('same wishlistItem result $result');
+    if (result.isEmpty) {
+      print('Tidak ada wishlistItem yang sama');
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

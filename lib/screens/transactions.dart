@@ -19,7 +19,10 @@ class _TransactionsState extends State<Transactions> {
       body: FutureBuilder(
         future: null,
         builder: (context, snapshot) {
-          return const ListTile();
+          return const Center(
+            child: Text('Tidak Ada Transaksi'),
+          );
+          // ListTile();
         },
       ),
     );

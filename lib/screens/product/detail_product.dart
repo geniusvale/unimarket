@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/controller/cart_provider.dart';
+import 'package:unimarket/controller/wishlist_provider.dart';
 
 import '../../controller/auth_provider.dart';
 import '../../controller/product_provider.dart';
@@ -30,12 +31,31 @@ class _DetailProductState extends State<DetailProduct> {
   bool showWidget = true;
 
   @override
+  void initState() {
+    checkIfOwnProduct();
+    super.initState();
+  }
+
+  Future<bool> checkIfOwnProduct() async {
+    final AsyncSnapshot<List<ProductModel>> snap = widget.snapshot;
+    final productSellerId = snap.data![widget.index].seller_id;
+    final sellerId = supabase.auth.currentUser!.id;
+
+    if (productSellerId == sellerId) {
+      return isOwnProduct = true;
+    } else {
+      return isOwnProduct = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final productProvider =
         Provider.of<ProductsProvider>(context, listen: false);
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    // print(widget.snapshot);
+    final wishlistProvider =
+        Provider.of<WishlistProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Product Detail'),
@@ -55,7 +75,8 @@ class _DetailProductState extends State<DetailProduct> {
                     child: CachedNetworkImage(
                       fit: BoxFit.fitHeight,
                       imageUrl:
-                          'https://picsum.photos/id/${widget.index + randomNumber}/200/200',
+                          '${widget.snapshot.data![widget.index].img_url}',
+                      // 'https://picsum.photos/id/${widget.index + randomNumber}/200/200',
                       progressIndicatorBuilder:
                           (context, url, downloadProgress) {
                         return CircularProgressIndicator(
@@ -79,8 +100,11 @@ class _DetailProductState extends State<DetailProduct> {
                   ),
                   formSpacer,
                   Text(
-                    'Rp ' +
-                        widget.snapshot.data![widget.index].price.toString(),
+                    // 'Rp ' +
+                    //     widget.snapshot.data![widget.index].price.toString(),
+                    numberCurrency.format(
+                      widget.snapshot.data![widget.index].price,
+                    ),
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -102,47 +126,62 @@ class _DetailProductState extends State<DetailProduct> {
           Padding(
             padding: const EdgeInsets.all(8),
             child: Visibility(
-              //Error Saat Masuk Sebagai Tamu
               visible: showWidget,
-
-              // widget.snapshot.data![widget.index].seller_id ==
-              //         supabase.auth.currentUser!.id
-              //     ? isOwnProduct
-              //     : true,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Expanded(
+                    //Tombol Wishlist
                     child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(width: 2, color: Colors.grey),
+                      ),
                       onPressed: () async {
                         try {
-                          if (authProvider.unAuthorized == false) {
-                            final user = supabase.auth.currentUser;
-                            productProvider.addToWishlist(
-                              usersId: user!.id,
-                              productId: widget.snapshot.data![widget.index].id,
-                            );
-                          } else if (authProvider.unAuthorized == true) {
-                            showWidget = true;
+                          if (authProvider.unAuthorized == true) {
+                            showWidget;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const Login(),
                               ),
                             );
-                          } else if (widget
-                                      .snapshot.data![widget.index].seller_id ==
-                                  supabase.auth.currentUser!.id &&
-                              authProvider.unAuthorized == false) {
-                            showWidget = false;
+                          } else if (isOwnProduct) {
+                            return showDialog(
+                              context: context,
+                              builder: (context) => const AlertDialog(
+                                content: Text('Anda Tidak Bisa',
+                                    textAlign: TextAlign.center),
+                              ),
+                            );
                           } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Login(),
-                              ),
+                            final isAlreadyWishlished = await wishlistProvider
+                                .checkIfHasSameWishlistItems(
+                              productId:
+                                  widget.snapshot.data![widget.index].id!,
                             );
+                            if (isAlreadyWishlished == true) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Produk Sudah Tersimpan!'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            } else {
+                              await productProvider.addToWishlist(
+                                context: context,
+                                usersId: supabase.auth.currentUser!.id,
+                                productId:
+                                    widget.snapshot.data![widget.index].id,
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Berhasil Menyimpan!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            }
                           }
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -167,9 +206,10 @@ class _DetailProductState extends State<DetailProduct> {
                   formSpacer,
                   Expanded(
                     flex: 2,
+                    //Tombol Tambah Ke Keranjang
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.amber[900],
+                        backgroundColor: Colors.blue[900],
                         foregroundColor: Colors.white,
                         textStyle: const TextStyle(color: Colors.white),
                         shape: const RoundedRectangleBorder(
@@ -186,36 +226,45 @@ class _DetailProductState extends State<DetailProduct> {
                               builder: (context) => const Login(),
                             ),
                           );
+                        } else if (isOwnProduct) {
+                          return showDialog(
+                            context: context,
+                            builder: (context) => const AlertDialog(
+                              content: Text(
+                                'Tidak Bisa Menambah Produk Anda Sendiri Ke Keranjang!',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
                         } else {
-                          try {
-                            final checkDuplicate =
-                                await cartProvider.checkIfHasSameCartItems(
-                              widget.snapshot.data![widget.index].id!,
+                          await cartProvider.checkIfHasCart(context);
+                          final isSameProduct =
+                              await cartProvider.checkIfHasSameCartItems(
+                            productId: widget.snapshot.data![widget.index].id!,
+                          );
+                          if (isSameProduct == true) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Sudah Ada Di Keranjang!'),
+                              ),
                             );
-                            if (checkDuplicate == true) {
+                          } else {
+                            try {
+                              await cartProvider.addToCart(
+                                productId:
+                                    widget.snapshot.data![widget.index].id ?? 0,
+                                usersId: supabase.auth.currentUser!.id,
+                              );
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  backgroundColor: Colors.red,
-                                  content: Text('Sudah Ada di Keranjang!'),
+                                  content:
+                                      Text('Berhasil Menambahkan Ke Keranjang'),
                                 ),
                               );
-                            } else {
-                              cartProvider.addToCart(
-                                supabase.auth.currentUser!.id,
-                                0,
-                                0,
-                                widget.snapshot.data![widget.index].id!,
-                              );
+                            } catch (e) {
+                              rethrow;
                             }
-                          } catch (e) {
-                            rethrow;
                           }
-                          // cartProvider.addToCart(
-                          //   supabase.auth.currentUser!.id,
-                          //   0,
-                          //   0,
-                          //   widget.snapshot.data![widget.index].id!,
-                          // );
                         }
                       },
                       child: const Text('Tambah Ke Keranjang'),

@@ -73,6 +73,9 @@ class _CartState extends State<Cart> {
                             title:
                                 Text(snapshot.data?[index]['products']['name']),
                             subtitle: Text(
+                              snapshot.data?[index]['products']['category'],
+                            ),
+                            trailing: Text(
                               numberCurrency.format(
                                   snapshot.data?[index]['products']['price']),
                             ),
@@ -112,7 +115,7 @@ class _CartState extends State<Cart> {
                                   ),
                                 ),
                                 onPressed: () {},
-                                child: const Text('BAYAR NGAB'),
+                                child: const Text('CHECKOUT'),
                               ),
                             ),
                           ],

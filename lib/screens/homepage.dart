@@ -147,6 +147,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int randomNumber = Random().nextInt(999);
   int randomNumberHeight = Random().nextInt(100);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final storeProvider =
@@ -187,11 +193,6 @@ class _HomeState extends State<Home> {
                           elevation: 0.3,
                           child: InkWell(
                             onTap: () {
-                              // storeProvider.showDetailProduct(
-                              //   context,
-                              //   snapshot,
-                              //   index,
-                              // );
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -215,7 +216,8 @@ class _HomeState extends State<Home> {
                                           topRight: Radius.circular(8)),
                                       child: CachedNetworkImage(
                                         imageUrl:
-                                            'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                            '${snapshot.data?[index].img_url}',
+                                        // 'https://picsum.photos/id/${index + randomNumber}/200/200',
                                         progressIndicatorBuilder:
                                             (context, url, downloadProgress) {
                                           return CircularProgressIndicator(
@@ -241,7 +243,8 @@ class _HomeState extends State<Home> {
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    'Rp ${snapshot.data![index].price}',
+                                    numberCurrency
+                                        .format(snapshot.data![index].price),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),

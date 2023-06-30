@@ -39,7 +39,6 @@ class _WishlistState extends State<Wishlist> {
               child: FutureBuilder<List<ProductModel>>(
                 future: wishlistProvider.getWishlist(),
                 builder: (context, snapshot) {
-                  print('status unAuthorized ${authProvider.unAuthorized}');
                   if (snapshot.connectionState == ConnectionState.done &&
                       authProvider.unAuthorized == false) {
                     return MasonryGridView.builder(
@@ -79,7 +78,8 @@ class _WishlistState extends State<Wishlist> {
                                           topRight: Radius.circular(8)),
                                       child: CachedNetworkImage(
                                         imageUrl:
-                                            'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                            '${snapshot.data?[index].img_url}',
+                                        // 'https://picsum.photos/id/${index + randomNumber}/200/200',
                                         progressIndicatorBuilder:
                                             (context, url, downloadProgress) {
                                           return CircularProgressIndicator(
@@ -106,7 +106,8 @@ class _WishlistState extends State<Wishlist> {
                                 Padding(
                                   padding: formPadding,
                                   child: Text(
-                                    'Rp ${snapshot.data![index].price}',
+                                    numberCurrency
+                                        .format(snapshot.data![index].price),
                                     // '',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
