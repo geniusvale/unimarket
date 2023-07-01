@@ -69,7 +69,9 @@ class _CartState extends State<Cart> {
                             ],
                           ),
                           child: ListTile(
-                            leading: const CircleAvatar(),
+                            leading: CircleAvatar(
+                              child: Text(index.toString()),
+                            ),
                             title:
                                 Text(snapshot.data?[index]['products']['name']),
                             subtitle: Text(
@@ -114,8 +116,50 @@ class _CartState extends State<Cart> {
                                     ),
                                   ),
                                 ),
-                                onPressed: () {},
                                 child: const Text('CHECKOUT'),
+                                onPressed: () async {
+                                  //Make new transactions to db
+                                  // await supabase.from('transactions').insert({
+                                  //   'users_id': supabase.auth.currentUser!.id,
+                                  //   'address': '',
+                                  //   'phone': '',
+                                  //   'email': supabase.auth.currentUser!.email,
+                                  //   'total_price': subtotal,
+                                  //   'payment_url': '',
+                                  //   'status': '',
+                                  // });
+                                  //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.
+                                  //redirect ke halaman tsb.
+                                  //GET Transactions ID yang baru dibuat. berdasarkan timestamps?? or what??
+                                  //~~~~~
+                                  // await supabase
+                                  //     .from('transactions')
+                                  //     .select('id')
+                                  //     .eq('users_id',
+                                  //         supabase.auth.currentUser!.id)
+                                  //     .single();
+                                  //ADD every items to transactionItems in db using looping
+                                  for (var cartItems in snapshot.data!) {
+                                    // await supabase
+                                    //     .from('transactions_item')
+                                    //     .insert({
+                                    //       'users_id' : supabase.auth.currentUser!.id,
+                                    //       'products_id' : cartItems['product_id'],
+                                    //       'transactions_id' : ''
+                                    //     });
+                                    print(cartItems);
+                                  }
+                                  //After adding, delete every cartItems in DB!
+                                  // for (var delCartItems in snapshot.data!) {
+                                  //   await supabase
+                                  //       .from('cart_items')
+                                  //       .delete()
+                                  //       .match({
+                                  //     'id': delCartItems['id'],
+                                  //   });
+                                  //   print(delCartItems);
+                                  // }
+                                },
                               ),
                             ),
                           ],

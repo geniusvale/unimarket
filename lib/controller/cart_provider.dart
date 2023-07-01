@@ -58,11 +58,6 @@ class CartProvider extends ChangeNotifier {
 
   addToCart({required String usersId, required int productId}) async {
     //Jika sudah, setiap menambah produk ke keranjang, simpan data ke Table CartItems di DB dengan cartId sebelumnya
-    // final getCartId = await supabase.from('cart').select<List>('id').match(
-    //   {'users_id': supabase.auth.currentUser!.id},
-    // );
-    // print('Hasil getCartId $getCartId');
-    // int cartId = getCartId[0]['id'];
     print(currentCartId);
     try {
       await supabase.from('cart_items').insert(

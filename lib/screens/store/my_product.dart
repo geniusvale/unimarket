@@ -107,7 +107,8 @@ class _MyProductState extends State<MyProduct> {
                                 child: CachedNetworkImage(
                                   fit: BoxFit.fill,
                                   imageUrl:
-                                      'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                      // 'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                      '${snapshot.data?[index].img_url}',
                                   progressIndicatorBuilder:
                                       (context, url, downloadProgress) {
                                     return CircularProgressIndicator(
@@ -136,7 +137,9 @@ class _MyProductState extends State<MyProduct> {
                           Padding(
                             padding: formPadding,
                             child: Text(
-                              'Rp ${snapshot.data![index].price}',
+                              // 'Rp ${snapshot.data![index].price}',
+                              numberCurrency
+                                  .format(snapshot.data![index].price),
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
