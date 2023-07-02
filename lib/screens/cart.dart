@@ -147,7 +147,7 @@ class _CartState extends State<Cart> {
                                     //       'products_id' : cartItems['product_id'],
                                     //       'transactions_id' : ''
                                     //     });
-                                    print(cartItems);
+                                    // print(cartItems);
                                   }
                                   //After adding, delete every cartItems in DB!
                                   // for (var delCartItems in snapshot.data!) {
@@ -159,6 +159,19 @@ class _CartState extends State<Cart> {
                                   //   });
                                   //   print(delCartItems);
                                   // }
+                                  var res = await xendit.invoke(
+                                    endpoint:
+                                        'POST https://api.xendit.co/v2/invoices',
+                                    headers: {'for-user-id': ''},
+                                    parameters: {
+                                      'external_id': 'invoice-timestamp',
+                                      'amount': subtotal,
+                                      'payer_email':
+                                          supabase.auth.currentUser!.email,
+                                      'description': "Invoice Demo #123"
+                                    },
+                                  );
+                                  print(res);
                                 },
                               ),
                             ),

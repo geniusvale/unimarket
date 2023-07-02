@@ -51,6 +51,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   intl: ^0.18.1
   flutter_slidable: ^3.0.0
+  xendit: ^0.0.14
 
 dev_dependencies:
   flutter_test:
