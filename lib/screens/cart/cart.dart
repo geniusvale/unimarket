@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
-import '../controller/cart_provider.dart';
+import '../../controller/cart_provider.dart';
 
-import '../utilities/constants.dart';
+import '../../utilities/constants.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -118,61 +119,6 @@ class _CartState extends State<Cart> {
                                 ),
                                 child: const Text('CHECKOUT'),
                                 onPressed: () async {
-                                  //Make new transactions to db
-                                  // await supabase.from('transactions').insert({
-                                  //   'users_id': supabase.auth.currentUser!.id,
-                                  //   'address': '',
-                                  //   'phone': '',
-                                  //   'email': supabase.auth.currentUser!.email,
-                                  //   'total_price': subtotal,
-                                  //   'payment_url': '',
-                                  //   'status': '',
-                                  // });
-                                  //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.
-                                  //redirect ke halaman tsb.
-                                  //GET Transactions ID yang baru dibuat. berdasarkan timestamps?? or what??
-                                  //~~~~~
-                                  // await supabase
-                                  //     .from('transactions')
-                                  //     .select('id')
-                                  //     .eq('users_id',
-                                  //         supabase.auth.currentUser!.id)
-                                  //     .single();
-                                  //ADD every items to transactionItems in db using looping
-                                  for (var cartItems in snapshot.data!) {
-                                    // await supabase
-                                    //     .from('transactions_item')
-                                    //     .insert({
-                                    //       'users_id' : supabase.auth.currentUser!.id,
-                                    //       'products_id' : cartItems['product_id'],
-                                    //       'transactions_id' : ''
-                                    //     });
-                                    // print(cartItems);
-                                  }
-                                  //After adding, delete every cartItems in DB!
-                                  // for (var delCartItems in snapshot.data!) {
-                                  //   await supabase
-                                  //       .from('cart_items')
-                                  //       .delete()
-                                  //       .match({
-                                  //     'id': delCartItems['id'],
-                                  //   });
-                                  //   print(delCartItems);
-                                  // }
-                                  //PAY WITH XENDIT
-                                  // var res = await xendit.invoke(
-                                  //   endpoint:
-                                  //       'POST https://api.xendit.co/v2/invoices',
-                                  //   headers: {'for-user-id': ''},
-                                  //   parameters: {
-                                  //     'external_id': 'invoice-timestamp',
-                                  //     'amount': subtotal,
-                                  //     'payer_email':
-                                  //         supabase.auth.currentUser!.email,
-                                  //     'description': "Invoice Demo #123"
-                                  //   },
-                                  // );
-                                  // print(res);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -341,60 +287,81 @@ class _CheckoutState extends State<Checkout> {
                         ),
                         onPressed: () async {
                           //Make new transactions to db
-                          // await supabase.from('transactions').insert({
-                          //   'users_id': supabase.auth.currentUser!.id,
-                          //   'address': '',
-                          //   'phone': '',
-                          //   'email': supabase.auth.currentUser!.email,
-                          //   'total_price': subtotal,
-                          //   'payment_url': '',
-                          //   'status': '',
-                          // });
+                          await supabase.from('transactions').insert({
+                            'users_id': supabase.auth.currentUser!.id,
+                            'address': '',
+                            'phone': '',
+                            'email': supabase.auth.currentUser!.email,
+                            'total_price': widget.subtotal,
+                            'payment_url': '',
+                            'status': 'UNPAID',
+                          });
                           //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.
                           //redirect ke halaman tsb.
                           //GET Transactions ID yang baru dibuat. berdasarkan timestamps?? or what??
                           //~~~~~
-                          // await supabase
-                          //     .from('transactions')
-                          //     .select('id')
-                          //     .eq('users_id',
-                          //         supabase.auth.currentUser!.id)
-                          //     .single();
+                          final transactionId = await supabase
+                              .from('transactions')
+                              .select('id')
+                              .eq('users_id', supabase.auth.currentUser!.id)
+                              .order('created_at', ascending: true)
+                              .single();
+                          //Belum Bener, karena gak bisa ambil 1 value yang baru dibuat jika ada lebih dari 1 data
+                          print('GET TransactionID $transactionId');
                           //ADD every items to transactionItems in db using looping
-                          // for (var cartItems in snapshot.data!) {
-                          //   // await supabase
-                          //   //     .from('transactions_item')
-                          //   //     .insert({
-                          //   //       'users_id' : supabase.auth.currentUser!.id,
-                          //   //       'products_id' : cartItems['product_id'],
-                          //   //       'transactions_id' : ''
-                          //   //     });
-                          //   // print(cartItems);
-                          // }
+                          for (var cartItems in widget.snapshotData!) {
+                            //Karena perulangan maka yang dikirim JSON, jadi value harus string dahulu!
+                            print(cartItems);
+                            await supabase.from('transactions_item').insert({
+                              'users_id': supabase.auth.currentUser!.id,
+                              'products_id': '${cartItems['product_id']}',
+                              'transactions_id': '${transactionId['id']}',
+                            });
+                          }
                           //After adding, delete every cartItems in DB!
-                          // for (var delCartItems in snapshot.data!) {
-                          //   await supabase
-                          //       .from('cart_items')
-                          //       .delete()
-                          //       .match({
-                          //     'id': delCartItems['id'],
-                          //   });
-                          //   print(delCartItems);
-                          // }
+                          for (var delCartItems in widget.snapshotData!) {
+                            await supabase.from('cart_items').delete().match({
+                              'id': delCartItems['id'],
+                            });
+                            print(delCartItems);
+                          }
+                          //Harus SetState(?)
                           //PAY WITH XENDIT
-                          // var res = await xendit.invoke(
-                          //   endpoint:
-                          //       'POST https://api.xendit.co/v2/invoices',
-                          //   headers: {'for-user-id': ''},
-                          //   parameters: {
-                          //     'external_id': 'invoice-timestamp',
-                          //     'amount': subtotal,
-                          //     'payer_email':
-                          //         supabase.auth.currentUser!.email,
-                          //     'description': "Invoice Demo #123"
-                          //   },
-                          // );
-                          // print(res);
+                          var res = await xendit.invoke(
+                            endpoint: 'POST https://api.xendit.co/v2/invoices',
+                            headers: {'for-user-id': ''},
+                            parameters: {
+                              'external_id': 'invoice-timestamp',
+                              'amount': widget.subtotal,
+                              'payer_email': supabase.auth.currentUser!.email,
+                              'description': "Invoice Demo #123"
+                            },
+                          );
+                          print(res);
+                          final paymentUrl = res['invoice_url'];
+                          print('Hasil PAYMENT URL $paymentUrl');
+
+                          await supabase
+                              .from('transactions')
+                              .update({'payment_url': paymentUrl}).eq(
+                            'id',
+                            '${transactionId['id']}',
+                          );
+
+                          //LAUNCH TO WEBVIEW
+                          try {
+                            await launchUrlString(
+                              paymentUrl,
+                              mode: LaunchMode.inAppWebView, //enables WebView
+                              webViewConfiguration: const WebViewConfiguration(
+                                enableJavaScript: true,
+                              ),
+                            );
+                          } catch (e) {
+                            rethrow;
+                          }
+                          //Kembali ke halaman dan refresh dari webview???
+                          //Mengatur Callback???
                         },
                       ),
                     ),

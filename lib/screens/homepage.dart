@@ -17,7 +17,7 @@ import 'package:provider/provider.dart' as providers;
 import '../controller/auth_provider.dart';
 import '../controller/profile_provider.dart';
 import '../controller/store_provider.dart';
-import 'cart.dart';
+import 'cart/cart.dart';
 import 'search.dart';
 
 class HomePage extends StatefulWidget {
