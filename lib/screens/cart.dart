@@ -159,19 +159,29 @@ class _CartState extends State<Cart> {
                                   //   });
                                   //   print(delCartItems);
                                   // }
-                                  var res = await xendit.invoke(
-                                    endpoint:
-                                        'POST https://api.xendit.co/v2/invoices',
-                                    headers: {'for-user-id': ''},
-                                    parameters: {
-                                      'external_id': 'invoice-timestamp',
-                                      'amount': subtotal,
-                                      'payer_email':
-                                          supabase.auth.currentUser!.email,
-                                      'description': "Invoice Demo #123"
-                                    },
+                                  //PAY WITH XENDIT
+                                  // var res = await xendit.invoke(
+                                  //   endpoint:
+                                  //       'POST https://api.xendit.co/v2/invoices',
+                                  //   headers: {'for-user-id': ''},
+                                  //   parameters: {
+                                  //     'external_id': 'invoice-timestamp',
+                                  //     'amount': subtotal,
+                                  //     'payer_email':
+                                  //         supabase.auth.currentUser!.email,
+                                  //     'description': "Invoice Demo #123"
+                                  //   },
+                                  // );
+                                  // print(res);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Checkout(
+                                        snapshotData: data,
+                                        subtotal: subtotal,
+                                      ),
+                                    ),
                                   );
-                                  print(res);
                                 },
                               ),
                             ),
@@ -187,6 +197,213 @@ class _CartState extends State<Cart> {
             return loadingIndicator;
           }
         },
+      ),
+    );
+  }
+}
+
+class Checkout extends StatefulWidget {
+  const Checkout({
+    Key? key,
+    this.snapshotData,
+    this.subtotal,
+  }) : super(key: key);
+
+  @override
+  State<Checkout> createState() => _CheckoutState();
+
+  final List<Map<String, dynamic>>? snapshotData;
+  final int? subtotal;
+}
+
+class _CheckoutState extends State<Checkout> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Checkout'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 4,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 8,
+                          ),
+                          color: Colors.grey[300],
+                          height: 35,
+                          child: const Text(
+                            'Rincian Produk',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  formSpacer,
+                  ListView.separated(
+                    itemCount: widget.snapshotData!.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          child: Text('$index'),
+                        ),
+                        title: Text(
+                            widget.snapshotData![index]['products']['name']),
+                        trailing: Text(
+                          numberCurrency.format(
+                            widget.snapshotData![index]['products']['price'],
+                          ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => const Divider(),
+                  ),
+                  formSpacer,
+                  const ListTile(
+                    title: Text('Alamat Pengiriman (Jika Produk Fisik)'),
+                    subtitle: Text(
+                      'Jl.Kesambi Gg.Ledeng No.66 Kota Cirebon 45134 Jawa Barat, Indonesia',
+                    ),
+                    trailing: Icon(Icons.chevron_right_rounded),
+                  ),
+                  formSpacer,
+                  RadioListTile(
+                    selected: true,
+                    value: 0,
+                    groupValue: 0,
+                    onChanged: (val) {},
+                    title: const Text('Metode Pembayaran'),
+                    subtitle: const Text(
+                      'Xendit Payment (Bank Transfer, EWallet, QRIS, Outlet)',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Ongkos Kirim : ${numberCurrency.format(0)}'),
+                //Jika ada barang fisik, maka hitung ongkos kirim nya! Buat fungsi IF nanti.
+                Text(
+                  'Jumlah Barang : ${widget.snapshotData!.length}',
+                  textAlign: TextAlign.right,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Subtotal : ${numberCurrency.format(widget.subtotal)}',
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+                formSpacer,
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[900],
+                          foregroundColor: Colors.white,
+                          textStyle: const TextStyle(color: Colors.white),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'BUAT PESANAN',
+                        ),
+                        onPressed: () async {
+                          //Make new transactions to db
+                          // await supabase.from('transactions').insert({
+                          //   'users_id': supabase.auth.currentUser!.id,
+                          //   'address': '',
+                          //   'phone': '',
+                          //   'email': supabase.auth.currentUser!.email,
+                          //   'total_price': subtotal,
+                          //   'payment_url': '',
+                          //   'status': '',
+                          // });
+                          //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.
+                          //redirect ke halaman tsb.
+                          //GET Transactions ID yang baru dibuat. berdasarkan timestamps?? or what??
+                          //~~~~~
+                          // await supabase
+                          //     .from('transactions')
+                          //     .select('id')
+                          //     .eq('users_id',
+                          //         supabase.auth.currentUser!.id)
+                          //     .single();
+                          //ADD every items to transactionItems in db using looping
+                          // for (var cartItems in snapshot.data!) {
+                          //   // await supabase
+                          //   //     .from('transactions_item')
+                          //   //     .insert({
+                          //   //       'users_id' : supabase.auth.currentUser!.id,
+                          //   //       'products_id' : cartItems['product_id'],
+                          //   //       'transactions_id' : ''
+                          //   //     });
+                          //   // print(cartItems);
+                          // }
+                          //After adding, delete every cartItems in DB!
+                          // for (var delCartItems in snapshot.data!) {
+                          //   await supabase
+                          //       .from('cart_items')
+                          //       .delete()
+                          //       .match({
+                          //     'id': delCartItems['id'],
+                          //   });
+                          //   print(delCartItems);
+                          // }
+                          //PAY WITH XENDIT
+                          // var res = await xendit.invoke(
+                          //   endpoint:
+                          //       'POST https://api.xendit.co/v2/invoices',
+                          //   headers: {'for-user-id': ''},
+                          //   parameters: {
+                          //     'external_id': 'invoice-timestamp',
+                          //     'amount': subtotal,
+                          //     'payer_email':
+                          //         supabase.auth.currentUser!.email,
+                          //     'description': "Invoice Demo #123"
+                          //   },
+                          // );
+                          // print(res);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )),
+        ],
       ),
     );
   }
