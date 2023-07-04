@@ -8,6 +8,7 @@ import 'package:unimarket/controller/cart_provider.dart';
 import 'package:unimarket/controller/home_provider.dart';
 import 'package:unimarket/controller/product_provider.dart';
 import 'package:unimarket/controller/seller_request_provider.dart';
+import 'package:unimarket/controller/transaction_provider.dart';
 import 'package:unimarket/controller/wishlist_provider.dart';
 import 'package:unimarket/models/product/product_model.dart';
 import 'package:unimarket/screens/product/detail_product.dart';
@@ -47,6 +48,8 @@ class _HomePageState extends State<HomePage> {
         providers.Provider.of<SellerRequestProvider>(context, listen: false);
     final cartProvider =
         providers.Provider.of<CartProvider>(context, listen: false);
+    final transactionProvider =
+        providers.Provider.of<TransactionProvider>(context, listen: false);
     print('Status unAuthorized ${authProvider.unAuthorized.toString()}');
     return Scaffold(
       appBar: AppBar(
@@ -66,8 +69,9 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               // cartProvider.checkIfHasSameCartItems(17);
-              final dateTime = DateTime.now();
-              print(dateTime);
+              // final dateTime = DateTime.now();
+              // print(dateTime);
+              transactionProvider.getTransactionItemDetail(29);
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',

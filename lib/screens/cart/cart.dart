@@ -309,6 +309,7 @@ class _CheckoutState extends State<Checkout> {
                               .limit(1)
                               .single();
                           //Belum Bener, karena gak bisa ambil 1 value yang baru dibuat jika ada lebih dari 1 data
+                          //Sudah benat
                           print('GET TransactionID $transactionId');
                           //ADD every items to transactionItems in db using looping
                           for (var cartItems in widget.snapshotData!) {
