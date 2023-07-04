@@ -66,6 +66,8 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               // cartProvider.checkIfHasSameCartItems(17);
+              final dateTime = DateTime.now();
+              print(dateTime);
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',
@@ -153,6 +155,7 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final storeProvider =

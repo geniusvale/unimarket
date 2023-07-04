@@ -112,7 +112,7 @@ class _RegisterState extends State<Register> {
                         onPressed: () async {
                           try {
                             if (formKey.currentState!.validate()) {
-                              authProvider.register(
+                              await authProvider.register(
                                 usernameC.text,
                                 emailC.text,
                                 passwordC.text,

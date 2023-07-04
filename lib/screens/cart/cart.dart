@@ -300,11 +300,13 @@ class _CheckoutState extends State<Checkout> {
                           //redirect ke halaman tsb.
                           //GET Transactions ID yang baru dibuat. berdasarkan timestamps?? or what??
                           //~~~~~
+                          final dateTime = DateTime.now();
                           final transactionId = await supabase
                               .from('transactions')
-                              .select('id')
+                              .select('id, created_at')
                               .eq('users_id', supabase.auth.currentUser!.id)
-                              .order('created_at', ascending: true)
+                              .order('created_at', ascending: false)
+                              .limit(1)
                               .single();
                           //Belum Bener, karena gak bisa ambil 1 value yang baru dibuat jika ada lebih dari 1 data
                           print('GET TransactionID $transactionId');
