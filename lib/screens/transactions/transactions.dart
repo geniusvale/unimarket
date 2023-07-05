@@ -54,15 +54,14 @@ class _TransactionsState extends State<Transactions> {
                               builder: (context) {
                                 return TransactionDetail(
                                   transactionId: snapshot.data![index].id,
+                                  transactionData: snapshot.data![index],
                                 );
                               },
                             ),
                           );
                         },
                         onLongPress: () {
-                          launchUrlString(
-                            snapshot.data![index].payment_url.toString(),
-                          );
+                          
                         },
                       );
                     },
