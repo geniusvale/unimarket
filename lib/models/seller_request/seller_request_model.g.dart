@@ -10,7 +10,9 @@ _$_SellerRequestModel _$$_SellerRequestModelFromJson(
         Map<String, dynamic> json) =>
     _$_SellerRequestModel(
       id: json['id'] as int,
-      users_id: json['users_id'] as String?,
+      profiles: json['profiles'] == null
+          ? null
+          : ProfileModel.fromJson(json['profiles'] as Map<String, dynamic>),
       nim: json['nim'] as String?,
     );
 
@@ -18,6 +20,6 @@ Map<String, dynamic> _$$_SellerRequestModelToJson(
         _$_SellerRequestModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'users_id': instance.users_id,
+      'profiles': instance.profiles,
       'nim': instance.nim,
     };

@@ -10,7 +10,9 @@ _$_CartItemsModel _$$_CartItemsModelFromJson(Map<String, dynamic> json) =>
     _$_CartItemsModel(
       id: json['id'] as String,
       cart_id: json['cart_id'] as String?,
-      product_id: json['product_id'],
+      product_id: json['product_id'] == null
+          ? null
+          : ProductModel.fromJson(json['product_id'] as Map<String, dynamic>),
       quantity: json['quantity'] as String?,
     );
 

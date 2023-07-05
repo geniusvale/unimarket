@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/controller/transaction_provider.dart';
+import 'package:unimarket/models/transaction/transaction_model.dart';
 import 'package:unimarket/screens/transactions/transactions_detail.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -23,7 +24,7 @@ class _TransactionsState extends State<Transactions> {
     return Scaffold(
       body: authProvider.unAuthorized
           ? const Center(child: Text('Tidak Ada Transaksi'))
-          : FutureBuilder<List<Map<String, dynamic>>>(
+          : FutureBuilder<List<TransactionModel>>(
               future: transactionProvider.getTransaction(),
               builder: (context, snapshot) {
                 print(snapshot.data);
@@ -35,17 +36,17 @@ class _TransactionsState extends State<Transactions> {
                         isThreeLine: true,
                         leading: const Icon(Icons.receipt_long),
                         title: Text(
-                            'Transaction ID : ${snapshot.data![index]['id'].toString()}'),
+                            'Transaction ID : ${snapshot.data![index].id}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(snapshot.data![index]['status']),
-                            Text(snapshot.data![index]['created_at'])
+                            Text(snapshot.data![index].status!),
+                            Text(snapshot.data![index].createdAt!)
                           ],
                         ),
                         trailing: Text(
                           numberCurrency
-                              .format(snapshot.data![index]['total_price']),
+                              .format(snapshot.data![index].total_price),
                         ),
                         onTap: () {
                           Navigator.push(
@@ -53,14 +54,16 @@ class _TransactionsState extends State<Transactions> {
                             MaterialPageRoute(
                               builder: (context) {
                                 return TransactionDetail(
-                                  transactionId: snapshot.data![index]['id'],
+                                  transactionId: snapshot.data![index].id,
                                 );
                               },
                             ),
                           );
                         },
                         onLongPress: () {
-                          launchUrlString(snapshot.data![index]['payment_url']);
+                          launchUrlString(
+                            snapshot.data![index].payment_url.toString(),
+                          );
                         },
                       );
                     },

@@ -14,7 +14,7 @@ part 'seller_request_model.g.dart';
 class SellerRequestModel with _$SellerRequestModel {
   const factory SellerRequestModel({
     required int id,
-    String? users_id,
+    ProfileModel? profiles,
     String? nim,
   }) = _SellerRequestModel;
 

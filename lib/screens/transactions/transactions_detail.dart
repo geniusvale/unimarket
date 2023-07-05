@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:unimarket/models/transaction/transaction_items_model.dart';
 import 'package:unimarket/utilities/constants.dart';
 
 import '../../controller/transaction_provider.dart';
@@ -22,22 +23,29 @@ class _TransactionDetailState extends State<TransactionDetail> {
       appBar: AppBar(
         title: const Text('Detail Transaksi'),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
+      body: FutureBuilder<List<TransactionItemsModel>>(
         future:
             transactionProvider.getTransactionItemDetail(widget.transactionId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(snapshot.data![index]['products']['name']),
-                  trailing: Text(
-                    numberCurrency
-                        .format(snapshot.data![index]['products']['price']),
-                  ),
-                );
-              },
+            return Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(snapshot.data![index].products!.name!),
+                      subtitle:
+                          Text(snapshot.data![index].products!.seller_id!),
+                      trailing: Text(
+                        numberCurrency
+                            .format(snapshot.data![index].products!.price),
+                      ),
+                    );
+                  },
+                ),
+              ],
             );
           } else {
             return loadingIndicator;

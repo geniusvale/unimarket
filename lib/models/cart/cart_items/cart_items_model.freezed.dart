@@ -39,6 +39,8 @@ abstract class $CartItemsModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String id, String? cart_id, ProductModel? product_id, String? quantity});
+
+  $ProductModelCopyWith<$Res>? get product_id;
 }
 
 /// @nodoc
@@ -78,6 +80,18 @@ class _$CartItemsModelCopyWithImpl<$Res, $Val extends CartItemsModel>
               as String?,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ProductModelCopyWith<$Res>? get product_id {
+    if (_value.product_id == null) {
+      return null;
+    }
+
+    return $ProductModelCopyWith<$Res>(_value.product_id!, (value) {
+      return _then(_value.copyWith(product_id: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -90,6 +104,9 @@ abstract class _$$_CartItemsModelCopyWith<$Res>
   @useResult
   $Res call(
       {String id, String? cart_id, ProductModel? product_id, String? quantity});
+
+  @override
+  $ProductModelCopyWith<$Res>? get product_id;
 }
 
 /// @nodoc
@@ -172,16 +189,16 @@ class _$_CartItemsModel
             other is _$_CartItemsModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.cart_id, cart_id) || other.cart_id == cart_id) &&
-            const DeepCollectionEquality()
-                .equals(other.product_id, product_id) &&
+            (identical(other.product_id, product_id) ||
+                other.product_id == product_id) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, cart_id,
-      const DeepCollectionEquality().hash(product_id), quantity);
+  int get hashCode =>
+      Object.hash(runtimeType, id, cart_id, product_id, quantity);
 
   @JsonKey(ignore: true)
   @override

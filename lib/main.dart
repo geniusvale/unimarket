@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unimarket/controller/cart_provider.dart';
 import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/controller/transaction_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
-import 'package:unimarket/utilities/constants.dart';
 
 import 'controller/auth_provider.dart';
 import 'controller/home_provider.dart';
@@ -47,7 +47,19 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'UniMarket.',
-        theme: appTheme,
+        theme: ThemeData(
+          useMaterial3: true,
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+          // primaryColor: Colors.blue[900],
+          // primarySwatch: Colors.blue[900],
+          appBarTheme: const AppBarTheme(
+            centerTitle: true,
+            titleTextStyle: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
         home: const Login(),
       ),
     );

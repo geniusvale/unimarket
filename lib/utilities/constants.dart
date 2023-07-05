@@ -10,19 +10,19 @@ final xendit = Xendit(
     apiKey:
         'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR');
 
-final appTheme = ThemeData(
-  useMaterial3: true,
-  textTheme: GoogleFonts.poppinsTextTheme(),
-  // primaryColor: Colors.blue[900],
-  // primarySwatch: Colors.blue[900],
-  appBarTheme: const AppBarTheme(
-    centerTitle: true,
-    titleTextStyle: TextStyle(
-      color: Colors.black,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-);
+// final appTheme = ThemeData(
+//   useMaterial3: true,
+//   textTheme: GoogleFonts.poppinsTextTheme(),
+//   // primaryColor: Colors.blue[900],
+//   // primarySwatch: Colors.blue[900],
+//   appBarTheme: const AppBarTheme(
+//     centerTitle: true,
+//     titleTextStyle: TextStyle(
+//       color: Colors.black,
+//       fontWeight: FontWeight.bold,
+//     ),
+//   ),
+// );
 
 const formPadding = EdgeInsets.symmetric(vertical: 0, horizontal: 16);
 const formSpacer = SizedBox(width: 16, height: 16);

@@ -21,7 +21,7 @@ SellerRequestModel _$SellerRequestModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$SellerRequestModel {
   int get id => throw _privateConstructorUsedError;
-  String? get users_id => throw _privateConstructorUsedError;
+  ProfileModel? get profiles => throw _privateConstructorUsedError;
   String? get nim => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -36,7 +36,9 @@ abstract class $SellerRequestModelCopyWith<$Res> {
           SellerRequestModel value, $Res Function(SellerRequestModel) then) =
       _$SellerRequestModelCopyWithImpl<$Res, SellerRequestModel>;
   @useResult
-  $Res call({int id, String? users_id, String? nim});
+  $Res call({int id, ProfileModel? profiles, String? nim});
+
+  $ProfileModelCopyWith<$Res>? get profiles;
 }
 
 /// @nodoc
@@ -53,7 +55,7 @@ class _$SellerRequestModelCopyWithImpl<$Res, $Val extends SellerRequestModel>
   @override
   $Res call({
     Object? id = null,
-    Object? users_id = freezed,
+    Object? profiles = freezed,
     Object? nim = freezed,
   }) {
     return _then(_value.copyWith(
@@ -61,15 +63,27 @@ class _$SellerRequestModelCopyWithImpl<$Res, $Val extends SellerRequestModel>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      users_id: freezed == users_id
-          ? _value.users_id
-          : users_id // ignore: cast_nullable_to_non_nullable
-              as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
       nim: freezed == nim
           ? _value.nim
           : nim // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ProfileModelCopyWith<$Res>? get profiles {
+    if (_value.profiles == null) {
+      return null;
+    }
+
+    return $ProfileModelCopyWith<$Res>(_value.profiles!, (value) {
+      return _then(_value.copyWith(profiles: value) as $Val);
+    });
   }
 }
 
@@ -81,7 +95,10 @@ abstract class _$$_SellerRequestModelCopyWith<$Res>
       __$$_SellerRequestModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String? users_id, String? nim});
+  $Res call({int id, ProfileModel? profiles, String? nim});
+
+  @override
+  $ProfileModelCopyWith<$Res>? get profiles;
 }
 
 /// @nodoc
@@ -96,7 +113,7 @@ class __$$_SellerRequestModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? users_id = freezed,
+    Object? profiles = freezed,
     Object? nim = freezed,
   }) {
     return _then(_$_SellerRequestModel(
@@ -104,10 +121,10 @@ class __$$_SellerRequestModelCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      users_id: freezed == users_id
-          ? _value.users_id
-          : users_id // ignore: cast_nullable_to_non_nullable
-              as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
       nim: freezed == nim
           ? _value.nim
           : nim // ignore: cast_nullable_to_non_nullable
@@ -121,7 +138,7 @@ class __$$_SellerRequestModelCopyWithImpl<$Res>
 class _$_SellerRequestModel
     with DiagnosticableTreeMixin
     implements _SellerRequestModel {
-  const _$_SellerRequestModel({required this.id, this.users_id, this.nim});
+  const _$_SellerRequestModel({required this.id, this.profiles, this.nim});
 
   factory _$_SellerRequestModel.fromJson(Map<String, dynamic> json) =>
       _$$_SellerRequestModelFromJson(json);
@@ -129,13 +146,13 @@ class _$_SellerRequestModel
   @override
   final int id;
   @override
-  final String? users_id;
+  final ProfileModel? profiles;
   @override
   final String? nim;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'SellerRequestModel(id: $id, users_id: $users_id, nim: $nim)';
+    return 'SellerRequestModel(id: $id, profiles: $profiles, nim: $nim)';
   }
 
   @override
@@ -144,7 +161,7 @@ class _$_SellerRequestModel
     properties
       ..add(DiagnosticsProperty('type', 'SellerRequestModel'))
       ..add(DiagnosticsProperty('id', id))
-      ..add(DiagnosticsProperty('users_id', users_id))
+      ..add(DiagnosticsProperty('profiles', profiles))
       ..add(DiagnosticsProperty('nim', nim));
   }
 
@@ -154,14 +171,14 @@ class _$_SellerRequestModel
         (other.runtimeType == runtimeType &&
             other is _$_SellerRequestModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.users_id, users_id) ||
-                other.users_id == users_id) &&
+            (identical(other.profiles, profiles) ||
+                other.profiles == profiles) &&
             (identical(other.nim, nim) || other.nim == nim));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, users_id, nim);
+  int get hashCode => Object.hash(runtimeType, id, profiles, nim);
 
   @JsonKey(ignore: true)
   @override
@@ -181,7 +198,7 @@ class _$_SellerRequestModel
 abstract class _SellerRequestModel implements SellerRequestModel {
   const factory _SellerRequestModel(
       {required final int id,
-      final String? users_id,
+      final ProfileModel? profiles,
       final String? nim}) = _$_SellerRequestModel;
 
   factory _SellerRequestModel.fromJson(Map<String, dynamic> json) =
@@ -190,7 +207,7 @@ abstract class _SellerRequestModel implements SellerRequestModel {
   @override
   int get id;
   @override
-  String? get users_id;
+  ProfileModel? get profiles;
   @override
   String? get nim;
   @override

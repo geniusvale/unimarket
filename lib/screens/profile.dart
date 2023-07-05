@@ -208,8 +208,10 @@ class _ProfileState extends State<Profile> {
                                       child: ElevatedButton(
                                         onPressed: () async {
                                           try {
-                                            sellerRequestProvider.sumbitRequest(
-                                              user_id:
+                                            await sellerRequestProvider
+                                                .submitRequest(
+                                              context: context,
+                                              userId:
                                                   supabase.auth.currentUser!.id,
                                               nim: sellerRequestProvider
                                                   .nimC.text,
