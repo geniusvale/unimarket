@@ -27,7 +27,6 @@ class _TransactionsState extends State<Transactions> {
           : FutureBuilder<List<TransactionModel>>(
               future: transactionProvider.getTransaction(),
               builder: (context, snapshot) {
-                print(snapshot.data);
                 if (snapshot.connectionState == ConnectionState.done) {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,

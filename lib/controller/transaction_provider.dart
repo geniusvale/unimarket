@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/transaction/transaction_items_model.dart';
 import '../models/transaction/transaction_model.dart';
@@ -17,16 +18,22 @@ class TransactionProvider extends ChangeNotifier {
 
   Future<List<TransactionItemsModel>> getTransactionItemDetail(
       int transactionId) async {
-    final result = await supabase
-        .from('transactions_item')
-        .select<List<Map<String, dynamic>>>('id, products!inner(*)')
-        .eq('transactions_id', transactionId);
-    final itemDetail = result
-        .map(
-          (e) => TransactionItemsModel.fromJson(e),
-        )
-        .toList();
-    print(result);
-    return itemDetail;
+    try {
+      final result = await supabase
+          .from('transactions_item')
+          .select<List<Map<String, dynamic>>>(
+              'id, products:products_id(*, profiles:seller_id(*)) ')
+          .eq('transactions_id', transactionId);
+      final itemDetail = result
+          .map(
+            (e) => TransactionItemsModel.fromJson(e),
+          )
+          .toList();
+      print(result);
+      notifyListeners();
+      return itemDetail;
+    } on PostgrestException catch (_) {
+      rethrow;
+    }
   }
 }

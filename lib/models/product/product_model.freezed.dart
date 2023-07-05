@@ -26,6 +26,7 @@ mixin _$ProductModel {
   String? get img_url => throw _privateConstructorUsedError;
   String? get desc => throw _privateConstructorUsedError;
   String? get seller_id => throw _privateConstructorUsedError;
+  ProfileModel? get profiles => throw _privateConstructorUsedError;
   String? get category => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -47,7 +48,10 @@ abstract class $ProductModelCopyWith<$Res> {
       String? img_url,
       String? desc,
       String? seller_id,
+      ProfileModel? profiles,
       String? category});
+
+  $ProfileModelCopyWith<$Res>? get profiles;
 }
 
 /// @nodoc
@@ -69,6 +73,7 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
     Object? img_url = freezed,
     Object? desc = freezed,
     Object? seller_id = freezed,
+    Object? profiles = freezed,
     Object? category = freezed,
   }) {
     return _then(_value.copyWith(
@@ -96,11 +101,27 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
           ? _value.seller_id
           : seller_id // ignore: cast_nullable_to_non_nullable
               as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ProfileModelCopyWith<$Res>? get profiles {
+    if (_value.profiles == null) {
+      return null;
+    }
+
+    return $ProfileModelCopyWith<$Res>(_value.profiles!, (value) {
+      return _then(_value.copyWith(profiles: value) as $Val);
+    });
   }
 }
 
@@ -119,7 +140,11 @@ abstract class _$$_ProductModelCopyWith<$Res>
       String? img_url,
       String? desc,
       String? seller_id,
+      ProfileModel? profiles,
       String? category});
+
+  @override
+  $ProfileModelCopyWith<$Res>? get profiles;
 }
 
 /// @nodoc
@@ -139,6 +164,7 @@ class __$$_ProductModelCopyWithImpl<$Res>
     Object? img_url = freezed,
     Object? desc = freezed,
     Object? seller_id = freezed,
+    Object? profiles = freezed,
     Object? category = freezed,
   }) {
     return _then(_$_ProductModel(
@@ -166,6 +192,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
           ? _value.seller_id
           : seller_id // ignore: cast_nullable_to_non_nullable
               as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -184,6 +214,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
       this.img_url,
       this.desc,
       this.seller_id,
+      this.profiles,
       this.category});
 
   factory _$_ProductModel.fromJson(Map<String, dynamic> json) =>
@@ -202,11 +233,13 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
   @override
   final String? seller_id;
   @override
+  final ProfileModel? profiles;
+  @override
   final String? category;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProductModel(id: $id, name: $name, price: $price, img_url: $img_url, desc: $desc, seller_id: $seller_id, category: $category)';
+    return 'ProductModel(id: $id, name: $name, price: $price, img_url: $img_url, desc: $desc, seller_id: $seller_id, profiles: $profiles, category: $category)';
   }
 
   @override
@@ -220,6 +253,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
       ..add(DiagnosticsProperty('img_url', img_url))
       ..add(DiagnosticsProperty('desc', desc))
       ..add(DiagnosticsProperty('seller_id', seller_id))
+      ..add(DiagnosticsProperty('profiles', profiles))
       ..add(DiagnosticsProperty('category', category));
   }
 
@@ -235,14 +269,16 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
             (identical(other.desc, desc) || other.desc == desc) &&
             (identical(other.seller_id, seller_id) ||
                 other.seller_id == seller_id) &&
+            (identical(other.profiles, profiles) ||
+                other.profiles == profiles) &&
             (identical(other.category, category) ||
                 other.category == category));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, price, img_url, desc, seller_id, category);
+  int get hashCode => Object.hash(runtimeType, id, name, price, img_url, desc,
+      seller_id, profiles, category);
 
   @JsonKey(ignore: true)
   @override
@@ -266,6 +302,7 @@ abstract class _ProductModel implements ProductModel {
       final String? img_url,
       final String? desc,
       final String? seller_id,
+      final ProfileModel? profiles,
       final String? category}) = _$_ProductModel;
 
   factory _ProductModel.fromJson(Map<String, dynamic> json) =
@@ -283,6 +320,8 @@ abstract class _ProductModel implements ProductModel {
   String? get desc;
   @override
   String? get seller_id;
+  @override
+  ProfileModel? get profiles;
   @override
   String? get category;
   @override

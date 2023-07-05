@@ -36,8 +36,8 @@ class _TransactionDetailState extends State<TransactionDetail> {
                   itemBuilder: (context, index) {
                     return ListTile(
                       title: Text(snapshot.data![index].products!.name!),
-                      subtitle:
-                          Text(snapshot.data![index].products!.seller_id!),
+                      subtitle: Text(
+                          snapshot.data![index].products!.profiles!.username!),
                       trailing: Text(
                         numberCurrency
                             .format(snapshot.data![index].products!.price),

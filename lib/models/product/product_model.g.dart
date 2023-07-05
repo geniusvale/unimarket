@@ -14,6 +14,9 @@ _$_ProductModel _$$_ProductModelFromJson(Map<String, dynamic> json) =>
       img_url: json['img_url'] as String?,
       desc: json['desc'] as String?,
       seller_id: json['seller_id'] as String?,
+      profiles: json['profiles'] == null
+          ? null
+          : ProfileModel.fromJson(json['profiles'] as Map<String, dynamic>),
       category: json['category'] as String?,
     );
 
@@ -25,5 +28,6 @@ Map<String, dynamic> _$$_ProductModelToJson(_$_ProductModel instance) =>
       'img_url': instance.img_url,
       'desc': instance.desc,
       'seller_id': instance.seller_id,
+      'profiles': instance.profiles,
       'category': instance.category,
     };
