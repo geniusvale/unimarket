@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../screens/homepage.dart';
 import '../screens/transactions/transactions.dart';
-import '../screens/profile.dart';
+import '../screens/profile/profile.dart';
 import '../screens/wishlist.dart';
 
 class HomeProvider extends ChangeNotifier {

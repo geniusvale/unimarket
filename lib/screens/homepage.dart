@@ -50,6 +50,8 @@ class _HomePageState extends State<HomePage> {
         providers.Provider.of<CartProvider>(context, listen: false);
     final transactionProvider =
         providers.Provider.of<TransactionProvider>(context, listen: false);
+    final storeProvider =
+        providers.Provider.of<StoreProvider>(context, listen: false);
     print('Status unAuthorized ${authProvider.unAuthorized.toString()}');
     return Scaffold(
       appBar: AppBar(
@@ -71,7 +73,9 @@ class _HomePageState extends State<HomePage> {
               // cartProvider.checkIfHasSameCartItems(17);
               // final dateTime = DateTime.now();
               // print(dateTime);
-              transactionProvider.getTransactionItemDetail(29);
+              // transactionProvider.getTransactionItemDetail(29);
+              // storeProvider.getMyOrder();
+              storeProvider.getMyOrderJson();
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',

@@ -4,28 +4,33 @@ import '../models/seller_request/seller_request_model.dart';
 import '../utilities/constants.dart';
 
 class SellerRequestProvider extends ChangeNotifier {
-  final nimC = TextEditingController();
   List<SellerRequestModel>? allRequest;
 
-  submitRequest({String? userId, nim, required BuildContext context}) async {
-    final hasSubmit = await checkIfHasRequested();
-    if (hasSubmit == true) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Anda Sudah Mengirim Request!'),
-        ),
-      );
-    } else {
-      await supabase.from('seller_request').insert(
-        {
-          'users_id': userId,
-          'nim': nim,
-        },
-      );
-      nimC.clear;
-      notifyListeners();
-    }
+  submitRequest({String? nim, required BuildContext context}) async {
+    // final hasSubmit = await checkIfHasRequested();
+    // if (hasSubmit == true) {
+    //   Navigator.pop(context);
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Anda Sudah Mengirim Request!'),
+    //     ),
+    //   );
+    // } else {
+    //CEK TELAH JADI SELLER & DUPLIKAT DATA REQUEST BELUM BENER
+    await supabase.from('seller_request').insert(
+      {
+        'users_id': supabase.auth.currentUser!.id,
+        'nim': nim,
+      },
+    );
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Anda Sudah Mengirim Request!'),
+      ),
+    );
+    notifyListeners();
+    // }
   }
 
   Future<bool> checkIfHasRequested() async {

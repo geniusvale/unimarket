@@ -8,10 +8,11 @@ import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/screens/auth/register.dart';
 import 'package:unimarket/screens/confirm_request.dart';
+import 'package:unimarket/screens/profile/edit_profile.dart';
 import 'package:unimarket/screens/store/store.dart';
 import 'package:unimarket/utilities/constants.dart';
 
-import '../controller/auth_provider.dart';
+import '../../controller/auth_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -24,6 +25,8 @@ class _ProfileState extends State<Profile> {
   File? foto;
   bool isNoPic = true;
   bool hideWidget = true;
+  final nimC = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   //CEK NANTI, BELUM DIIMPLEMENT!
   checkIfHasRequestedForSeller(BuildContext context) async {
@@ -164,7 +167,12 @@ class _ProfileState extends State<Profile> {
                     ),
                   );
                 } else {
-                  return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfile(),
+                    ),
+                  );
                 }
               },
             ),
@@ -191,46 +199,51 @@ class _ProfileState extends State<Profile> {
                   } else {
                     showModalBottomSheet(
                       context: context,
-                      builder: ((context) {
+                      builder: ((ctx) {
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                controller: sellerRequestProvider.nimC,
-                                decoration: formDecor(hint: 'Masukkan NIM'),
-                              ),
-                              Expanded(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          try {
-                                            await sellerRequestProvider
-                                                .submitRequest(
-                                              context: context,
-                                              userId:
-                                                  supabase.auth.currentUser!.id,
-                                              nim: sellerRequestProvider
-                                                  .nimC.text,
-                                            );
-                                          } catch (e) {
-                                            Navigator.pop(context);
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Text(e.toString()),
-                                            ));
-                                          }
-                                        },
-                                        child: const Text('Kirim Request'),
-                                      ),
-                                    ),
-                                  ],
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                TextFormField(
+                                  controller: nimC,
+                                  decoration: formDecor(hint: 'Masukkan NIM'),
                                 ),
-                              )
-                            ],
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            try {
+                                              await sellerRequestProvider
+                                                  .submitRequest(
+                                                context: ctx,
+                                                // nim: sellerRequestProvider
+                                                //     .nimC.text,
+                                                nim: nimC.text,
+                                              );
+                                              print(nimC.text);
+                                            } catch (e) {
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(e.toString()),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: const Text('Kirim Request'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         );
                       }),
