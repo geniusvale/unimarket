@@ -27,7 +27,8 @@ class ProductsProvider extends ChangeNotifier {
   //Menampilkan Seluruh Produk Dari Tabel di DB
   Future<List<ProductModel>> getProduct() async {
     final supabase = Supabase.instance.client;
-    final result = await supabase.from('products').select();
+    final result =
+        await supabase.from('products').select('*, profiles:seller_id(*)');
     final allProducts = result
         .map<ProductModel>(
           (e) => ProductModel.fromJson(e),

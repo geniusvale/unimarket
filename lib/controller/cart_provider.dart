@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:unimarket/models/cart/cart_items/cart_items_model.dart';
 
 import '../utilities/constants.dart';
 
 class CartProvider extends ChangeNotifier {
   int? currentCartId;
 
-  //Cek user sudah punya keranjang atau belum
   Future<bool> checkIfHasCart(BuildContext context) async {
     bool? hasCart;
+    //Cek user sudah punya keranjang atau belum
     //Jika belum, add keranjang ke DB Cart
     try {
       final result = await supabase
@@ -57,7 +58,8 @@ class CartProvider extends ChangeNotifier {
   }
 
   addToCart({required String usersId, required int productId}) async {
-    //Jika sudah, setiap menambah produk ke keranjang, simpan data ke Table CartItems di DB dengan cartId sebelumnya
+    //Jika sudah, setiap menambah produk ke keranjang,
+    //simpan data ke Table CartItems di DB dengan cartId sebelumnya
     print(currentCartId);
     try {
       await supabase.from('cart_items').insert(
@@ -73,30 +75,27 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int jumlahkanSubtotal(List<Map<String, dynamic>> data) {
+  int jumlahkanSubtotal(List<CartItemsModel> data) {
     int newSubtotal = 0;
     for (var i = 0; i < data.length; i++) {
-      int value = data[i]['products']['price'];
-      newSubtotal += value;
+      int? value = data[i].products!.price;
+      newSubtotal += value!;
     }
     // notifyListeners();
     return newSubtotal;
   }
 
-  Future<List<Map<String, dynamic>>> getMyCart() async {
+  Future<List<CartItemsModel>> getMyCart() async {
     final result = await supabase
         .from('cart_items')
         .select<List<Map<String, dynamic>>>(
           '*, products!inner(*)',
         ) //Inner Join Langsung Ke ForeignKey Table
-        .match(
-      {
-        'user_id': supabase.auth.currentUser!.id,
-      },
-    );
+        .match({'user_id': supabase.auth.currentUser!.id});
+    final data = result.map((e) => CartItemsModel.fromJson(e)).toList();
+    // print(result);
     notifyListeners();
-    print(result);
-    return result;
+    return data;
   }
 
   deleteCartItems(int cartItemsId) async {

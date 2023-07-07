@@ -96,12 +96,13 @@ class _DetailProductState extends State<DetailProduct> {
                   formSpacer,
                   Text(
                     widget.snapshot.data![widget.index].name ?? 'Tak Ada Data',
-                    style: const TextStyle(fontSize: 24),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   formSpacer,
                   Text(
-                    // 'Rp ' +
-                    //     widget.snapshot.data![widget.index].price.toString(),
                     numberCurrency.format(
                       widget.snapshot.data![widget.index].price,
                     ),
@@ -112,12 +113,35 @@ class _DetailProductState extends State<DetailProduct> {
                   ),
                   formSpacer,
                   const Text(
+                    'Informasi Penjual',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        minRadius: 16,
+                        backgroundImage: NetworkImage(
+                          widget.snapshot.data![widget.index].profiles!
+                              .avatar_url!,
+                        ),
+                        onBackgroundImageError: (exception, stackTrace) =>
+                            Icons.broken_image,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        widget.snapshot.data![widget.index].profiles!.username!,
+                      ),
+                    ],
+                  ),
+                  formSpacer,
+                  const Text(
                     'Informasi Produk',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     widget.snapshot.data![widget.index].desc ?? 'No Deskripsi',
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ],
               ),
@@ -160,32 +184,20 @@ class _DetailProductState extends State<DetailProduct> {
                             productId: widget.snapshot.data![widget.index].id!,
                           );
                           if (isAlreadyWishlished == true) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Produk Sudah Tersimpan!'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
+                            snackbar(
+                                context, 'Produk Sudah Tersimpan!', Colors.red);
                           } else {
                             await productProvider.addToWishlist(
                               context: context,
                               usersId: supabase.auth.currentUser!.id,
                               productId: widget.snapshot.data![widget.index].id,
                             );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Berhasil Menyimpan!'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
+                            snackbar(
+                                context, 'Berhasil Menyimpan!', Colors.green);
                           }
                         }
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(e.toString()),
-                          ),
-                        );
+                        snackbar(context, e.toString(), Colors.black);
                       }
                     },
                     icon: SvgPicture.asset(
@@ -241,11 +253,8 @@ class _DetailProductState extends State<DetailProduct> {
                           productId: widget.snapshot.data![widget.index].id!,
                         );
                         if (isSameProduct == true) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Sudah Ada Di Keranjang!'),
-                            ),
-                          );
+                          snackbar(
+                              context, 'Sudah Ada di Keranjang!', Colors.black);
                         } else {
                           try {
                             await cartProvider.addToCart(
@@ -253,12 +262,8 @@ class _DetailProductState extends State<DetailProduct> {
                                   widget.snapshot.data![widget.index].id ?? 0,
                               usersId: supabase.auth.currentUser!.id,
                             );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('Berhasil Menambahkan Ke Keranjang'),
-                              ),
-                            );
+                            snackbar(context, 'Berhasil Menambah ke Keranjang!',
+                                Colors.black);
                           } catch (e) {
                             rethrow;
                           }

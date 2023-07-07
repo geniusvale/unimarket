@@ -20,10 +20,11 @@ CartItemsModel _$CartItemsModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CartItemsModel {
-  String get id => throw _privateConstructorUsedError;
-  String? get cart_id => throw _privateConstructorUsedError;
-  ProductModel? get product_id => throw _privateConstructorUsedError;
-  String? get quantity => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  int? get cart_id => throw _privateConstructorUsedError;
+  int? get product_id => throw _privateConstructorUsedError;
+  ProductModel? get products => throw _privateConstructorUsedError;
+  int? get quantity => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,9 +39,13 @@ abstract class $CartItemsModelCopyWith<$Res> {
       _$CartItemsModelCopyWithImpl<$Res, CartItemsModel>;
   @useResult
   $Res call(
-      {String id, String? cart_id, ProductModel? product_id, String? quantity});
+      {int id,
+      int? cart_id,
+      int? product_id,
+      ProductModel? products,
+      int? quantity});
 
-  $ProductModelCopyWith<$Res>? get product_id;
+  $ProductModelCopyWith<$Res>? get products;
 }
 
 /// @nodoc
@@ -59,37 +64,42 @@ class _$CartItemsModelCopyWithImpl<$Res, $Val extends CartItemsModel>
     Object? id = null,
     Object? cart_id = freezed,
     Object? product_id = freezed,
+    Object? products = freezed,
     Object? quantity = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       cart_id: freezed == cart_id
           ? _value.cart_id
           : cart_id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       product_id: freezed == product_id
           ? _value.product_id
           : product_id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      products: freezed == products
+          ? _value.products
+          : products // ignore: cast_nullable_to_non_nullable
               as ProductModel?,
       quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $ProductModelCopyWith<$Res>? get product_id {
-    if (_value.product_id == null) {
+  $ProductModelCopyWith<$Res>? get products {
+    if (_value.products == null) {
       return null;
     }
 
-    return $ProductModelCopyWith<$Res>(_value.product_id!, (value) {
-      return _then(_value.copyWith(product_id: value) as $Val);
+    return $ProductModelCopyWith<$Res>(_value.products!, (value) {
+      return _then(_value.copyWith(products: value) as $Val);
     });
   }
 }
@@ -103,10 +113,14 @@ abstract class _$$_CartItemsModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id, String? cart_id, ProductModel? product_id, String? quantity});
+      {int id,
+      int? cart_id,
+      int? product_id,
+      ProductModel? products,
+      int? quantity});
 
   @override
-  $ProductModelCopyWith<$Res>? get product_id;
+  $ProductModelCopyWith<$Res>? get products;
 }
 
 /// @nodoc
@@ -123,25 +137,30 @@ class __$$_CartItemsModelCopyWithImpl<$Res>
     Object? id = null,
     Object? cart_id = freezed,
     Object? product_id = freezed,
+    Object? products = freezed,
     Object? quantity = freezed,
   }) {
     return _then(_$_CartItemsModel(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       cart_id: freezed == cart_id
           ? _value.cart_id
           : cart_id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       product_id: freezed == product_id
           ? _value.product_id
           : product_id // ignore: cast_nullable_to_non_nullable
+              as int?,
+      products: freezed == products
+          ? _value.products
+          : products // ignore: cast_nullable_to_non_nullable
               as ProductModel?,
       quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
     ));
   }
 }
@@ -152,23 +171,29 @@ class _$_CartItemsModel
     with DiagnosticableTreeMixin
     implements _CartItemsModel {
   const _$_CartItemsModel(
-      {required this.id, this.cart_id, this.product_id, this.quantity});
+      {required this.id,
+      this.cart_id,
+      this.product_id,
+      this.products,
+      this.quantity});
 
   factory _$_CartItemsModel.fromJson(Map<String, dynamic> json) =>
       _$$_CartItemsModelFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
-  final String? cart_id;
+  final int? cart_id;
   @override
-  final ProductModel? product_id;
+  final int? product_id;
   @override
-  final String? quantity;
+  final ProductModel? products;
+  @override
+  final int? quantity;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'CartItemsModel(id: $id, cart_id: $cart_id, product_id: $product_id, quantity: $quantity)';
+    return 'CartItemsModel(id: $id, cart_id: $cart_id, product_id: $product_id, products: $products, quantity: $quantity)';
   }
 
   @override
@@ -179,6 +204,7 @@ class _$_CartItemsModel
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('cart_id', cart_id))
       ..add(DiagnosticsProperty('product_id', product_id))
+      ..add(DiagnosticsProperty('products', products))
       ..add(DiagnosticsProperty('quantity', quantity));
   }
 
@@ -191,6 +217,8 @@ class _$_CartItemsModel
             (identical(other.cart_id, cart_id) || other.cart_id == cart_id) &&
             (identical(other.product_id, product_id) ||
                 other.product_id == product_id) &&
+            (identical(other.products, products) ||
+                other.products == products) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity));
   }
@@ -198,7 +226,7 @@ class _$_CartItemsModel
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, cart_id, product_id, quantity);
+      Object.hash(runtimeType, id, cart_id, product_id, products, quantity);
 
   @JsonKey(ignore: true)
   @override
@@ -216,22 +244,25 @@ class _$_CartItemsModel
 
 abstract class _CartItemsModel implements CartItemsModel {
   const factory _CartItemsModel(
-      {required final String id,
-      final String? cart_id,
-      final ProductModel? product_id,
-      final String? quantity}) = _$_CartItemsModel;
+      {required final int id,
+      final int? cart_id,
+      final int? product_id,
+      final ProductModel? products,
+      final int? quantity}) = _$_CartItemsModel;
 
   factory _CartItemsModel.fromJson(Map<String, dynamic> json) =
       _$_CartItemsModel.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
-  String? get cart_id;
+  int? get cart_id;
   @override
-  ProductModel? get product_id;
+  int? get product_id;
   @override
-  String? get quantity;
+  ProductModel? get products;
+  @override
+  int? get quantity;
   @override
   @JsonKey(ignore: true)
   _$$_CartItemsModelCopyWith<_$_CartItemsModel> get copyWith =>

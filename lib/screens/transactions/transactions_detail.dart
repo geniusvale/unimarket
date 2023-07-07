@@ -110,6 +110,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                   title: const Text('Alamat Pengiriman'),
                   subtitle: Text(widget.transactionData.address!),
                 ),
+                //BUTTON BAWAH
                 Row(
                   children: [
                     Expanded(

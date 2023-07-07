@@ -100,7 +100,6 @@ class _WishlistState extends State<Wishlist> {
                                   padding: formPadding,
                                   child: Text(
                                     snapshot.data?[index].name ?? '~Error',
-                                    // '',
                                   ),
                                 ),
                                 Padding(
@@ -108,7 +107,6 @@ class _WishlistState extends State<Wishlist> {
                                   child: Text(
                                     numberCurrency
                                         .format(snapshot.data![index].price),
-                                    // '',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),

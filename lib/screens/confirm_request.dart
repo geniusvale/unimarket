@@ -51,17 +51,10 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                             await sellerRequestProvider.declineSellerRequest(
                               snapshot.data![index].profiles!.id,
                             );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text('Request Ditolak!'),
-                              backgroundColor: Colors.red,
-                            ));
+                            snackbar(context, 'Request Ditolak', Colors.red);
                             setState(() {});
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(e.toString()),
-                              backgroundColor: Colors.red,
-                            ));
+                            snackbar(context, 'error', Colors.red);
                           }
                         },
                         icon: const Icon(
@@ -75,16 +68,11 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                             await sellerRequestProvider.acceptSellerRequest(
                                 snapshot.data![index].nim!,
                                 snapshot.data![index].profiles!.id);
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text('Konfirmasi Berhasil!'),
-                              backgroundColor: Colors.green,
-                            ));
+                            snackbar(
+                                context, 'Konfirmasi Berhasil!', Colors.green);
                             setState(() {});
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(e.toString())),
-                            );
+                            snackbar(context, e.toString(), Colors.black);
                           }
                         },
                         icon: const Icon(

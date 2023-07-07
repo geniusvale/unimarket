@@ -20,7 +20,7 @@ class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   bool _passwordVisible = true;
   bool kIsWeb = true;
-  
+
   @override
   void initState() {
     // WidgetsBinding.instance.addPostFrameCallback(
@@ -131,9 +131,7 @@ class _LoginState extends State<Login> {
                               ),
                             );
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(e.toString())),
-                            );
+                            snackbar(context, e.toString(), Colors.black);
                           }
                         },
                         child: const Text('Login'),

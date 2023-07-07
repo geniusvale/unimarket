@@ -13,10 +13,11 @@ part 'cart_items_model.g.dart';
 @freezed
 class CartItemsModel with _$CartItemsModel {
   const factory CartItemsModel({
-    required String id,
-    String? cart_id,
-    ProductModel? product_id,
-    String? quantity,
+    required int id,
+    int? cart_id,
+    int? product_id,
+    ProductModel? products,
+    int? quantity,
   }) = _CartItemsModel;
 
   factory CartItemsModel.fromJson(Map<String, Object?> json) =>

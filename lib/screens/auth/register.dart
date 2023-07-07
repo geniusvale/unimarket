@@ -119,13 +119,8 @@ class _RegisterState extends State<Register> {
                               );
                               await profileProvider
                                   .getProfileDataFromAuth(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Akun Berhasil Dibuat!',
-                                  ),
-                                ),
-                              );
+                              snackbar(context, 'Akun Berhasil Dibuat!',
+                                  Colors.black);
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -134,9 +129,7 @@ class _RegisterState extends State<Register> {
                               );
                             }
                           } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(e.toString())),
-                            );
+                            snackbar(context, e.toString(), Colors.black);
                           }
                         },
                         child: const Text('Register'),

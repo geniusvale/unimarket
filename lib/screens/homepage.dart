@@ -18,6 +18,7 @@ import 'package:provider/provider.dart' as providers;
 import '../controller/auth_provider.dart';
 import '../controller/profile_provider.dart';
 import '../controller/store_provider.dart';
+import '../utilities/widgets.dart';
 import 'cart/cart.dart';
 import 'search.dart';
 
@@ -70,11 +71,6 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () async {
-              // cartProvider.checkIfHasSameCartItems(17);
-              // final dateTime = DateTime.now();
-              // print(dateTime);
-              // transactionProvider.getTransactionItemDetail(29);
-              // storeProvider.getMyOrder();
               storeProvider.getMyOrderJson();
             },
             icon: SvgPicture.asset(
@@ -160,7 +156,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -200,72 +195,7 @@ class _HomeState extends State<Home> {
                         crossAxisCount: 2,
                       ),
                       itemBuilder: (context, index) {
-                        return Card(
-                          elevation: 0.3,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return DetailProduct(
-                                      index: index,
-                                      snapshot: snapshot,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Center(
-                                  child: SizedBox(
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(8),
-                                          topRight: Radius.circular(8)),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            '${snapshot.data?[index].img_url}',
-                                        // 'https://picsum.photos/id/${index + randomNumber}/200/200',
-                                        progressIndicatorBuilder:
-                                            (context, url, downloadProgress) {
-                                          return CircularProgressIndicator(
-                                            value: downloadProgress.progress,
-                                          );
-                                        },
-                                        errorWidget: (context, url, error) {
-                                          return const Icon(
-                                            Icons.broken_image_outlined,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                formSpacer,
-                                Padding(
-                                  padding: formPadding,
-                                  child: Text(
-                                    snapshot.data?[index].name ?? '~Error',
-                                  ),
-                                ),
-                                Padding(
-                                  padding: formPadding,
-                                  child: Text(
-                                    numberCurrency
-                                        .format(snapshot.data![index].price),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                formSpacer
-                              ],
-                            ),
-                          ),
-                        );
+                        return ProductCard(index: index, snapshot: snapshot);
                       },
                     );
                   } else {
@@ -280,3 +210,5 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
+

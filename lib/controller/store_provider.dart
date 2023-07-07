@@ -6,7 +6,6 @@ import '../utilities/constants.dart';
 class StoreProvider extends ChangeNotifier {
   int tabIndex = 0;
 
-  //WIDGET Menampilkan Dialog Hapus Produk di Toko
   Future<List<TransactionItemsModel>> getMyOrder() async {
     final result = await supabase
         .from('transactions_item')

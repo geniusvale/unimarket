@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:xendit/xendit.dart';
@@ -7,8 +6,9 @@ import 'package:xendit/xendit.dart';
 final supabase = Supabase.instance.client;
 
 final xendit = Xendit(
-    apiKey:
-        'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR');
+  apiKey:
+      'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
+);
 
 // final appTheme = ThemeData(
 //   useMaterial3: true,
@@ -69,8 +69,6 @@ final giantHeader = SizedBox(
   ),
 );
 
-// final showDialog = showDialog(context: context, builder: builder)
-
 dialog(BuildContext context) {
   return showDialog(
     context: context,
@@ -91,5 +89,14 @@ modal(BuildContext context) {
           // height: 50,
           );
     },
+  );
+}
+
+snackbar(BuildContext context, String title, Color color) {
+  return ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(title),
+      backgroundColor: color,
+    ),
   );
 }
