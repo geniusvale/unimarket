@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:unimarket/models/cart/cart_items/cart_items_model.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../utilities/constants.dart';
 
@@ -101,5 +103,92 @@ class CartProvider extends ChangeNotifier {
   deleteCartItems(int cartItemsId) async {
     await supabase.from('cart_items').delete().match({'id': cartItemsId});
     notifyListeners();
+  }
+
+  makeOrderAndPay(
+      {required List<CartItemsModel> snapshotData,
+      required int subtotal}) async {
+    //Make new transactions to db
+    await supabase.from('transactions').insert({
+      'users_id': supabase.auth.currentUser!.id,
+      'address': '',
+      'phone': '',
+      'email': supabase.auth.currentUser!.email,
+      'total_price': subtotal,
+      'payment_url': '',
+      'quantity': snapshotData.length,
+      'status': 'UNPAID',
+    });
+    //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.
+    //redirect ke halaman tsb.
+    //GET Transactions ID yang baru dibuat.
+    //~~~~~
+    final dateTime = DateTime.now();
+    final String formattedDateTime = DateFormat.yMd().format(dateTime);
+    final transactionId = await supabase
+        .from('transactions')
+        .select('id, created_at')
+        .eq('users_id', supabase.auth.currentUser!.id)
+        .order('created_at', ascending: false)
+        .limit(1)
+        .single();
+    //Sudah benar
+    print('GET TransactionID $transactionId');
+    //ADD every items to transactionItems in db using looping
+    for (var cartItems in snapshotData) {
+      //Karena perulangan maka yang dikirim JSON, jadi value harus string dahulu!
+      print(cartItems);
+      await supabase.from('transactions_item').insert({
+        'users_id': supabase.auth.currentUser!.id,
+        'products_id': '${cartItems.product_id}',
+        'transactions_id': '${transactionId['id']}',
+      });
+    }
+    //After adding, delete every cartItems in DB!
+    for (var delCartItems in snapshotData) {
+      await supabase.from('cart_items').delete().match({
+        'id': delCartItems.id,
+      });
+      print(delCartItems);
+    }
+    //PAY WITH XENDIT
+    var res = await xendit.invoke(
+      endpoint: 'POST https://api.xendit.co/v2/invoices',
+      headers: {'for-user-id': ''},
+      parameters: {
+        'external_id': 'INV-$transactionId-$formattedDateTime',
+        'amount': subtotal,
+        'payer_email': supabase.auth.currentUser!.email,
+        'description': "Invoice #123"
+      },
+    );
+    print(res);
+    final paymentUrl = res['invoice_url'];
+    print('Hasil PAYMENT URL $paymentUrl');
+
+    //Tambahkan Invoice ID ke Transactions (Belum diimplement)
+
+    await supabase.from('transactions').update({
+      'payment_url': paymentUrl,
+      'invoices_id': res['id'],
+    }).eq(
+      'id',
+      '${transactionId['id']}',
+    );
+
+    //LAUNCH TO WEBVIEW
+    try {
+      await launchUrlString(
+        paymentUrl,
+        mode: LaunchMode.inAppWebView, //enables WebView
+        webViewConfiguration: const WebViewConfiguration(
+          enableJavaScript: true,
+        ),
+      );
+    } catch (e) {
+      rethrow;
+    }
+    //Kembali ke halaman dan refresh dari webview???
+    //Mengatur Callback???
   }
 }

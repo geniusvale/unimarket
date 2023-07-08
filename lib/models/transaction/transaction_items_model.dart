@@ -14,10 +14,12 @@ part 'transaction_items_model.g.dart';
 class TransactionItemsModel with _$TransactionItemsModel {
   const factory TransactionItemsModel({
     required int id,
+    @JsonKey(name: 'transactions_id') int? transactionId,
     @JsonKey(name: 'users_id') String? userId,
     ProfileModel? profiles,
+    @JsonKey(name: 'products_id') int? productsId,
     ProductModel? products,
-    @JsonKey(name: 'transactions_id') int? transactionId,
+    bool? isConfirmed,
     @JsonKey(name: 'created_at') String? createdAt,
   }) = _TransactionItemsModel;
 

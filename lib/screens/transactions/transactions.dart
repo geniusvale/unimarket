@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/controller/transaction_provider.dart';
 import 'package:unimarket/models/transaction/transaction_model.dart';
 import 'package:unimarket/screens/transactions/transactions_detail.dart';
 import 'package:unimarket/utilities/constants.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../controller/auth_provider.dart';
 
@@ -28,24 +28,46 @@ class _TransactionsState extends State<Transactions> {
               future: transactionProvider.getTransaction(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
-                  return ListView.builder(
+                  return ListView.separated(
                     itemCount: snapshot.data!.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
                     itemBuilder: (context, index) {
+                      final date =
+                          DateTime.parse(snapshot.data![index].createdAt!);
                       return ListTile(
                         isThreeLine: true,
-                        leading: const Icon(Icons.receipt_long),
-                        title: Text(
-                            'Transaction ID : ${snapshot.data![index].id}'),
+                        // leading: CircleAvatar(
+                        //   maxRadius: 32,
+                        //   backgroundColor: Colors.transparent,
+                        //   child: Text(
+                        //     DateFormat('d\nMMM yy').format(date),
+                        //     maxLines: 2,
+                        //     textAlign: TextAlign.center,
+                        //     style: TextStyle(
+                        //       fontSize: 12,
+                        //       color: Colors.grey[700],
+                        //     ),
+                        //   ),
+                        // ),
+                        //Harusnya Tampil ExternalID dari Xendit
+                        title: Text('Transaksi : ${snapshot.data![index].id}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(snapshot.data![index].status!),
-                            Text(snapshot.data![index].createdAt!)
+                            Text('Status : ${snapshot.data![index].status!}'),
+                            Text(DateFormat('d MMM yyyy').format(date)),
                           ],
                         ),
-                        trailing: Text(
-                          numberCurrency
-                              .format(snapshot.data![index].total_price),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              numberCurrency
+                                  .format(snapshot.data![index].total_price),
+                            ),
+                            Text('${snapshot.data![index].quantity ?? 0} Item'),
+                          ],
                         ),
                         onTap: () {
                           Navigator.push(
@@ -60,9 +82,7 @@ class _TransactionsState extends State<Transactions> {
                             ),
                           );
                         },
-                        onLongPress: () {
-                          
-                        },
+                        onLongPress: () {},
                       );
                     },
                   );

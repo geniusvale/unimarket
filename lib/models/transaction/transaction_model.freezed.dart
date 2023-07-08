@@ -25,6 +25,9 @@ mixin _$TransactionModel {
   String? get address => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'invoices_id')
+  String? get invoicesId => throw _privateConstructorUsedError;
+  int? get quantity => throw _privateConstructorUsedError;
   int? get total_price => throw _privateConstructorUsedError;
   String? get payment_url => throw _privateConstructorUsedError;
   String? get status => throw _privateConstructorUsedError;
@@ -49,6 +52,8 @@ abstract class $TransactionModelCopyWith<$Res> {
       String? address,
       String? phone,
       String? email,
+      @JsonKey(name: 'invoices_id') String? invoicesId,
+      int? quantity,
       int? total_price,
       String? payment_url,
       String? status,
@@ -73,6 +78,8 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
     Object? address = freezed,
     Object? phone = freezed,
     Object? email = freezed,
+    Object? invoicesId = freezed,
+    Object? quantity = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
     Object? status = freezed,
@@ -99,6 +106,14 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
+      invoicesId: freezed == invoicesId
+          ? _value.invoicesId
+          : invoicesId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as int?,
       total_price: freezed == total_price
           ? _value.total_price
           : total_price // ignore: cast_nullable_to_non_nullable
@@ -133,6 +148,8 @@ abstract class _$$_TransactionModelCopyWith<$Res>
       String? address,
       String? phone,
       String? email,
+      @JsonKey(name: 'invoices_id') String? invoicesId,
+      int? quantity,
       int? total_price,
       String? payment_url,
       String? status,
@@ -155,6 +172,8 @@ class __$$_TransactionModelCopyWithImpl<$Res>
     Object? address = freezed,
     Object? phone = freezed,
     Object? email = freezed,
+    Object? invoicesId = freezed,
+    Object? quantity = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
     Object? status = freezed,
@@ -181,6 +200,14 @@ class __$$_TransactionModelCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
+      invoicesId: freezed == invoicesId
+          ? _value.invoicesId
+          : invoicesId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      quantity: freezed == quantity
+          ? _value.quantity
+          : quantity // ignore: cast_nullable_to_non_nullable
+              as int?,
       total_price: freezed == total_price
           ? _value.total_price
           : total_price // ignore: cast_nullable_to_non_nullable
@@ -212,6 +239,8 @@ class _$_TransactionModel
       this.address,
       this.phone,
       this.email,
+      @JsonKey(name: 'invoices_id') this.invoicesId,
+      this.quantity,
       this.total_price,
       this.payment_url,
       this.status,
@@ -231,6 +260,11 @@ class _$_TransactionModel
   @override
   final String? email;
   @override
+  @JsonKey(name: 'invoices_id')
+  final String? invoicesId;
+  @override
+  final int? quantity;
+  @override
   final int? total_price;
   @override
   final String? payment_url;
@@ -242,7 +276,7 @@ class _$_TransactionModel
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TransactionModel(id: $id, userId: $userId, address: $address, phone: $phone, email: $email, total_price: $total_price, payment_url: $payment_url, status: $status, createdAt: $createdAt)';
+    return 'TransactionModel(id: $id, userId: $userId, address: $address, phone: $phone, email: $email, invoicesId: $invoicesId, quantity: $quantity, total_price: $total_price, payment_url: $payment_url, status: $status, createdAt: $createdAt)';
   }
 
   @override
@@ -255,6 +289,8 @@ class _$_TransactionModel
       ..add(DiagnosticsProperty('address', address))
       ..add(DiagnosticsProperty('phone', phone))
       ..add(DiagnosticsProperty('email', email))
+      ..add(DiagnosticsProperty('invoicesId', invoicesId))
+      ..add(DiagnosticsProperty('quantity', quantity))
       ..add(DiagnosticsProperty('total_price', total_price))
       ..add(DiagnosticsProperty('payment_url', payment_url))
       ..add(DiagnosticsProperty('status', status))
@@ -271,6 +307,10 @@ class _$_TransactionModel
             (identical(other.address, address) || other.address == address) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.invoicesId, invoicesId) ||
+                other.invoicesId == invoicesId) &&
+            (identical(other.quantity, quantity) ||
+                other.quantity == quantity) &&
             (identical(other.total_price, total_price) ||
                 other.total_price == total_price) &&
             (identical(other.payment_url, payment_url) ||
@@ -283,7 +323,7 @@ class _$_TransactionModel
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, userId, address, phone,
-      email, total_price, payment_url, status, createdAt);
+      email, invoicesId, quantity, total_price, payment_url, status, createdAt);
 
   @JsonKey(ignore: true)
   @override
@@ -306,6 +346,8 @@ abstract class _TransactionModel implements TransactionModel {
           final String? address,
           final String? phone,
           final String? email,
+          @JsonKey(name: 'invoices_id') final String? invoicesId,
+          final int? quantity,
           final int? total_price,
           final String? payment_url,
           final String? status,
@@ -325,6 +367,11 @@ abstract class _TransactionModel implements TransactionModel {
   String? get phone;
   @override
   String? get email;
+  @override
+  @JsonKey(name: 'invoices_id')
+  String? get invoicesId;
+  @override
+  int? get quantity;
   @override
   int? get total_price;
   @override

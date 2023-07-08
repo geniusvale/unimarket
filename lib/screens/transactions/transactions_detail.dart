@@ -45,36 +45,91 @@ class _TransactionDetailState extends State<TransactionDetail> {
                   shrinkWrap: true,
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      isThreeLine: true,
-                      leading: snapshot.data![index].products!.img_url == null
-                          ? const Icon(Icons.broken_image_outlined)
-                          : Image.network(
-                              snapshot.data![index].products!.img_url!,
-                              width: 50,
-                              height: 50,
-                            ),
-                      title: Text(snapshot.data![index].products!.name!),
-                      subtitle: Text(
-                          snapshot.data![index].products!.profiles!.username!),
-                      trailing: Column(
+                    //NANTI EXTRACT WIDGET
+                    return Container(
+                      color: Colors.grey[350],
+                      width: double.infinity,
+                      height: 150,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            numberCurrency
-                                .format(snapshot.data![index].products!.price),
-                          ),
-                          SizedBox(
-                            width: 110,
-                            height: 35,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: const Text(
-                                'Konfirmasi\natau Unduh',
-                                style: TextStyle(fontSize: 11),
-                                textAlign: TextAlign.center,
-                              ),
+                          //ROW 1
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  flex: 1,
+                                  fit: FlexFit.tight,
+                                  child: Container(
+                                    child: snapshot.data![index].products!
+                                                .img_url ==
+                                            null
+                                        ? const Icon(
+                                            Icons.broken_image_outlined)
+                                        : Image.network(
+                                            snapshot.data![index].products!
+                                                .img_url!,
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 3,
+                                  fit: FlexFit.tight,
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(snapshot
+                                            .data![index].products!.name!),
+                                        Text(snapshot
+                                            .data![index].products!.category!),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Flexible(
+                                  flex: 2,
+                                  fit: FlexFit.tight,
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          numberCurrency.format(snapshot
+                                              .data![index].products!.price),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                          //ROW 2
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    child: snapshot.data![index].products!
+                                                .category! ==
+                                            'Produk Digital'
+                                        ? const Text('Unduh')
+                                        : const Text('Konfirmasi Pesanan'),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          const Divider(height: 1),
                         ],
                       ),
                     );

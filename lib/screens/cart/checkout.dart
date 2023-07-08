@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:provider/provider.dart' as providers;
 
+import '../../controller/cart_provider.dart';
 import '../../models/cart/cart_items/cart_items_model.dart';
 import '../../utilities/constants.dart';
 
@@ -21,6 +22,8 @@ class Checkout extends StatefulWidget {
 class _CheckoutState extends State<Checkout> {
   @override
   Widget build(BuildContext context) {
+    final cartProvider =
+        providers.Provider.of<CartProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
@@ -58,6 +61,7 @@ class _CheckoutState extends State<Checkout> {
               itemCount: widget.snapshotData!.length,
               shrinkWrap: true,
               // physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: SizedBox(
@@ -76,7 +80,6 @@ class _CheckoutState extends State<Checkout> {
                   ),
                 );
               },
-              separatorBuilder: (context, index) => const Divider(),
             ),
           ),
           Flexible(
@@ -156,96 +159,10 @@ class _CheckoutState extends State<Checkout> {
                               'BUAT PESANAN',
                             ),
                             onPressed: () async {
-                              //Make new transactions to db
-                              await supabase.from('transactions').insert({
-                                'users_id': supabase.auth.currentUser!.id,
-                                'address': '',
-                                'phone': '',
-                                'email': supabase.auth.currentUser!.email,
-                                'total_price': widget.subtotal,
-                                'payment_url': '',
-                                'status': 'UNPAID',
-                              });
-                              //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.
-                              //redirect ke halaman tsb.
-                              //GET Transactions ID yang baru dibuat. berdasarkan timestamps?? or what??
-                              //~~~~~
-                              final dateTime = DateTime.now();
-                              final transactionId = await supabase
-                                  .from('transactions')
-                                  .select('id, created_at')
-                                  .eq('users_id', supabase.auth.currentUser!.id)
-                                  .order('created_at', ascending: false)
-                                  .limit(1)
-                                  .single();
-                              //Belum Bener, karena gak bisa ambil 1 value yang baru dibuat jika ada lebih dari 1 data
-                              //Sudah benat
-                              print('GET TransactionID $transactionId');
-                              //ADD every items to transactionItems in db using looping
-                              for (var cartItems in widget.snapshotData!) {
-                                //Karena perulangan maka yang dikirim JSON, jadi value harus string dahulu!
-                                print(cartItems);
-                                await supabase
-                                    .from('transactions_item')
-                                    .insert({
-                                  'users_id': supabase.auth.currentUser!.id,
-                                  'products_id': '${cartItems.product_id}',
-                                  'transactions_id': '${transactionId['id']}',
-                                });
-                              }
-                              //After adding, delete every cartItems in DB!
-                              for (var delCartItems in widget.snapshotData!) {
-                                await supabase
-                                    .from('cart_items')
-                                    .delete()
-                                    .match({
-                                  'id': delCartItems.id,
-                                });
-                                print(delCartItems);
-                              }
-                              //Harus SetState(?)
-                              //PAY WITH XENDIT
-                              var res = await xendit.invoke(
-                                endpoint:
-                                    'POST https://api.xendit.co/v2/invoices',
-                                headers: {'for-user-id': ''},
-                                parameters: {
-                                  'external_id': 'invoice-timestamp',
-                                  'amount': widget.subtotal,
-                                  'payer_email':
-                                      supabase.auth.currentUser!.email,
-                                  'description': "Invoice Demo #123"
-                                },
+                              await cartProvider.makeOrderAndPay(
+                                snapshotData: widget.snapshotData!,
+                                subtotal: widget.subtotal!,
                               );
-                              print(res);
-                              final paymentUrl = res['invoice_url'];
-                              print('Hasil PAYMENT URL $paymentUrl');
-
-                              //Tambahkan Invoice ID ke Transactions (Belum diimplement)
-
-                              await supabase
-                                  .from('transactions')
-                                  .update({'payment_url': paymentUrl}).eq(
-                                'id',
-                                '${transactionId['id']}',
-                              );
-
-                              //LAUNCH TO WEBVIEW
-                              try {
-                                await launchUrlString(
-                                  paymentUrl,
-                                  mode:
-                                      LaunchMode.inAppWebView, //enables WebView
-                                  webViewConfiguration:
-                                      const WebViewConfiguration(
-                                    enableJavaScript: true,
-                                  ),
-                                );
-                              } catch (e) {
-                                rethrow;
-                              }
-                              //Kembali ke halaman dan refresh dari webview???
-                              //Mengatur Callback???
                             },
                           ),
                         ),
