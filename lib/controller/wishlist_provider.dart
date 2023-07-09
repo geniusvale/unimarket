@@ -9,7 +9,8 @@ class WishlistProvider extends ChangeNotifier {
     try {
       final result = await supabase
           .from('wishlist')
-          .select('products!inner(*)') //Inner Join Langsung Ke ForeignKey Table
+          .select(
+              'products!inner(*, profiles:seller_id(*))') //Inner Join Langsung Ke ForeignKey Table
           .eq('users_id', user?.id);
       final allWishlist = result
           .map<ProductModel>((e) => ProductModel.fromJson(e['products']))

@@ -160,6 +160,7 @@ class _CheckoutState extends State<Checkout> {
                             ),
                             onPressed: () async {
                               await cartProvider.makeOrderAndPay(
+                                context: context,
                                 snapshotData: widget.snapshotData!,
                                 subtotal: widget.subtotal!,
                               );

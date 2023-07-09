@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:unimarket/models/cart/cart_items/cart_items_model.dart';
+import 'package:unimarket/screens/cart/xendit_webview.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../utilities/constants.dart';
@@ -106,7 +107,8 @@ class CartProvider extends ChangeNotifier {
   }
 
   makeOrderAndPay(
-      {required List<CartItemsModel> snapshotData,
+      {required BuildContext context,
+      required List<CartItemsModel> snapshotData,
       required int subtotal}) async {
     //Make new transactions to db
     await supabase.from('transactions').insert({
@@ -156,7 +158,7 @@ class CartProvider extends ChangeNotifier {
       endpoint: 'POST https://api.xendit.co/v2/invoices',
       headers: {'for-user-id': ''},
       parameters: {
-        'external_id': 'INV-$transactionId-$formattedDateTime',
+        'external_id': 'INV-${transactionId['id']}-$formattedDateTime',
         'amount': subtotal,
         'payer_email': supabase.auth.currentUser!.email,
         'description': "Invoice #123"
@@ -178,13 +180,19 @@ class CartProvider extends ChangeNotifier {
 
     //LAUNCH TO WEBVIEW
     try {
-      await launchUrlString(
-        paymentUrl,
-        mode: LaunchMode.inAppWebView, //enables WebView
-        webViewConfiguration: const WebViewConfiguration(
-          enableJavaScript: true,
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => XenditWebview(url: paymentUrl),
         ),
       );
+      // await launchUrlString(
+      //   paymentUrl,
+      //   mode: LaunchMode.inAppWebView, //enables WebView
+      //   webViewConfiguration: const WebViewConfiguration(
+      //     enableJavaScript: true,
+      //   ),
+      // );
     } catch (e) {
       rethrow;
     }

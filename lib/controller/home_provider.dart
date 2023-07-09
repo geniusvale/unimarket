@@ -19,7 +19,6 @@ class HomeProvider extends ChangeNotifier {
   //Function Pindah Halaman di PageView
   changePage(int value) {
     currentIndex = value;
-    print('Index sekarang $currentIndex}');
     notifyListeners();
   }
 }

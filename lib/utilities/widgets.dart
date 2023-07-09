@@ -97,3 +97,37 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
+
+class BlueButton extends StatelessWidget {
+  String teks;
+  VoidCallback onPressed;
+  BlueButton({Key? key, required this.teks, required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[900],
+                foregroundColor: Colors.white,
+                textStyle: const TextStyle(color: Colors.white),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+              child: Text(teks),
+              onPressed: onPressed,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}

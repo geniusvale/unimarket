@@ -33,6 +33,12 @@ const loadingIndicator = Center(child: CircularProgressIndicator());
 
 final numberCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
 
+String capitalizeOnlyFirstLetter(String text) {
+    if(text.trim().isEmpty) return "";
+
+    return "${text[0].toUpperCase()}${text.substring(1)}";
+}
+
 final handleBar = Container(
   width: 50,
   height: 5,
