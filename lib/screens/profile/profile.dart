@@ -141,6 +141,9 @@ class _ProfileState extends State<Profile> {
                                 Text(profileProvider.loggedUserData.email
                                     .toString()),
                                 const Text('STATUS'),
+                                Text(
+                                  'Saldo : ${numberCurrency.format(profileProvider.loggedUserData.saldo ?? 0)}',
+                                ),
                               ],
                             ),
                           ),
@@ -228,12 +231,8 @@ class _ProfileState extends State<Profile> {
                                               print(nimC.text);
                                             } catch (e) {
                                               Navigator.pop(context);
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(e.toString()),
-                                                ),
-                                              );
+                                              snackbar(context, e.toString(),
+                                                  Colors.black);
                                             }
                                           },
                                           child: const Text('Kirim Request'),
@@ -292,6 +291,35 @@ class _ProfileState extends State<Profile> {
                   height: 20,
                 ),
                 title: const Text('Kelola Toko'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () {
+                  if (authProvider.unAuthorized == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Login(),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Store(),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+            Visibility(
+              visible: profileProvider.loggedUserData.isSeller == true,
+              child: ListTile(
+                leading: Image.asset(
+                  'assets/icons/money.png',
+                  width: 25,
+                  height: 25,
+                ),
+                title: const Text('Pencairan Dana'),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () {
                   if (authProvider.unAuthorized == true) {

@@ -27,6 +27,7 @@ mixin _$ProfileModel {
   bool? get isSeller => throw _privateConstructorUsedError;
   bool? get isAdmin => throw _privateConstructorUsedError;
   String? get nim => throw _privateConstructorUsedError;
+  int? get saldo => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -47,7 +48,8 @@ abstract class $ProfileModelCopyWith<$Res> {
       String? avatar_url,
       bool? isSeller,
       bool? isAdmin,
-      String? nim});
+      String? nim,
+      int? saldo});
 }
 
 /// @nodoc
@@ -70,6 +72,7 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
     Object? isSeller = freezed,
     Object? isAdmin = freezed,
     Object? nim = freezed,
+    Object? saldo = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -100,6 +103,10 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
           ? _value.nim
           : nim // ignore: cast_nullable_to_non_nullable
               as String?,
+      saldo: freezed == saldo
+          ? _value.saldo
+          : saldo // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -119,7 +126,8 @@ abstract class _$$_ProfileModelCopyWith<$Res>
       String? avatar_url,
       bool? isSeller,
       bool? isAdmin,
-      String? nim});
+      String? nim,
+      int? saldo});
 }
 
 /// @nodoc
@@ -140,6 +148,7 @@ class __$$_ProfileModelCopyWithImpl<$Res>
     Object? isSeller = freezed,
     Object? isAdmin = freezed,
     Object? nim = freezed,
+    Object? saldo = freezed,
   }) {
     return _then(_$_ProfileModel(
       id: null == id
@@ -170,6 +179,10 @@ class __$$_ProfileModelCopyWithImpl<$Res>
           ? _value.nim
           : nim // ignore: cast_nullable_to_non_nullable
               as String?,
+      saldo: freezed == saldo
+          ? _value.saldo
+          : saldo // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -184,7 +197,8 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       this.avatar_url,
       this.isSeller,
       this.isAdmin,
-      this.nim});
+      this.nim,
+      this.saldo});
 
   factory _$_ProfileModel.fromJson(Map<String, dynamic> json) =>
       _$$_ProfileModelFromJson(json);
@@ -203,10 +217,12 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
   final bool? isAdmin;
   @override
   final String? nim;
+  @override
+  final int? saldo;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProfileModel(id: $id, username: $username, email: $email, avatar_url: $avatar_url, isSeller: $isSeller, isAdmin: $isAdmin, nim: $nim)';
+    return 'ProfileModel(id: $id, username: $username, email: $email, avatar_url: $avatar_url, isSeller: $isSeller, isAdmin: $isAdmin, nim: $nim, saldo: $saldo)';
   }
 
   @override
@@ -220,7 +236,8 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       ..add(DiagnosticsProperty('avatar_url', avatar_url))
       ..add(DiagnosticsProperty('isSeller', isSeller))
       ..add(DiagnosticsProperty('isAdmin', isAdmin))
-      ..add(DiagnosticsProperty('nim', nim));
+      ..add(DiagnosticsProperty('nim', nim))
+      ..add(DiagnosticsProperty('saldo', saldo));
   }
 
   @override
@@ -237,13 +254,14 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
             (identical(other.isSeller, isSeller) ||
                 other.isSeller == isSeller) &&
             (identical(other.isAdmin, isAdmin) || other.isAdmin == isAdmin) &&
-            (identical(other.nim, nim) || other.nim == nim));
+            (identical(other.nim, nim) || other.nim == nim) &&
+            (identical(other.saldo, saldo) || other.saldo == saldo));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, username, email, avatar_url, isSeller, isAdmin, nim);
+  int get hashCode => Object.hash(runtimeType, id, username, email, avatar_url,
+      isSeller, isAdmin, nim, saldo);
 
   @JsonKey(ignore: true)
   @override
@@ -267,7 +285,8 @@ abstract class _ProfileModel implements ProfileModel {
       final String? avatar_url,
       final bool? isSeller,
       final bool? isAdmin,
-      final String? nim}) = _$_ProfileModel;
+      final String? nim,
+      final int? saldo}) = _$_ProfileModel;
 
   factory _ProfileModel.fromJson(Map<String, dynamic> json) =
       _$_ProfileModel.fromJson;
@@ -286,6 +305,8 @@ abstract class _ProfileModel implements ProfileModel {
   bool? get isAdmin;
   @override
   String? get nim;
+  @override
+  int? get saldo;
   @override
   @JsonKey(ignore: true)
   _$$_ProfileModelCopyWith<_$_ProfileModel> get copyWith =>

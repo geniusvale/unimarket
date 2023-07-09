@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/models/transaction/transaction_items_model.dart';
 import 'package:unimarket/utilities/constants.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../controller/transaction_provider.dart';
 import '../../models/transaction/transaction_model.dart';
@@ -122,18 +121,59 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: ElevatedButton(
-                                      onPressed:
-                                          widget.transactionData.status ==
-                                                  'UNPAID'
-                                              ? null
-                                              : widget.transactionData.status ==
-                                                      'PENDING'
-                                                  ? null
-                                                  : snapshot.data![index]
-                                                              .isConfirmed ==
-                                                          true
-                                                      ? null
-                                                      : () {},
+                                      onPressed: transactionProvider
+                                          .buttonConfirmedState(
+                                        isConfirmed:
+                                            snapshot.data![index].isConfirmed!,
+                                        status: widget.transactionData.status!,
+                                        onPressed: () async {
+                                          await transactionProvider
+                                              .confirmTransaction(
+                                            transactionItemId:
+                                                snapshot.data![index].id,
+                                            productPrice: snapshot
+                                                .data![index].products!.price,
+                                            sellerId: snapshot.data![index]
+                                                .products!.seller_id!,
+                                          );
+                                          setState(() {});
+                                        },
+                                      ),
+                                      // snapshot
+                                      //             .data![index].isConfirmed ==
+                                      //         true
+                                      //     ? null
+                                      //     : widget.transactionData.status ==
+                                      //             'PENDING'
+                                      //         ? null
+                                      //         : widget.transactionData.status ==
+                                      //                 'UNPAID'
+                                      //             ? null
+                                      //             : widget.transactionData
+                                      //                         .status ==
+                                      //                     'EXPIRED'
+                                      //                 ? null
+                                      //                 : () async {
+                                      //                     await transactionProvider
+                                      //                         .confirmTransaction(
+                                      //                       transactionItemId:
+                                      //                           snapshot
+                                      //                               .data![
+                                      //                                   index]
+                                      //                               .id,
+                                      //                       productPrice:
+                                      //                           snapshot
+                                      //                               .data![
+                                      //                                   index]
+                                      //                               .products!
+                                      //                               .price,
+                                      //                       sellerId: snapshot
+                                      //                           .data![index]
+                                      //                           .products!
+                                      //                           .seller_id!,
+                                      //                     );
+                                      //                     setState(() {});
+                                      //                   },
                                       child: snapshot.data![index].products!
                                                   .category! ==
                                               'Produk Digital'
@@ -238,5 +278,3 @@ class _TransactionDetailState extends State<TransactionDetail> {
     );
   }
 }
-
-

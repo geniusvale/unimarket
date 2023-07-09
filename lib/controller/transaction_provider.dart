@@ -18,7 +18,7 @@ class TransactionProvider extends ChangeNotifier {
       final res = await xendit.getInvoice(
         invoice_id: transactionData.invoicesId!,
       );
-      print(res);
+      // print(res);
       await supabase.from('transactions').update({
         'status': res['status'],
       }).match({
@@ -35,7 +35,7 @@ class TransactionProvider extends ChangeNotifier {
       final result = await supabase
           .from('transactions_item')
           .select<List<Map<String, dynamic>>>(
-              'id, products:products_id(*, profiles:seller_id(*)) ')
+              '*, products:products_id(*, profiles:seller_id(*)) ')
           .eq('transactions_id', transactionId);
       final itemDetail = result
           .map(
@@ -47,6 +47,62 @@ class TransactionProvider extends ChangeNotifier {
       return itemDetail;
     } on PostgrestException catch (_) {
       rethrow;
+    }
+  }
+
+  confirmTransaction(
+      {required int transactionItemId,
+      productPrice,
+      required String sellerId}) async {
+    //Jika Produk Digital, Ada Proses Download!
+    //Proses unduh disini ->
+    //.........................................
+    //Selain itu Langsung Ubah Status Saja!
+    //Ubah Status Menjadi isConfirmed
+    await supabase.from('transactions_item').update({
+      'isConfirmed': true,
+    }).match({
+      'id': transactionItemId,
+    });
+    //Masukkan Saldo Ke Penjual
+    await supabase.from('profiles').update({
+      'saldo': productPrice,
+    }).eq('id', sellerId);
+    //Setelah isConfirmed Tombol Disabled!
+    notifyListeners();
+  }
+
+  buttonConfirmedState(
+      {bool? isConfirmed, String? status, Function()? onPressed}) {
+    //Kalau tidak mau ada return, gunakan break; pada switch case
+    switch (status) {
+      case 'UNPAID':
+        null;
+        break;
+      case 'PENDING':
+        null;
+        break;
+      case 'EXPIRED':
+        null;
+        break;
+      case 'PAID':
+        {
+          if (isConfirmed == true) {
+            return null;
+          } else {
+            return onPressed;
+          }
+        }
+      case 'SETTLED':
+        {
+          if (isConfirmed == true) {
+            return null;
+          } else {
+            return onPressed;
+          }
+        }
+      default:
+        return null;
     }
   }
 }

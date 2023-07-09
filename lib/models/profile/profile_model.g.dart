@@ -15,6 +15,7 @@ _$_ProfileModel _$$_ProfileModelFromJson(Map<String, dynamic> json) =>
       isSeller: json['isSeller'] as bool?,
       isAdmin: json['isAdmin'] as bool?,
       nim: json['nim'] as String?,
+      saldo: json['saldo'] as int?,
     );
 
 Map<String, dynamic> _$$_ProfileModelToJson(_$_ProfileModel instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$$_ProfileModelToJson(_$_ProfileModel instance) =>
       'isSeller': instance.isSeller,
       'isAdmin': instance.isAdmin,
       'nim': instance.nim,
+      'saldo': instance.saldo,
     };

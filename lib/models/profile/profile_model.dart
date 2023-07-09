@@ -18,6 +18,7 @@ class ProfileModel with _$ProfileModel {
     bool? isSeller,
     bool? isAdmin,
     String? nim,
+    int? saldo,
   }) = _ProfileModel;
 
   factory ProfileModel.fromJson(Map<String, Object?> json) =>
