@@ -22,33 +22,21 @@ class StoreProvider extends ChangeNotifier {
     return data;
   }
 
-  Future<List<Map<String, dynamic>>> getMyOrderJson() async {
-    final result = await supabase
-        .from('transactions_item')
-        .select<List<Map<String, dynamic>>>(
-            '*, products!inner(*), profiles:users_id(*)')
-        .eq('products.seller_id', supabase.auth.currentUser!.id);
-    // final data = result
-    //     .map<TransactionItemsModel>((e) => TransactionItemsModel.fromJson(e))
-    //     .toList();
-    print(result);
-    return result;
-  }
-
-  withdraw(
-      {required BuildContext context,
-      required String username,
-      required int amount}) async {
+  withdraw({
+    required BuildContext context,
+    required String username,
+    required int amount,
+  }) async {
     final dateTime = DateTime.now();
     final String formattedDateTime = DateFormat.yMd().format(dateTime);
     int randomId = Random().nextInt(100);
-
+    //Buat req api payout ke xendit
     final payout = await xendit.createPayOutLink(
         external_id: 'WD-$randomId/$username/$formattedDateTime',
         amount: amount,
         email: supabase.auth.currentUser!.email!);
     print(payout);
-
+    //update data dari response xendit ke tabel
     await supabase.from('withdraw').insert({
       'users_id': supabase.auth.currentUser!.id,
       'payout_id': payout['id'],
@@ -58,11 +46,12 @@ class StoreProvider extends ChangeNotifier {
       'status': payout['status'],
       'expiration_timestamp': payout['expiration_timestamp'],
     });
-
+    //setelah membuat penarikan, buat data saldo menjadi 0 di DB
     await supabase.from('profiles').update({
       'saldo': 0,
     }).eq('id', supabase.auth.currentUser!.id);
-
+    //buka link payout ke webview
+    //Harus ada kontrol OnWillPop untuk refresh getPayoutLinkById lalu update status lagi ke table
     await Navigator.push(
       context,
       MaterialPageRoute(
