@@ -10,6 +10,7 @@ import 'package:unimarket/screens/auth/register.dart';
 import 'package:unimarket/screens/confirm_request.dart';
 import 'package:unimarket/screens/profile/edit_profile.dart';
 import 'package:unimarket/screens/store/store.dart';
+import 'package:unimarket/screens/store/withdraw.dart';
 import 'package:unimarket/utilities/constants.dart';
 
 import '../../controller/auth_provider.dart';
@@ -333,7 +334,7 @@ class _ProfileState extends State<Profile> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const Store(),
+                        builder: (context) => const Withdraw(),
                       ),
                     );
                   }
