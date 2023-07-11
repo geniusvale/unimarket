@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/transaction/transaction_items_model.dart';
+import '../models/withdraw/withdraw_model.dart';
 import '../screens/cart/xendit_webview.dart';
 import '../utilities/constants.dart';
 
@@ -61,17 +62,22 @@ class StoreProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Map<String, dynamic>>> getWithdrawHistory() async {
-    // final newInfo = await xendit.getPayOutLink(id: payoutId);
-    // await supabase.from('withdraw').update({
-    //   'status': newInfo['status'],
-    // });
-
+  Future<List<WithdrawModel>> getWithdrawHistory() async {
     final res = await supabase
         .from('withdraw')
         .select<List<Map<String, dynamic>>>('*')
         .eq('users_id', supabase.auth.currentUser!.id);
     // print(res);
-    return res;
+    final data = res.map((e) => WithdrawModel.fromJson(e)).toList();
+
+    for (var withdraw in data) {
+      final newInfo = await xendit.getPayOutLink(id: withdraw.payout_id!);
+      // print(newInfo);
+      await supabase.from('withdraw').update({
+        'status': newInfo['status'],
+      }).eq('id', withdraw.id);
+    }
+    notifyListeners();
+    return data;
   }
 }
