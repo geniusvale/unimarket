@@ -14,6 +14,8 @@ class ProfileModel with _$ProfileModel {
     required String id,
     String? username,
     String? email,
+    String? phone,
+    String? address,
     String? avatar_url,
     bool? isSeller,
     bool? isAdmin,

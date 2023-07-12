@@ -12,6 +12,7 @@ import 'package:unimarket/screens/profile/edit_profile.dart';
 import 'package:unimarket/screens/store/store.dart';
 import 'package:unimarket/screens/store/withdraw.dart';
 import 'package:unimarket/utilities/constants.dart';
+import 'package:unimarket/utilities/widgets.dart';
 
 import '../../controller/auth_provider.dart';
 
@@ -27,6 +28,8 @@ class _ProfileState extends State<Profile> {
   bool isNoPic = true;
   bool hideWidget = true;
   final nimC = TextEditingController();
+  final phoneC = TextEditingController();
+  final addressC = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   //CEK NANTI, BELUM DIIMPLEMENT!
@@ -203,50 +206,117 @@ class _ProfileState extends State<Profile> {
                   } else {
                     showModalBottomSheet(
                       context: context,
-                      builder: ((ctx) {
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  controller: nimC,
-                                  decoration: formDecor(hint: 'Masukkan NIM'),
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            try {
-                                              await sellerRequestProvider
-                                                  .submitRequest(
-                                                context: ctx,
-                                                // nim: sellerRequestProvider
-                                                //     .nimC.text,
-                                                nim: nimC.text,
-                                              );
-                                              print(nimC.text);
-                                            } catch (e) {
-                                              Navigator.pop(context);
-                                              snackbar(context, e.toString(),
-                                                  Colors.black);
-                                            }
-                                          },
-                                          child: const Text('Kirim Request'),
-                                        ),
+                      builder: (ctx) {
+                        return Form(
+                          key: _formKey,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                // color: Colors.grey[300],
+                                margin:
+                                    const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                                child: Column(
+                                  children: [
+                                    handleBar,
+                                    formSpacer,
+                                    TextFormField(
+                                      controller: nimC,
+                                      decoration: formDecor(
+                                        hint: 'Masukkan NIM',
+                                        label: 'NIM',
                                       ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                                      validator: (value) {
+                                        if (value!.isEmpty ||
+                                            value.length < 10) {
+                                          return 'NIM tidak sesuai!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    formSpacer,
+                                    TextFormField(
+                                      controller: phoneC,
+                                      decoration: formDecor(
+                                          hint: 'Masukkan Nomor HP',
+                                          label: 'Nomor HP'),
+                                      keyboardType: TextInputType.phone,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Nomor HP tidak boleh kosong!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    formSpacer,
+                                    TextFormField(
+                                      controller: addressC,
+                                      decoration: formDecor(
+                                          hint: 'Masukkan Alamat',
+                                          label: 'Alamat'),
+                                      keyboardType: TextInputType.streetAddress,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return 'Alamat tidak boleh kosong!';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    formSpacer,
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                child: BlueButton(
+                                  teks: 'Kirim Request',
+                                  onPressed: () async {
+                                    try {
+                                      if (_formKey.currentState!.validate()) {
+                                        final check =
+                                            await sellerRequestProvider
+                                                .checkIfHasRequested(
+                                          nimC.text,
+                                          phoneC.text,
+                                          addressC.text,
+                                        );
+                                        if (check == true) {
+                                          Navigator.pop(context);
+                                          snackbar(
+                                            context,
+                                            'Data Sudah Ada!',
+                                            Colors.red,
+                                          );
+                                        } else {
+                                          await sellerRequestProvider
+                                              .submitRequest(
+                                            nim: nimC.text,
+                                            phone: phoneC.text,
+                                            address: addressC.text,
+                                          );
+                                          Navigator.pop(context);
+                                          snackbar(
+                                            context,
+                                            'Berhasil Mengirim Request',
+                                            Colors.green,
+                                          );
+                                        }
+                                      }
+                                    } catch (e) {
+                                      Navigator.pop(context);
+                                      snackbar(
+                                        context,
+                                        e.toString(),
+                                        Colors.black,
+                                      );
+                                    }
+                                  },
+                                ),
+                              )
+                            ],
                           ),
                         );
-                      }),
+                      },
                     );
                   }
                 },
@@ -313,7 +383,7 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             Visibility(
-              visible: profileProvider.loggedUserData.isSeller == true,
+              visible: true,
               child: ListTile(
                 leading: Image.asset(
                   'assets/icons/money.png',

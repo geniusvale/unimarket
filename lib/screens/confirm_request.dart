@@ -66,8 +66,11 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                         onPressed: () async {
                           try {
                             await sellerRequestProvider.acceptSellerRequest(
-                                snapshot.data![index].nim!,
-                                snapshot.data![index].profiles!.id);
+                              nim: snapshot.data![index].nim!,
+                              userId: snapshot.data![index].profiles!.id,
+                              phone: snapshot.data![index].profiles!.phone,
+                              address: snapshot.data![index].profiles!.address,
+                            );
                             snackbar(
                                 context, 'Konfirmasi Berhasil!', Colors.green);
                             setState(() {});

@@ -6,42 +6,36 @@ import '../utilities/constants.dart';
 class SellerRequestProvider extends ChangeNotifier {
   List<SellerRequestModel>? allRequest;
 
-  submitRequest({String? nim, required BuildContext context}) async {
-    // final hasSubmit = await checkIfHasRequested();
-    // if (hasSubmit == true) {
-    //   Navigator.pop(context);
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('Anda Sudah Mengirim Request!'),
-    //     ),
-    //   );
-    // } else {
+  submitRequest({String? nim, phone, address}) async {
     //CEK TELAH JADI SELLER & DUPLIKAT DATA REQUEST BELUM BENER
     await supabase.from('seller_request').insert(
       {
         'users_id': supabase.auth.currentUser!.id,
         'nim': nim,
+        'phone': phone,
+        'address': address,
       },
-    );
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Anda Sudah Mengirim Request!'),
-      ),
     );
     notifyListeners();
     // }
   }
 
-  Future<bool> checkIfHasRequested() async {
+  Future<bool> checkIfHasRequested(
+      String submittedNIM, submittedPhone, submittedAddress) async {
     final result = await supabase
         .from('seller_request')
-        .select()
-        .match({'users_id': supabase.auth.currentUser!.id});
-    if (result != null) {
-      return true;
-    } else {
+        .select<List<Map<String, dynamic>>>('*')
+        .match({
+      'users_id': supabase.auth.currentUser!.id,
+      // 'nim': submittedNIM,
+      // 'phone': submittedPhone,
+      // 'address': submittedAddress,
+    });
+    // print(result);
+    if (result.isEmpty) {
       return false;
+    } else {
+      return true;
     }
   }
 
@@ -58,11 +52,13 @@ class SellerRequestProvider extends ChangeNotifier {
     //WORKING GOOD
   }
 
-  acceptSellerRequest(String nim, userId) async {
+  acceptSellerRequest({required String nim, userId, phone, address}) async {
     try {
       await supabase.from('profiles').update({
         'nim': nim,
         'isSeller': true,
+        'phone': phone,
+        'address': address,
       }).match({
         'id': userId,
       });

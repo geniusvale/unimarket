@@ -18,18 +18,16 @@ class ProfileProvider extends ChangeNotifier {
   //Mengambil dan Simpan Info User Yang Telah Login
   getProfileDataFromAuth(BuildContext context) async {
     try {
-      final User? user = supabase.auth.currentUser;
-      final uData = await supabase
+      final res = await supabase
           .from('profiles')
           .select('*')
           .eq(
             'id',
-            user!.id,
+            supabase.auth.currentUser!.id,
           )
           .single();
-      _loggedUserData = ProfileModel.fromJson(uData);
-      print(uData);
-      print(loggedUserData.username);
+      _loggedUserData = ProfileModel.fromJson(res);
+      print(res);
       notifyListeners();
     } catch (e) {
       rethrow;

@@ -34,9 +34,9 @@ const loadingIndicator = Center(child: CircularProgressIndicator());
 final numberCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
 
 String capitalizeOnlyFirstLetter(String text) {
-    if(text.trim().isEmpty) return "";
+  if (text.trim().isEmpty) return "";
 
-    return "${text[0].toUpperCase()}${text.substring(1)}";
+  return "${text[0].toUpperCase()}${text.substring(1)}";
 }
 
 final handleBar = Container(
@@ -48,10 +48,12 @@ final handleBar = Container(
   ),
 );
 
-formDecor({required String hint}) {
+formDecor({required String hint, label, labelText}) {
   return InputDecoration(
     border: const OutlineInputBorder(borderRadius: borderRadiusStd),
     hintText: hint,
+    label: Text('$label'),
+    // labelText: labelText,
   );
 }
 

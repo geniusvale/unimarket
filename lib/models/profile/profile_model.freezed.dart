@@ -23,6 +23,8 @@ mixin _$ProfileModel {
   String get id => throw _privateConstructorUsedError;
   String? get username => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get address => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
   bool? get isSeller => throw _privateConstructorUsedError;
   bool? get isAdmin => throw _privateConstructorUsedError;
@@ -45,6 +47,8 @@ abstract class $ProfileModelCopyWith<$Res> {
       {String id,
       String? username,
       String? email,
+      String? phone,
+      String? address,
       String? avatar_url,
       bool? isSeller,
       bool? isAdmin,
@@ -68,6 +72,8 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
     Object? id = null,
     Object? username = freezed,
     Object? email = freezed,
+    Object? phone = freezed,
+    Object? address = freezed,
     Object? avatar_url = freezed,
     Object? isSeller = freezed,
     Object? isAdmin = freezed,
@@ -86,6 +92,14 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
               as String?,
       avatar_url: freezed == avatar_url
           ? _value.avatar_url
@@ -123,6 +137,8 @@ abstract class _$$_ProfileModelCopyWith<$Res>
       {String id,
       String? username,
       String? email,
+      String? phone,
+      String? address,
       String? avatar_url,
       bool? isSeller,
       bool? isAdmin,
@@ -144,6 +160,8 @@ class __$$_ProfileModelCopyWithImpl<$Res>
     Object? id = null,
     Object? username = freezed,
     Object? email = freezed,
+    Object? phone = freezed,
+    Object? address = freezed,
     Object? avatar_url = freezed,
     Object? isSeller = freezed,
     Object? isAdmin = freezed,
@@ -162,6 +180,14 @@ class __$$_ProfileModelCopyWithImpl<$Res>
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
               as String?,
       avatar_url: freezed == avatar_url
           ? _value.avatar_url
@@ -194,6 +220,8 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       {required this.id,
       this.username,
       this.email,
+      this.phone,
+      this.address,
       this.avatar_url,
       this.isSeller,
       this.isAdmin,
@@ -210,6 +238,10 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
   @override
   final String? email;
   @override
+  final String? phone;
+  @override
+  final String? address;
+  @override
   final String? avatar_url;
   @override
   final bool? isSeller;
@@ -222,7 +254,7 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProfileModel(id: $id, username: $username, email: $email, avatar_url: $avatar_url, isSeller: $isSeller, isAdmin: $isAdmin, nim: $nim, saldo: $saldo)';
+    return 'ProfileModel(id: $id, username: $username, email: $email, phone: $phone, address: $address, avatar_url: $avatar_url, isSeller: $isSeller, isAdmin: $isAdmin, nim: $nim, saldo: $saldo)';
   }
 
   @override
@@ -233,6 +265,8 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('username', username))
       ..add(DiagnosticsProperty('email', email))
+      ..add(DiagnosticsProperty('phone', phone))
+      ..add(DiagnosticsProperty('address', address))
       ..add(DiagnosticsProperty('avatar_url', avatar_url))
       ..add(DiagnosticsProperty('isSeller', isSeller))
       ..add(DiagnosticsProperty('isAdmin', isAdmin))
@@ -249,6 +283,8 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(other.avatar_url, avatar_url) ||
                 other.avatar_url == avatar_url) &&
             (identical(other.isSeller, isSeller) ||
@@ -260,8 +296,8 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, username, email, avatar_url,
-      isSeller, isAdmin, nim, saldo);
+  int get hashCode => Object.hash(runtimeType, id, username, email, phone,
+      address, avatar_url, isSeller, isAdmin, nim, saldo);
 
   @JsonKey(ignore: true)
   @override
@@ -282,6 +318,8 @@ abstract class _ProfileModel implements ProfileModel {
       {required final String id,
       final String? username,
       final String? email,
+      final String? phone,
+      final String? address,
       final String? avatar_url,
       final bool? isSeller,
       final bool? isAdmin,
@@ -297,6 +335,10 @@ abstract class _ProfileModel implements ProfileModel {
   String? get username;
   @override
   String? get email;
+  @override
+  String? get phone;
+  @override
+  String? get address;
   @override
   String? get avatar_url;
   @override
