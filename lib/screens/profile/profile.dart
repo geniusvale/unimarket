@@ -205,115 +205,129 @@ class _ProfileState extends State<Profile> {
                     );
                   } else {
                     showModalBottomSheet(
+                      isScrollControlled: true,
                       context: context,
                       builder: (ctx) {
-                        return Form(
-                          key: _formKey,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                // color: Colors.grey[300],
-                                margin:
-                                    const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                                child: Column(
-                                  children: [
-                                    handleBar,
-                                    formSpacer,
-                                    TextFormField(
-                                      controller: nimC,
-                                      decoration: formDecor(
-                                        hint: 'Masukkan NIM',
-                                        label: 'NIM',
-                                      ),
-                                      validator: (value) {
-                                        if (value!.isEmpty ||
-                                            value.length < 10) {
-                                          return 'NIM tidak sesuai!';
+                        return SingleChildScrollView(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                            ),
+                            child: Form(
+                              key: _formKey,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    // color: Colors.grey[300],
+                                    margin: const EdgeInsets.fromLTRB(
+                                        16, 16, 16, 16),
+                                    child: Column(
+                                      children: [
+                                        handleBar,
+                                        formSpacer,
+                                        TextFormField(
+                                          controller: nimC,
+                                          decoration: formDecor(
+                                            hint: 'Masukkan NIM',
+                                            label: 'NIM',
+                                          ),
+                                          validator: (value) {
+                                            if (value!.isEmpty ||
+                                                value.length < 10) {
+                                              return 'NIM tidak sesuai!';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        formSpacer,
+                                        TextFormField(
+                                          controller: phoneC,
+                                          decoration: formDecor(
+                                              hint: 'Masukkan Nomor HP',
+                                              label: 'Nomor HP'),
+                                          keyboardType: TextInputType.phone,
+                                          validator: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Nomor HP tidak boleh kosong!';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        formSpacer,
+                                        TextFormField(
+                                          controller: addressC,
+                                          decoration: formDecor(
+                                              hint: 'Masukkan Alamat',
+                                              label: 'Alamat'),
+                                          keyboardType:
+                                              TextInputType.streetAddress,
+                                          validator: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Alamat tidak boleh kosong!';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                        formSpacer,
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    child: BlueButton(
+                                      padding: 8,
+                                      teks: 'Kirim Request',
+                                      onPressed: () async {
+                                        try {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            final check =
+                                                await sellerRequestProvider
+                                                    .checkIfHasRequested(
+                                              nimC.text,
+                                              phoneC.text,
+                                              addressC.text,
+                                            );
+                                            if (check == true) {
+                                              Navigator.pop(context);
+                                              snackbar(
+                                                context,
+                                                'Data Sudah Ada!',
+                                                Colors.red,
+                                              );
+                                            } else {
+                                              await sellerRequestProvider
+                                                  .submitRequest(
+                                                nim: nimC.text,
+                                                phone: phoneC.text,
+                                                address: addressC.text,
+                                              );
+                                              Navigator.pop(context);
+                                              snackbar(
+                                                context,
+                                                'Berhasil Mengirim Request',
+                                                Colors.green,
+                                              );
+                                            }
+                                          }
+                                        } catch (e) {
+                                          Navigator.pop(context);
+                                          snackbar(
+                                            context,
+                                            e.toString(),
+                                            Colors.black,
+                                          );
                                         }
-                                        return null;
                                       },
                                     ),
-                                    formSpacer,
-                                    TextFormField(
-                                      controller: phoneC,
-                                      decoration: formDecor(
-                                          hint: 'Masukkan Nomor HP',
-                                          label: 'Nomor HP'),
-                                      keyboardType: TextInputType.phone,
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Nomor HP tidak boleh kosong!';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    formSpacer,
-                                    TextFormField(
-                                      controller: addressC,
-                                      decoration: formDecor(
-                                          hint: 'Masukkan Alamat',
-                                          label: 'Alamat'),
-                                      keyboardType: TextInputType.streetAddress,
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Alamat tidak boleh kosong!';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    formSpacer,
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
-                              Container(
-                                child: BlueButton(
-                                  teks: 'Kirim Request',
-                                  onPressed: () async {
-                                    try {
-                                      if (_formKey.currentState!.validate()) {
-                                        final check =
-                                            await sellerRequestProvider
-                                                .checkIfHasRequested(
-                                          nimC.text,
-                                          phoneC.text,
-                                          addressC.text,
-                                        );
-                                        if (check == true) {
-                                          Navigator.pop(context);
-                                          snackbar(
-                                            context,
-                                            'Data Sudah Ada!',
-                                            Colors.red,
-                                          );
-                                        } else {
-                                          await sellerRequestProvider
-                                              .submitRequest(
-                                            nim: nimC.text,
-                                            phone: phoneC.text,
-                                            address: addressC.text,
-                                          );
-                                          Navigator.pop(context);
-                                          snackbar(
-                                            context,
-                                            'Berhasil Mengirim Request',
-                                            Colors.green,
-                                          );
-                                        }
-                                      }
-                                    } catch (e) {
-                                      Navigator.pop(context);
-                                      snackbar(
-                                        context,
-                                        e.toString(),
-                                        Colors.black,
-                                      );
-                                    }
-                                  },
-                                ),
-                              )
-                            ],
+                            ),
                           ),
                         );
                       },

@@ -119,14 +119,20 @@ class _DetailProductState extends State<DetailProduct> {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      CircleAvatar(
-                        minRadius: 16,
-                        backgroundImage: NetworkImage(
-                          widget.snapshot.data![widget.index].profiles!
-                              .avatar_url!,
+                      ClipOval(
+                        child: SizedBox(
+                          height: 16,
+                          width: 16,
+                          child: widget.snapshot.data![widget.index].profiles!
+                                      .avatar_url ==
+                                  null
+                              ? SvgPicture.asset('assets/images/blankpp.svg')
+                              : Image.network(widget.snapshot
+                                  .data![widget.index].profiles!.avatar_url!),
+                          // CachedNetworkImage(
+                          //     imageUrl:
+                          //         profileProvider.loggedUserData.avatar_url!),
                         ),
-                        onBackgroundImageError: (exception, stackTrace) =>
-                            Icons.broken_image,
                       ),
                       const SizedBox(width: 5),
                       Text(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -5,23 +7,95 @@ import '../models/product/product_model.dart';
 import '../utilities/constants.dart';
 
 class ProductsProvider extends ChangeNotifier {
-  List<ProductModel>? allProducts; //Masuh Kosong, harus ada operasi add
-  List<ProductModel>? allMyProducts; //Masuh Kosong, harus ada operasi add
-  ProductModel? productData; //Masuh Kosong, harus ada operasi add
+  List<ProductModel>? allProducts; //Masih Kosong, harus ada operasi add
+  List<ProductModel>? allMyProducts; //Masih Kosong, harus ada operasi add
+  ProductModel? productData; //Masih Kosong, harus ada operasi add
 
   //Tambah Produk Ke DB
-  void addProduct({String? name, desc, category, userId, int? price}) async {
-    await supabase.from('products').insert(
-      {
-        'name': name,
-        'price': price,
-        'desc': desc,
-        'category': category,
-        'seller_id': userId
-      },
-    );
+  addProduct(
+      {String? name,
+      desc,
+      category,
+      userId,
+      yourFileName,
+      yourPhotoName,
+      int? price,
+      File? yourFile,
+      File? yourPhoto}) async {
+    if (category == 'Produk Digital') {
+      //BUAT DATA PRODUK KE TABLE
+      await supabase.from('products').insert(
+        {
+          'name': name,
+          'price': price,
+          'desc': desc,
+          'category': category,
+          'seller_id': userId
+        },
+      );
+      //AMBIL ID PRODUK YANG BARU DIBUAT
+      final recentProductId = await supabase
+          .from('products')
+          .select('id, created_at')
+          .eq('seller_id', supabase.auth.currentUser!.id)
+          .order('created_at', ascending: false)
+          .limit(1)
+          .single();
+      print(recentProductId);
+      //UPLOAD FILE
+      await supabase.storage.from('product-files').upload(
+          '${supabase.auth.currentUser!.id}/${recentProductId['id']}/$yourFileName',
+          yourFile!);
+      final fileUrl = supabase.storage
+          .from(
+              'product-files/${supabase.auth.currentUser!.id}/${recentProductId['id']}')
+          .getPublicUrl(yourFileName);
+      //UPLOAD FOTO
+      await supabase.storage.from('product-images').upload(
+          '${supabase.auth.currentUser!.id}/${recentProductId['id']}/$yourPhotoName',
+          yourPhoto!);
+      final photoUrl = supabase.storage
+          .from(
+              'product-images/${supabase.auth.currentUser!.id}/${recentProductId['id']}')
+          .getPublicUrl(yourPhotoName);
+      //UPDATE KE TABLE PRODUCT
+      await supabase.from('products').update({
+        'file_url': fileUrl,
+        'img_url': photoUrl,
+      }).eq('id', recentProductId['id']);
+    } else {
+      //SELAIN PRODUK DIGITAL
+      await supabase.from('products').insert(
+        {
+          'name': name,
+          'price': price,
+          'desc': desc,
+          'category': category,
+          'seller_id': userId
+        },
+      );
+      //AMBIL ID PRODUK YANG BARU DIBUAT
+      final recentProductId = await supabase
+          .from('products')
+          .select('id, created_at')
+          .eq('seller_id', supabase.auth.currentUser!.id)
+          .order('created_at', ascending: false)
+          .limit(1)
+          .single();
+      //UPLOAD FOTO
+      await supabase.storage.from('product-images').upload(
+          '${supabase.auth.currentUser!.id}/${recentProductId['id']}/$yourPhotoName',
+          yourPhoto!);
+      final photoUrl = supabase.storage
+          .from(
+              'product-images/${supabase.auth.currentUser!.id}/${recentProductId['id']}')
+          .getPublicUrl(yourPhotoName);
+      //UPDATE KE TABLE PRODUCT
+      await supabase.from('products').update({
+        'img_url': photoUrl,
+      }).eq('id', recentProductId['id']);
+    }
     notifyListeners();
-    //WORKING GOOD
   }
 
   //Menampilkan Seluruh Produk Dari Tabel di DB
@@ -44,7 +118,7 @@ class ProductsProvider extends ChangeNotifier {
     final supabase = Supabase.instance.client;
     final result = await supabase
         .from('products')
-        .select()
+        .select('*, profiles:seller_id(*)')
         .eq('seller_id', supabase.auth.currentUser!.id);
     final semuaProdukSaya = result
         .map<ProductModel>(
@@ -64,7 +138,8 @@ class ProductsProvider extends ChangeNotifier {
     //WORKING GOOD
   }
 
-  showDeleteProduct(BuildContext context, AsyncSnapshot snapshot, int index) {
+  showDeleteProduct(BuildContext context,
+      AsyncSnapshot<List<ProductModel>> snapshot, int index) {
     showDialog(
       context: context,
       builder: (context) {
@@ -74,7 +149,7 @@ class ProductsProvider extends ChangeNotifier {
             ElevatedButton(
               onPressed: () {
                 ProductsProvider().deleteProduct(
-                  snapshot.data?[index]['id'] ?? 0,
+                  snapshot.data?[index].id ?? 0,
                 );
                 Navigator.pop(context);
                 // setState(() {});

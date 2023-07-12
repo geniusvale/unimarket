@@ -52,7 +52,7 @@ formDecor({required String hint, label, labelText}) {
   return InputDecoration(
     border: const OutlineInputBorder(borderRadius: borderRadiusStd),
     hintText: hint,
-    label: Text('$label'),
+    label: label == null ? null : Text('$label'),
     // labelText: labelText,
   );
 }

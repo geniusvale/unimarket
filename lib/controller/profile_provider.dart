@@ -62,25 +62,25 @@ class ProfileProvider extends ChangeNotifier {
 
   uploadFotoProfil() async {
     //Ambil File
-    FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: false,
       // allowedExtensions: ['jpg', 'jpeg', 'png', 'webp', 'tif', 'tiff', 'bmp'],
     );
 
-    if (pickedFile != null) {
+    if (result != null) {
       //Direktori File
-      File filePath = File(pickedFile.files.single.path!);
+      File pickedFile = File(result.files.single.path!);
       //Nama file dan Ekstensinya
-      String fileName = pickedFile.files.first.name;
+      String fileName = result.files.first.name;
       //Link foto yang terupload
       String? fileUrl;
 
       try {
         //Upload FOTO ke supabase storage
-        final String uploadPath = await supabase.storage
+        final upload = await supabase.storage
             .from('profile-pic')
-            .upload('${supabase.auth.currentUser!.id}/$fileName', filePath);
+            .upload('${supabase.auth.currentUser!.id}/$fileName', pickedFile);
 
         //Mengambil LINK foto yang diupload
         final publicUrl = supabase.storage
@@ -107,17 +107,16 @@ class ProfileProvider extends ChangeNotifier {
 
   updateFotoProfil() async {
     //Ambil File
-    FilePickerResult? pickedFile = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      // allowedExtensions: ['jpg', 'jpeg', 'png', 'webp', 'tif', 'tiff', 'bmp'],
       allowMultiple: false,
     );
 
-    if (pickedFile != null) {
+    if (result != null) {
       //Direktori File
-      File filePath = File(pickedFile.files.single.path!);
+      File pickedFile = File(result.files.single.path!);
       //Nama file dan Ekstensinya
-      String fileName = pickedFile.files.first.name;
+      String fileName = result.files.first.name;
       //Link foto yang terupload
       String? fileUrl;
 
@@ -127,10 +126,10 @@ class ProfileProvider extends ChangeNotifier {
         String currentFileName = splitCurrentFileName.last;
 
         //UPDATE FOTO ke supabase storage
-        final String uploadPath =
+        final upload =
             await supabase.storage.from('profile-pic').update(
                   '${supabase.auth.currentUser!.id}/$currentFileName',
-                  filePath,
+                  pickedFile,
                   fileOptions: const FileOptions(upsert: false),
                 );
 
@@ -173,5 +172,15 @@ class ProfileProvider extends ChangeNotifier {
         await supabase.from('profiles').update({'avatar_url': publicUrl}).match(
       {'id': supabase.auth.currentUser!.id},
     );
+  }
+
+  updateProfileData(
+      {required String username, email, phone, address}) async {
+    await supabase.from('profiles').update({
+      'username': username,
+      'email': email,
+      'phone': phone,
+      'address': address,
+    }).eq('id', supabase.auth.currentUser!.id);
   }
 }

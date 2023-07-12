@@ -46,7 +46,7 @@ class SellerRequestProvider extends ChangeNotifier {
         .map<SellerRequestModel>((e) => SellerRequestModel.fromJson(e))
         .toList();
     allRequest = allRequestData;
-    print(allSellerRequestList);
+    // print(allSellerRequestList);
     notifyListeners();
     return allRequestData;
     //WORKING GOOD

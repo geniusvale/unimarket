@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../models/product/product_model.dart';
 import '../screens/product/detail_product.dart';
@@ -76,12 +77,18 @@ class ProductCard extends StatelessWidget {
               padding: formPadding,
               child: Row(
                 children: [
-                  CircleAvatar(
-                    minRadius: 10,
-                    backgroundImage: NetworkImage(
-                        snapshot.data![index].profiles!.avatar_url!),
-                    onBackgroundImageError: (exception, stackTrace) =>
-                        const Icon(Icons.broken_image),
+                  ClipOval(
+                    child: SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: snapshot.data![index].profiles!.avatar_url == null
+                          ? SvgPicture.asset('assets/images/blankpp.svg')
+                          : Image.network(
+                              snapshot.data![index].profiles!.avatar_url!),
+                      // CachedNetworkImage(
+                      //     imageUrl:
+                      //         profileProvider.loggedUserData.avatar_url!),
+                    ),
                   ),
                   const SizedBox(
                     width: 5,
@@ -101,7 +108,12 @@ class ProductCard extends StatelessWidget {
 class BlueButton extends StatelessWidget {
   String teks;
   VoidCallback onPressed;
-  BlueButton({Key? key, required this.teks, required this.onPressed})
+  double padding;
+  BlueButton(
+      {Key? key,
+      required this.teks,
+      required this.onPressed,
+      required this.padding})
       : super(key: key);
 
   @override
@@ -110,7 +122,7 @@ class BlueButton extends StatelessWidget {
       children: [
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(padding),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue[900],

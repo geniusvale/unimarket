@@ -1,5 +1,9 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:unimarket/utilities/widgets.dart';
 
+import '../../controller/profile_provider.dart';
 import '../../utilities/constants.dart';
 
 class EditProfile extends StatefulWidget {
@@ -11,84 +15,100 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController usernameC = TextEditingController();
+  TextEditingController emailC = TextEditingController();
+  TextEditingController nimC = TextEditingController();
+  TextEditingController phoneC = TextEditingController();
+  TextEditingController addressC = TextEditingController();
+
+  @override
+  void initState() {
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
+    usernameC.text = profileProvider.loggedUserData.username!;
+    emailC.text = profileProvider.loggedUserData.email!;
+    nimC.text = profileProvider.loggedUserData.nim ?? '';
+    phoneC.text = profileProvider.loggedUserData.phone ?? '';
+    addressC.text = profileProvider.loggedUserData.address ?? '';
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profil'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Nama'),
-                    TextFormField(
-                      controller: null,
-                      decoration: formDecor(hint: 'Username'),
-                    ),
-                    formSpacer,
-                    const Text('Email'),
-                    TextFormField(
-                      controller: null,
-                      decoration: formDecor(hint: 'Email'),
-                    ),
-                    formSpacer,
-                    
-                    const Text('NIM'), //SHOULD DISABLED
-                    TextFormField(
-                      controller: null,
-                      decoration: formDecor(hint: 'NIM'),
-                    ),
-                    formSpacer,
-                    const Text('Nomor HP'),
-                    TextFormField(
-                      controller: null,
-                      decoration: formDecor(hint: 'Nomor HP'),
-                    ),
-                    formSpacer,
-                    const Text('Alamat'),
-                    TextFormField(
-                      controller: null,
-                      decoration: formDecor(hint: 'Alamat'),
-                    ),
-                    formSpacer,
-                  ],
-                ),
+              const Text('Username'),
+              TextFormField(
+                controller: usernameC,
+                decoration: formDecor(hint: 'Username'),
               ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue[900],
-                              foregroundColor: Colors.white,
-                              textStyle: const TextStyle(color: Colors.white),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8),
-                                ),
-                              ),
-                            ),
-                            child: const Text('Simpan'),
-                            onPressed: () {},
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+              formSpacer,
+              const Text('Email'),
+              TextFormField(
+                controller: emailC,
+                decoration: formDecor(hint: 'Email'),
+                validator: (value) => !EmailValidator.validate(value!)
+                    ? 'Format Email Salah!'
+                    : null,
+              ),
+              formSpacer,
+              const Text('NIM'), //SHOULD DISABLED
+              TextFormField(
+                enabled: false,
+                controller: nimC,
+                style: const TextStyle(color: Colors.grey),
+                decoration: formDecor(hint: 'NIM'),
+              ),
+              formSpacer,
+              const Text('Nomor HP'),
+              TextFormField(
+                controller: phoneC,
+                decoration: formDecor(hint: 'Nomor HP'),
+                validator: (value) {
+                  if (value!.length < 10) {
+                    return 'Format Salah!';
+                  }
+                  return null;
+                },
+              ),
+              formSpacer,
+              const Text('Alamat'),
+              TextFormField(
+                controller: addressC,
+                decoration: formDecor(hint: 'Alamat'),
+                validator: (value) {
+                  return null;
+                },
+              ),
+              formSpacer,
+              BlueButton(
+                padding: 0,
+                teks: 'Simpan',
+                onPressed: () async {
+                  try {
+                    await profileProvider.updateProfileData(
+                      username: usernameC.text,
+                      email: emailC.text,
+                      phone: phoneC.text,
+                      address: addressC.text,
+                    );
+                    Navigator.pop(context);
+                    snackbar(context, 'Berhasil Update Data!', Colors.black);
+                  } catch (e) {
+                    rethrow;
+                  }
+                },
               ),
             ],
           ),
