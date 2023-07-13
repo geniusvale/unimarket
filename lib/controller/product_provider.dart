@@ -132,8 +132,17 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   //Hapus Produk
-  deleteProduct(int productId) async {
+  deleteProduct(
+      {required int productId,
+      required String fileName,
+      required String photoName}) async {
     await supabase.from('products').delete().match({'id': productId});
+    await supabase.storage
+        .from('product-files')
+        .remove(['${supabase.auth.currentUser!.id}/$productId/$fileName']);
+    await supabase.storage
+        .from('product-images')
+        .remove(['${supabase.auth.currentUser!.id}/$productId/$photoName']);
     notifyListeners();
     //WORKING GOOD
   }
@@ -147,12 +156,13 @@ class ProductsProvider extends ChangeNotifier {
           title: const Text('Hapus?'),
           actions: [
             ElevatedButton(
-              onPressed: () {
-                ProductsProvider().deleteProduct(
-                  snapshot.data?[index].id ?? 0,
+              onPressed: () async {
+                await ProductsProvider().deleteProduct(
+                  productId: snapshot.data![index].id ?? 0,
+                  fileName: snapshot.data![index].file_url!.split('/').last,
+                  photoName: snapshot.data![index].img_url!.split('/').last,
                 );
                 Navigator.pop(context);
-                // setState(() {});
               },
               child: const Text('Oke'),
             ),
@@ -168,29 +178,103 @@ class ProductsProvider extends ChangeNotifier {
     );
   }
 
-  //Edit Produk
-  editProduct({
-    String? name,
-    desc,
-    int? price,
+  updateProduct({
+    int? productId,
     String? currentName,
-    currentDesc,
-    currentPrice,
-    currentCategory,
+    String? currentDesc,
+    String? currentCategory,
+    String? currentFileName,
+    String? currentPhotoName,
+    int? currentPrice,
+    File? currentFile,
+    File? currentPhoto,
   }) async {
-    await supabase.from('products').update({
-      'name': name,
-      'price': price,
-      'desc': desc,
-      'category': currentCategory,
-    }).match({
-      'name': currentName,
-      'price': currentPrice,
-      'desc': currentDesc,
-      'category': currentCategory,
-    });
+    if (currentCategory == 'Produk Digital') {
+      //BUAT DATA PRODUK KE TABLE
+      await supabase.from('products').update(
+        {
+          'name': currentName,
+          'price': currentPrice,
+          'desc': currentDesc,
+          'category': currentCategory,
+        },
+      ).eq('id', productId);
+
+      if (currentFile != null && currentPhoto != null) {
+        //UPLOAD FILE
+        await supabase.storage.from('product-files').update(
+            '${supabase.auth.currentUser!.id}/$productId/${currentFileName!.split('/').last}',
+            currentFile);
+        final fileUrl = supabase.storage
+            .from('product-files/${supabase.auth.currentUser!.id}/$productId')
+            .getPublicUrl(currentFileName);
+        //UPLOAD FOTO
+        await supabase.storage.from('product-images').update(
+            '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}',
+            currentPhoto);
+        final photoUrl = supabase.storage
+            .from('product-images/${supabase.auth.currentUser!.id}/$productId')
+            .getPublicUrl(currentPhotoName);
+        //UPDATE KE TABLE PRODUCT
+        await supabase.from('products').update({
+          'file_url': fileUrl,
+          'img_url': photoUrl,
+        }).eq('id', productId);
+      } else if (currentFile != null) {
+        //UPLOAD & UPDATE FILE NYA SAJA
+        await supabase.storage.from('product-files').update(
+            '${supabase.auth.currentUser!.id}/$productId/${currentFileName!.split('/').last}',
+            currentFile);
+        final fileUrl = supabase.storage
+            .from('product-files/${supabase.auth.currentUser!.id}/$productId')
+            .getPublicUrl(currentFileName);
+        //UPDATE KE TABLE PRODUCT
+        await supabase.from('products').update({
+          'file_url': fileUrl,
+        }).eq('id', productId);
+      } else if (currentPhoto != null) {
+        //UPLOAD & UPDATE FOTO NYA SAJA
+        await supabase.storage.from('product-images').update(
+            '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}',
+            currentPhoto);
+        final photoUrl = supabase.storage
+            .from('product-images/${supabase.auth.currentUser!.id}/$productId')
+            .getPublicUrl(currentPhotoName);
+        //UPDATE KE TABLE PRODUCT
+        await supabase.from('products').update({
+          'img_url': photoUrl,
+        }).eq('id', productId);
+      } else {
+        null;
+      }
+    } else {
+      //SELAIN PRODUK DIGITAL
+      await supabase.from('products').update(
+        {
+          'name': currentName,
+          'price': currentPrice,
+          'desc': currentDesc,
+          'category': currentCategory,
+        },
+      ).eq('id', productId);
+
+      if (currentPhoto != null) {
+        //UPLOAD FOTO
+        await supabase.storage.from('product-images').update(
+            '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}',
+            currentPhoto);
+        final photoUrl = supabase.storage
+            .from('product-images/${supabase.auth.currentUser!.id}/$productId')
+            .getPublicUrl(currentPhotoName);
+        //UPDATE KE TABLE PRODUCT
+        await supabase.from('products').update({
+          'img_url': photoUrl,
+        }).eq('id', productId);
+      } else {
+        null;
+      }
+    }
     notifyListeners();
-    //WORKING GOOD
   }
 
   addToWishlist(

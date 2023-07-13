@@ -75,8 +75,8 @@ class _MyProductState extends State<MyProduct> {
                           ),
                         );
                       },
-                      onLongPress: () {
-                        productProvider.showDeleteProduct(
+                      onLongPress: () async {
+                        await productProvider.showDeleteProduct(
                           context,
                           snapshot,
                           index,

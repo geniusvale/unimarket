@@ -1,10 +1,15 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/product_provider.dart';
 import '../../models/product/product_model.dart';
 import '../../utilities/constants.dart';
+import '../../utilities/widgets.dart';
 
 class UpdateProduct extends StatefulWidget {
   UpdateProduct({Key? key, required this.index, required this.snapshot})
@@ -19,9 +24,18 @@ class UpdateProduct extends StatefulWidget {
 
 class _UpdateProductState extends State<UpdateProduct> {
   final _formKey = GlobalKey<FormState>();
-  final nameC = TextEditingController();
-  final priceC = TextEditingController();
-  final descC = TextEditingController();
+  TextEditingController nameC = TextEditingController();
+  TextEditingController priceC = TextEditingController();
+  TextEditingController descC = TextEditingController();
+  File? pickedPhoto;
+  String? pickedPhotoName;
+  File? pickedFile;
+  String? pickedFileName;
+
+  String? currentFileUrl;
+  String? currentPhotoUrl;
+
+  bool? isLoading;
 
   List<String> kategori = [
     'Pilih Kategori Produk',
@@ -32,6 +46,19 @@ class _UpdateProductState extends State<UpdateProduct> {
   String selKategori = 'Pilih Kategori Produk';
 
   @override
+  void initState() {
+    // TODO: implement initState
+    nameC.text = widget.snapshot.data![widget.index].name!;
+    priceC.text = widget.snapshot.data![widget.index].price!.toString();
+    descC.text = widget.snapshot.data![widget.index].desc!;
+    selKategori = widget.snapshot.data![widget.index].category!;
+    currentPhotoUrl = widget.snapshot.data![widget.index].img_url!;
+    currentFileUrl = widget.snapshot.data![widget.index].file_url!;
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final productProvider =
         Provider.of<ProductsProvider>(context, listen: false);
@@ -40,15 +67,15 @@ class _UpdateProductState extends State<UpdateProduct> {
         title: const Text('Update Product'),
       ),
       body: SingleChildScrollView(
-        child: Container(
-          padding: formPadding,
-          child: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-              child: Column(
-                children: [
-                  Row(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        child: Form(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          key: _formKey,
+          child: Column(
+            children: [
+              FormField(
+                builder: (field) {
+                  return Row(
                     children: [
                       //Bisa Dikasih Gesture Detector
                       DottedBorder(
@@ -58,27 +85,95 @@ class _UpdateProductState extends State<UpdateProduct> {
                           height: 120,
                           width: 120,
                           color: Colors.grey,
-                          child: IconButton(
-                            icon: const Icon(Icons.camera_alt_outlined),
-                            onPressed: () {},
-                          ),
+                          child: pickedPhoto != null
+                              ? GestureDetector(
+                                  onTap: () async {
+                                    FilePickerResult? result = await FilePicker
+                                        .platform
+                                        .pickFiles(type: FileType.image);
+                                    if (result != null) {
+                                      pickedPhoto = File(
+                                        result.files.first.path!,
+                                      );
+                                      pickedPhotoName = result.files.first.name
+                                          .replaceAll(' ', '');
+                                      setState(() {});
+                                    } else {
+                                      //Cancel
+                                    }
+                                  },
+                                  child: Image.file(pickedPhoto!,
+                                      fit: BoxFit.fill),
+                                )
+                              : pickedPhoto == null
+                                  ? GestureDetector(
+                                      onTap: () async {
+                                        FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                                type: FileType.image);
+                                        if (result != null) {
+                                          pickedPhoto = File(
+                                            result.files.first.path!,
+                                          );
+                                          pickedPhotoName = result
+                                              .files.first.name
+                                              .replaceAll(' ', '');
+                                          setState(() {});
+                                        } else {
+                                          //Cancel
+                                        }
+                                      },
+                                      child: CachedNetworkImage(
+                                          imageUrl: currentPhotoUrl!,
+                                          fit: BoxFit.fill),
+                                    )
+                                  : IconButton(
+                                      icon:
+                                          const Icon(Icons.camera_alt_outlined),
+                                      onPressed: () async {
+                                        FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                                type: FileType.image);
+                                        if (result != null) {
+                                          pickedPhoto = File(
+                                            result.files.first.path!,
+                                          );
+                                          pickedPhotoName =
+                                              result.files.first.name;
+                                          setState(() {});
+                                        } else {
+                                          //Cancel
+                                        }
+                                      },
+                                    ),
                         ),
                       ),
                       formSpacer,
                       const Text('Upload Foto Produk - Max 5MB'),
                     ],
-                  ),
-                  formSpacer,
-                  TextFormField(
-                    controller: nameC,
-                    decoration: formDecor(
-                      hint: widget.snapshot.data![widget.index].name ?? '',
-                    ),
-                  ),
-                  formSpacer,
-                  DropdownButtonFormField<String>(
+                  );
+                },
+                validator: (value) {
+                  return null;
+                },
+              ),
+              formSpacer,
+              TextFormField(
+                controller: nameC,
+                decoration: formDecor(hint: 'Nama Produk'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Nama Produk Tidak Boleh Kosong!';
+                  }
+                  return null;
+                },
+              ),
+              formSpacer,
+              FormField(
+                builder: (field) {
+                  return DropdownButtonFormField<String>(
                       decoration: formDecor(hint: ''),
-                      value: widget.snapshot.data![widget.index].category,
+                      value: selKategori,
                       items: kategori.map((String item) {
                         return DropdownMenuItem<String>(
                           child: Text(item),
@@ -89,58 +184,134 @@ class _UpdateProductState extends State<UpdateProduct> {
                         setState(() {
                           selKategori = value.toString();
                         });
-                      }),
-                  formSpacer,
-                  TextFormField(
-                    controller: priceC,
-                    decoration: formDecor(
-                      hint:
-                          widget.snapshot.data![widget.index].price.toString(),
-                    ),
-                  ),
-                  formSpacer,
-                  TextFormField(
-                    controller: descC,
-                    keyboardType: TextInputType.multiline,
-                    minLines: 5,
-                    maxLines: null,
-                    decoration: formDecor(
-                      hint: widget.snapshot.data![widget.index].desc ??
-                          'Tidak Ada Deskripsi',
-                    ),
-                  ),
-                  formSpacer,
-                  //BUTTON
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await productProvider.editProduct(
-                              name: nameC.text,
-                              price: int.parse(priceC.text),
-                              desc: descC.text,
-                              currentName:
-                                  widget.snapshot.data![widget.index].name,
-                              currentPrice: widget
-                                  .snapshot.data![widget.index].price
-                                  .toString(),
-                              currentDesc:
-                                  widget.snapshot.data![widget.index].desc,
-                            );
-                            nameC.clear();
-                            priceC.clear();
-                            descC.clear();
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Update'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                      });
+                },
               ),
-            ),
+              formSpacer,
+              Visibility(
+                visible: selKategori == 'Produk Digital' ? true : false,
+                child: FormField(
+                  builder: (field) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        pickedFile != null
+                            ? Expanded(child: Text('File Anda : $pickedFile'))
+                            : Expanded(
+                                child: Text(
+                                  'File Anda : ${currentFileUrl!.split('/').last}',
+                                  overflow: TextOverflow.fade,
+                                ),
+                              ),
+                        TextButton(
+                          child: const Text('Pilih File'),
+                          onPressed: () async {
+                            FilePickerResult? result = await FilePicker.platform
+                                .pickFiles(withData: true);
+                            if (result != null) {
+                              pickedFile = File(result.files.first.path!);
+                              pickedFileName = result.files.first.name;
+                              setState(() {});
+                            } else {}
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                  validator: (value) {
+                    return null;
+                  },
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextFormField(
+                controller: priceC,
+                keyboardType: TextInputType.number,
+                decoration: formDecor(hint: 'Harga'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Harga Tidak Boleh Kosong!';
+                  }
+                  return null;
+                },
+              ),
+              formSpacer,
+              TextFormField(
+                controller: descC,
+                keyboardType: TextInputType.multiline,
+                minLines: 5,
+                maxLines: null,
+                decoration: formDecor(hint: 'Deskripsi'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Deskripsi Tidak Boleh Kosong!';
+                  }
+                  return null;
+                },
+              ),
+              formSpacer,
+              BlueButton(
+                padding: 0,
+                teks: 'Update Product',
+                onPressed: () async {
+                  try {
+                    if (_formKey.currentState!.validate()) {
+                      isLoading = true;
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            Container(
+                          child: loadingIndicator,
+                        ),
+                      );
+                      print(pickedPhotoName);
+                      print(pickedPhoto);
+                      print(pickedFileName);
+                      print(pickedFile);
+                      await productProvider.updateProduct(
+                        currentName: nameC.text,
+                        currentDesc: descC.text,
+                        currentPrice: int.parse(priceC.text),
+                        currentCategory: selKategori,
+                        productId: widget.snapshot.data![widget.index].id,
+                        currentFile: pickedFile,
+                        currentFileName:
+                            widget.snapshot.data![widget.index].file_url,
+                        currentPhoto: pickedPhoto,
+                        currentPhotoName:
+                            widget.snapshot.data![widget.index].img_url,
+                      );
+                      nameC.clear();
+                      priceC.clear();
+                      descC.clear();
+                      isLoading = false;
+                      Navigator.of(context, rootNavigator: true).pop();
+                      Navigator.pop(context);
+                      snackbar(
+                          context, 'Sukses Mengupdate Produk', Colors.green);
+                    } else {
+                      return snackbar(
+                          context, 'Error Mengupdate!', Colors.black);
+                    }
+                  } catch (e) {
+                    // final recentProductId = await supabase
+                    //     .from('products')
+                    //     .select('id, created_at')
+                    //     .eq('seller_id', supabase.auth.currentUser!.id)
+                    //     .order('created_at', ascending: false)
+                    //     .limit(1)
+                    //     .single();
+                    // await supabase
+                    //     .from('products')
+                    //     .delete()
+                    //     .eq('id', recentProductId['id']);
+                    Navigator.pop(context);
+                    snackbar(context, e.toString(), Colors.black);
+                    rethrow;
+                  }
+                },
+              )
+            ],
           ),
         ),
       ),

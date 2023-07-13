@@ -16,6 +16,7 @@ class ProductModel with _$ProductModel {
     String? name,
     int? price,
     String? img_url,
+    String? file_url,
     String? desc,
     String? seller_id,
     ProfileModel? profiles,

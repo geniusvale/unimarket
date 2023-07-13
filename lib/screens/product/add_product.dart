@@ -266,7 +266,6 @@ class _AddProductState extends State<AddProduct> {
                         }
                     }
                   } catch (e) {
-                    Navigator.pop(context);
                     final recentProductId = await supabase
                         .from('products')
                         .select('id, created_at')
@@ -278,6 +277,7 @@ class _AddProductState extends State<AddProduct> {
                         .from('products')
                         .delete()
                         .eq('id', recentProductId['id']);
+                    Navigator.pop(context);
                     snackbar(context, e.toString(), Colors.black);
                   }
                 },

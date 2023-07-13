@@ -24,6 +24,7 @@ mixin _$ProductModel {
   String? get name => throw _privateConstructorUsedError;
   int? get price => throw _privateConstructorUsedError;
   String? get img_url => throw _privateConstructorUsedError;
+  String? get file_url => throw _privateConstructorUsedError;
   String? get desc => throw _privateConstructorUsedError;
   String? get seller_id => throw _privateConstructorUsedError;
   ProfileModel? get profiles => throw _privateConstructorUsedError;
@@ -46,6 +47,7 @@ abstract class $ProductModelCopyWith<$Res> {
       String? name,
       int? price,
       String? img_url,
+      String? file_url,
       String? desc,
       String? seller_id,
       ProfileModel? profiles,
@@ -71,6 +73,7 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
     Object? name = freezed,
     Object? price = freezed,
     Object? img_url = freezed,
+    Object? file_url = freezed,
     Object? desc = freezed,
     Object? seller_id = freezed,
     Object? profiles = freezed,
@@ -92,6 +95,10 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
       img_url: freezed == img_url
           ? _value.img_url
           : img_url // ignore: cast_nullable_to_non_nullable
+              as String?,
+      file_url: freezed == file_url
+          ? _value.file_url
+          : file_url // ignore: cast_nullable_to_non_nullable
               as String?,
       desc: freezed == desc
           ? _value.desc
@@ -138,6 +145,7 @@ abstract class _$$_ProductModelCopyWith<$Res>
       String? name,
       int? price,
       String? img_url,
+      String? file_url,
       String? desc,
       String? seller_id,
       ProfileModel? profiles,
@@ -162,6 +170,7 @@ class __$$_ProductModelCopyWithImpl<$Res>
     Object? name = freezed,
     Object? price = freezed,
     Object? img_url = freezed,
+    Object? file_url = freezed,
     Object? desc = freezed,
     Object? seller_id = freezed,
     Object? profiles = freezed,
@@ -183,6 +192,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
       img_url: freezed == img_url
           ? _value.img_url
           : img_url // ignore: cast_nullable_to_non_nullable
+              as String?,
+      file_url: freezed == file_url
+          ? _value.file_url
+          : file_url // ignore: cast_nullable_to_non_nullable
               as String?,
       desc: freezed == desc
           ? _value.desc
@@ -212,6 +225,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
       this.name,
       this.price,
       this.img_url,
+      this.file_url,
       this.desc,
       this.seller_id,
       this.profiles,
@@ -229,6 +243,8 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
   @override
   final String? img_url;
   @override
+  final String? file_url;
+  @override
   final String? desc;
   @override
   final String? seller_id;
@@ -239,7 +255,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProductModel(id: $id, name: $name, price: $price, img_url: $img_url, desc: $desc, seller_id: $seller_id, profiles: $profiles, category: $category)';
+    return 'ProductModel(id: $id, name: $name, price: $price, img_url: $img_url, file_url: $file_url, desc: $desc, seller_id: $seller_id, profiles: $profiles, category: $category)';
   }
 
   @override
@@ -251,6 +267,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('price', price))
       ..add(DiagnosticsProperty('img_url', img_url))
+      ..add(DiagnosticsProperty('file_url', file_url))
       ..add(DiagnosticsProperty('desc', desc))
       ..add(DiagnosticsProperty('seller_id', seller_id))
       ..add(DiagnosticsProperty('profiles', profiles))
@@ -266,6 +283,8 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.img_url, img_url) || other.img_url == img_url) &&
+            (identical(other.file_url, file_url) ||
+                other.file_url == file_url) &&
             (identical(other.desc, desc) || other.desc == desc) &&
             (identical(other.seller_id, seller_id) ||
                 other.seller_id == seller_id) &&
@@ -277,8 +296,8 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, price, img_url, desc,
-      seller_id, profiles, category);
+  int get hashCode => Object.hash(runtimeType, id, name, price, img_url,
+      file_url, desc, seller_id, profiles, category);
 
   @JsonKey(ignore: true)
   @override
@@ -300,6 +319,7 @@ abstract class _ProductModel implements ProductModel {
       final String? name,
       final int? price,
       final String? img_url,
+      final String? file_url,
       final String? desc,
       final String? seller_id,
       final ProfileModel? profiles,
@@ -316,6 +336,8 @@ abstract class _ProductModel implements ProductModel {
   int? get price;
   @override
   String? get img_url;
+  @override
+  String? get file_url;
   @override
   String? get desc;
   @override
