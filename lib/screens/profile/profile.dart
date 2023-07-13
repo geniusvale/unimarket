@@ -31,6 +31,7 @@ class _ProfileState extends State<Profile> {
   final phoneC = TextEditingController();
   final addressC = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool? isLoading;
 
   //CEK NANTI, BELUM DIIMPLEMENT!
   checkIfHasRequestedForSeller(BuildContext context) async {
@@ -71,11 +72,44 @@ class _ProfileState extends State<Profile> {
                   GestureDetector(
                     onTap: () async {
                       if (profileProvider.loggedUserData.avatar_url == null) {
-                        await profileProvider.uploadFotoProfil();
-                        setState(() {});
+                        try {
+                          isLoading = true;
+                          showGeneralDialog(
+                            context: context,
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    loadingIndicator,
+                          );
+                          await profileProvider.uploadFotoProfil();
+                          isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
+                          setState(() {});
+                        } catch (e) {
+                          isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
+                          snackbar(context, e.toString(), Colors.black);
+                        }
                       } else {
-                        await profileProvider.updateFotoProfil();
-                        setState(() {});
+                        try {
+                          isLoading = true;
+                          showGeneralDialog(
+                            context: context,
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    loadingIndicator,
+                          );
+                          await profileProvider.updateFotoProfil(
+                            currentAvatarUrl:
+                                profileProvider.loggedUserData.avatar_url!,
+                          );
+                          isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
+                          setState(() {});
+                        } catch (e) {
+                          isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
+                          snackbar(context, e.toString(), Colors.black);
+                        }
                       }
                     },
                     child: ClipOval(
@@ -85,7 +119,9 @@ class _ProfileState extends State<Profile> {
                         child: profileProvider.loggedUserData.avatar_url == null
                             ? SvgPicture.asset('assets/images/blankpp.svg')
                             : Image.network(
-                                profileProvider.loggedUserData.avatar_url!),
+                                profileProvider.loggedUserData.avatar_url!,
+                                fit: BoxFit.fill,
+                              ),
                         // CachedNetworkImage(
                         //     imageUrl:
                         //         profileProvider.loggedUserData.avatar_url!),

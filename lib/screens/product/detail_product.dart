@@ -141,18 +141,29 @@ class _DetailProductState extends State<DetailProduct> {
                       ),
                     ],
                   ),
-                  formSpacer,
-                  Row(children: [
-                    TextButton.icon(
-                      onPressed: () async {
+                  // formSpacer,
+                  TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(0),
+                    ),
+                    onPressed: () async {
+                      try {
                         await launchUrlString(
-                          'https://wa.me/62${widget.snapshot.data![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                          'whatsapp://send?phone=${widget.snapshot.data![widget.index].profiles!.phone!}&text=${Uri.parse('message')}',
+                          // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.data![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                          mode: LaunchMode.externalApplication,
                         );
-                      },
-                      icon: const Icon(Icons.call),
-                      label: const Text('Hubungi Penjual'),
-                    )
-                  ]),
+                      } catch (e) {
+                        snackbar(context, e.toString(), Colors.black);
+                      }
+                    },
+                    icon: Image.asset(
+                      'assets/icons/whatsapp.png',
+                      width: 15,
+                      height: 15,
+                    ),
+                    label: const Text('Hubungi Penjual'),
+                  ),
                   formSpacer,
                   const Text(
                     'Informasi Produk',

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/models/transaction/transaction_items_model.dart';
 import 'package:unimarket/utilities/constants.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../controller/transaction_provider.dart';
 import '../../models/transaction/transaction_model.dart';
@@ -42,14 +43,16 @@ class _TransactionDetailState extends State<TransactionDetail> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListView.builder(
+                  ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: snapshot.data!.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
                     itemBuilder: (context, index) {
                       //NANTI EXTRACT WIDGET
-                      return Container(
-                        color: Colors.grey[350],
+                      return SizedBox(
+                        // color: Colors.grey[350],
                         width: double.infinity,
                         // height: 150,
                         child: Column(
@@ -117,6 +120,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                //TOMBOL UNDUH / KONFIRMASI
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -139,41 +143,6 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                           setState(() {});
                                         },
                                       ),
-                                      // snapshot
-                                      //             .data![index].isConfirmed ==
-                                      //         true
-                                      //     ? null
-                                      //     : widget.transactionData.status ==
-                                      //             'PENDING'
-                                      //         ? null
-                                      //         : widget.transactionData.status ==
-                                      //                 'UNPAID'
-                                      //             ? null
-                                      //             : widget.transactionData
-                                      //                         .status ==
-                                      //                     'EXPIRED'
-                                      //                 ? null
-                                      //                 : () async {
-                                      //                     await transactionProvider
-                                      //                         .confirmTransaction(
-                                      //                       transactionItemId:
-                                      //                           snapshot
-                                      //                               .data![
-                                      //                                   index]
-                                      //                               .id,
-                                      //                       productPrice:
-                                      //                           snapshot
-                                      //                               .data![
-                                      //                                   index]
-                                      //                               .products!
-                                      //                               .price,
-                                      //                       sellerId: snapshot
-                                      //                           .data![index]
-                                      //                           .products!
-                                      //                           .seller_id!,
-                                      //                     );
-                                      //                     setState(() {});
-                                      //                   },
                                       child: snapshot.data![index].products!
                                                   .category! ==
                                               'Produk Digital'
@@ -181,16 +150,37 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                           : const Text('Konfirmasi Pesanan'),
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
-                            const Divider(height: 1),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(8),
+                              ),
+                              onPressed: () async {
+                                try {
+                                  await launchUrlString(
+                                    'whatsapp://send?phone=${snapshot.data![index].products!.profiles!.phone}&text=${Uri.parse('message')}',
+                                    // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.data![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                } catch (e) {
+                                  snackbar(
+                                    context,
+                                    e.toString(),
+                                    Colors.black,
+                                  );
+                                }
+                              },
+                              child: const Text('Hubungi Penjual'),
+                            ),
+                            // const Divider(height: 1),
                           ],
                         ),
                       );
                     },
                   ),
-                  formSpacer,
+                  // formSpacer,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,

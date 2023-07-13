@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/profile/profile_model.dart';
 import '../utilities/constants.dart';
@@ -61,121 +60,77 @@ class ProfileProvider extends ChangeNotifier {
   }
 
   uploadFotoProfil() async {
-    //Ambil File
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: false,
-      // allowedExtensions: ['jpg', 'jpeg', 'png', 'webp', 'tif', 'tiff', 'bmp'],
     );
 
     if (result != null) {
-      //Direktori File
-      File pickedFile = File(result.files.single.path!);
-      //Nama file dan Ekstensinya
-      String fileName = result.files.first.name;
-      //Link foto yang terupload
-      String? fileUrl;
+      File pickedPhoto = File(result.files.single.path!);
+      String pickedPhotoName = result.files.first.name;
 
       try {
         //Upload FOTO ke supabase storage
-        final upload = await supabase.storage
-            .from('profile-pic')
-            .upload('${supabase.auth.currentUser!.id}/$fileName', pickedFile);
+        await supabase.storage.from('profile-pic').upload(
+            '${supabase.auth.currentUser!.id}/$pickedPhotoName', pickedPhoto);
 
         //Mengambil LINK foto yang diupload
-        final publicUrl = supabase.storage
+        final photoUrl = supabase.storage
             .from('profile-pic/${supabase.auth.currentUser!.id}')
-            .getPublicUrl(fileName);
-        fileUrl = publicUrl;
-        print(fileUrl);
+            .getPublicUrl(pickedPhotoName);
 
         //Menyimpan LINK dari storage ke Tabel Profiles
-        final simpanKeTabel = await supabase
-            .from('profiles')
-            .update({'avatar_url': fileUrl}).match(
-          {'id': supabase.auth.currentUser!.id},
-        );
+        await supabase.from('profiles').update({
+          'avatar_url': photoUrl,
+        }).eq('id', supabase.auth.currentUser!.id);
+        _loggedUserData = loggedUserData.copyWith(avatar_url: photoUrl);
         //Harus Ada SetState Setelah Ini
         notifyListeners();
       } catch (e) {
         rethrow;
       }
     } else {
-      // User canceled the picker
+      // CANCEL
     }
   }
 
-  updateFotoProfil() async {
-    //Ambil File
+  updateFotoProfil({required String currentAvatarUrl}) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: false,
     );
 
     if (result != null) {
-      //Direktori File
-      File pickedFile = File(result.files.single.path!);
-      //Nama file dan Ekstensinya
-      String fileName = result.files.first.name;
-      //Link foto yang terupload
-      String? fileUrl;
+      File pickedPhoto = File(result.files.single.path!);
+      String pickedPhotoName = result.files.first.name;
 
       try {
-        List<String> splitCurrentFileName =
-            loggedUserData.avatar_url!.split('/');
-        String currentFileName = splitCurrentFileName.last;
-
-        //UPDATE FOTO ke supabase storage
-        final upload =
-            await supabase.storage.from('profile-pic').update(
-                  '${supabase.auth.currentUser!.id}/$currentFileName',
-                  pickedFile,
-                  fileOptions: const FileOptions(upsert: false),
-                );
-
-        // await refreshAndUpdate(fileName);
-
-        // //Mengambil LINK foto yang diupload
-        // final publicUrl = supabase.storage
-        //     .from('profile-pic/${supabase.auth.currentUser!.id}')
-        //     .getPublicUrl(fileName);
-        // fileUrl = publicUrl;
-        // print(fileUrl);
-
-        // //Menyimpan LINK dari storage ke Tabel Profiles
-        // final simpanKeTabel = await supabase
-        //     .from('profiles')
-        //     .update({'avatar_url': fileUrl}).match(
-        //   {'id': supabase.auth.currentUser!.id},
-        // );
-
+        await supabase.storage.from('profile-pic').remove([
+          '${supabase.auth.currentUser!.id}/${currentAvatarUrl.split('/').last}'
+        ]);
+        await supabase.storage.from('profile-pic').upload(
+            '${supabase.auth.currentUser!.id}/$pickedPhotoName', pickedPhoto);
+        final photoUrl = supabase.storage
+            .from('profile-pic/${supabase.auth.currentUser!.id}')
+            .getPublicUrl(pickedPhotoName);
+        //UPDATE KE TABLE PRODUCT
+        await supabase.from('profiles').update({
+          'avatar_url': photoUrl,
+        }).eq('id', supabase.auth.currentUser!.id);
+        _loggedUserData = loggedUserData.copyWith(avatar_url: photoUrl);
         //Harus Ada SetState Setelah Ini
         notifyListeners();
       } catch (e) {
         rethrow;
       }
     } else {
-      // User canceled the picker
+      // CANCEL
     }
+    //Harus Ada SetState Setelah Ini
+    notifyListeners();
   }
 
-  refreshAndUpdate(String fileName) async {
-    //Mengambil LINK foto yang diupload
-    final publicUrl = supabase.storage
-        .from('profile-pic/${supabase.auth.currentUser!.id}')
-        .getPublicUrl(fileName);
-
-    print(publicUrl);
-
-    //Menyimpan LINK dari storage ke Tabel Profiles
-    final simpanKeTabel =
-        await supabase.from('profiles').update({'avatar_url': publicUrl}).match(
-      {'id': supabase.auth.currentUser!.id},
-    );
-  }
-
-  updateProfileData(
-      {required String username, email, phone, address}) async {
+  updateProfileData({required String username, email, phone, address}) async {
     await supabase.from('profiles').update({
       'username': username,
       'email': email,
