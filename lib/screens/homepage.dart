@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,7 +10,6 @@ import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/controller/transaction_provider.dart';
 import 'package:unimarket/controller/wishlist_provider.dart';
 import 'package:unimarket/models/product/product_model.dart';
-import 'package:unimarket/screens/product/detail_product.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
 
@@ -210,5 +208,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-

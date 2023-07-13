@@ -5,6 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import '../../controller/product_provider.dart';
 import '../../models/product/product_model.dart';
@@ -274,10 +275,12 @@ class _UpdateProductState extends State<UpdateProduct> {
                         currentPrice: int.parse(priceC.text),
                         currentCategory: selKategori,
                         productId: widget.snapshot.data![widget.index].id,
-                        currentFile: pickedFile,
+                        newFile: pickedFile,
+                        newFileName: pickedFileName,
                         currentFileName:
                             widget.snapshot.data![widget.index].file_url,
-                        currentPhoto: pickedPhoto,
+                        newPhoto: pickedPhoto,
+                        newPhotoName: pickedPhotoName,
                         currentPhotoName:
                             widget.snapshot.data![widget.index].img_url,
                       );
@@ -285,6 +288,8 @@ class _UpdateProductState extends State<UpdateProduct> {
                       priceC.clear();
                       descC.clear();
                       isLoading = false;
+                      DefaultCacheManager manager = DefaultCacheManager();
+                      manager.emptyCache();
                       Navigator.of(context, rootNavigator: true).pop();
                       Navigator.pop(context);
                       snackbar(
@@ -294,17 +299,6 @@ class _UpdateProductState extends State<UpdateProduct> {
                           context, 'Error Mengupdate!', Colors.black);
                     }
                   } catch (e) {
-                    // final recentProductId = await supabase
-                    //     .from('products')
-                    //     .select('id, created_at')
-                    //     .eq('seller_id', supabase.auth.currentUser!.id)
-                    //     .order('created_at', ascending: false)
-                    //     .limit(1)
-                    //     .single();
-                    // await supabase
-                    //     .from('products')
-                    //     .delete()
-                    //     .eq('id', recentProductId['id']);
                     Navigator.pop(context);
                     snackbar(context, e.toString(), Colors.black);
                     rethrow;

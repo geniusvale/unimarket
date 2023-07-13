@@ -185,9 +185,11 @@ class ProductsProvider extends ChangeNotifier {
     String? currentCategory,
     String? currentFileName,
     String? currentPhotoName,
+    String? newFileName,
+    String? newPhotoName,
     int? currentPrice,
-    File? currentFile,
-    File? currentPhoto,
+    File? newFile,
+    File? newPhoto,
   }) async {
     if (currentCategory == 'Produk Digital') {
       //BUAT DATA PRODUK KE TABLE
@@ -200,46 +202,58 @@ class ProductsProvider extends ChangeNotifier {
         },
       ).eq('id', productId);
 
-      if (currentFile != null && currentPhoto != null) {
-        //UPLOAD FILE
-        await supabase.storage.from('product-files').update(
-            '${supabase.auth.currentUser!.id}/$productId/${currentFileName!.split('/').last}',
-            currentFile);
+      if (newFile != null && newPhoto != null) {
+        //UPDATE FILE (HAPUS YANG LAMA GANTI YANG BARU)
+        await supabase.storage.from('product-files').remove([
+          '${supabase.auth.currentUser!.id}/$productId/${currentFileName!.split('/').last}'
+        ]);
+        await supabase.storage.from('product-files').upload(
+            '${supabase.auth.currentUser!.id}/$productId/$newFileName',
+            newFile);
         final fileUrl = supabase.storage
             .from('product-files/${supabase.auth.currentUser!.id}/$productId')
-            .getPublicUrl(currentFileName);
-        //UPLOAD FOTO
-        await supabase.storage.from('product-images').update(
-            '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}',
-            currentPhoto);
+            .getPublicUrl(newFileName!);
+        //UPDATE FOTO (HAPUS YANG LAMA GANTI YANG BARU)
+        await supabase.storage.from('product-images').remove([
+          '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}'
+        ]);
+        await supabase.storage.from('product-images').upload(
+            '${supabase.auth.currentUser!.id}/$productId/$newPhotoName',
+            newPhoto);
         final photoUrl = supabase.storage
             .from('product-images/${supabase.auth.currentUser!.id}/$productId')
-            .getPublicUrl(currentPhotoName);
+            .getPublicUrl(newPhotoName!);
         //UPDATE KE TABLE PRODUCT
         await supabase.from('products').update({
           'file_url': fileUrl,
           'img_url': photoUrl,
         }).eq('id', productId);
-      } else if (currentFile != null) {
-        //UPLOAD & UPDATE FILE NYA SAJA
-        await supabase.storage.from('product-files').update(
-            '${supabase.auth.currentUser!.id}/$productId/${currentFileName!.split('/').last}',
-            currentFile);
+      } else if (newFile != null) {
+        //UPLOAD & UPDATE FILE NYA SAJA (HAPUS YANG LAMA GANTI YANG BARU)
+        await supabase.storage.from('product-files').remove([
+          '${supabase.auth.currentUser!.id}/$productId/${currentFileName!.split('/').last}'
+        ]);
+        await supabase.storage.from('product-files').upload(
+            '${supabase.auth.currentUser!.id}/$productId/$newFileName',
+            newFile);
         final fileUrl = supabase.storage
             .from('product-files/${supabase.auth.currentUser!.id}/$productId')
-            .getPublicUrl(currentFileName);
+            .getPublicUrl(newFileName!);
         //UPDATE KE TABLE PRODUCT
         await supabase.from('products').update({
           'file_url': fileUrl,
         }).eq('id', productId);
-      } else if (currentPhoto != null) {
-        //UPLOAD & UPDATE FOTO NYA SAJA
-        await supabase.storage.from('product-images').update(
-            '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}',
-            currentPhoto);
+      } else if (newPhoto != null) {
+        //UPLOAD & UPDATE FOTO NYA SAJA (HAPUS YANG LAMA GANTI YANG BARU)
+        await supabase.storage.from('product-images').remove([
+          '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}'
+        ]);
+        await supabase.storage.from('product-images').upload(
+            '${supabase.auth.currentUser!.id}/$productId/$newPhotoName',
+            newPhoto);
         final photoUrl = supabase.storage
             .from('product-images/${supabase.auth.currentUser!.id}/$productId')
-            .getPublicUrl(currentPhotoName);
+            .getPublicUrl(newPhotoName!);
         //UPDATE KE TABLE PRODUCT
         await supabase.from('products').update({
           'img_url': photoUrl,
@@ -258,14 +272,17 @@ class ProductsProvider extends ChangeNotifier {
         },
       ).eq('id', productId);
 
-      if (currentPhoto != null) {
-        //UPLOAD FOTO
-        await supabase.storage.from('product-images').update(
-            '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}',
-            currentPhoto);
+      if (newPhoto != null) {
+        //UPLOAD & UPDATE FOTO NYA SAJA (HAPUS YANG LAMA GANTI YANG BARU)
+        await supabase.storage.from('product-images').remove([
+          '${supabase.auth.currentUser!.id}/$productId/${currentPhotoName!.split('/').last}'
+        ]);
+        await supabase.storage.from('product-images').upload(
+            '${supabase.auth.currentUser!.id}/$productId/$newPhotoName',
+            newPhoto);
         final photoUrl = supabase.storage
             .from('product-images/${supabase.auth.currentUser!.id}/$productId')
-            .getPublicUrl(currentPhotoName);
+            .getPublicUrl(newPhotoName!);
         //UPDATE KE TABLE PRODUCT
         await supabase.from('products').update({
           'img_url': photoUrl,

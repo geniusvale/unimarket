@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/controller/cart_provider.dart';
 import 'package:unimarket/controller/wishlist_provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../controller/auth_provider.dart';
 import '../../controller/product_provider.dart';
@@ -140,6 +141,18 @@ class _DetailProductState extends State<DetailProduct> {
                       ),
                     ],
                   ),
+                  formSpacer,
+                  Row(children: [
+                    TextButton.icon(
+                      onPressed: () async {
+                        await launchUrlString(
+                          'https://wa.me/62${widget.snapshot.data![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                        );
+                      },
+                      icon: const Icon(Icons.call),
+                      label: const Text('Hubungi Penjual'),
+                    )
+                  ]),
                   formSpacer,
                   const Text(
                     'Informasi Produk',
