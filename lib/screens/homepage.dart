@@ -10,6 +10,7 @@ import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/controller/transaction_provider.dart';
 import 'package:unimarket/controller/wishlist_provider.dart';
 import 'package:unimarket/models/product/product_model.dart';
+import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
 
@@ -79,12 +80,21 @@ class _HomePageState extends State<HomePage> {
           ),
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Cart(),
-                ),
-              );
+              if (authProvider.unAuthorized == true) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Login(),
+                  ),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Cart(),
+                  ),
+                );
+              }
             },
             icon: SvgPicture.asset(
               'assets/icons/cart.svg',

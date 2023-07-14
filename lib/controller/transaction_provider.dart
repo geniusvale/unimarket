@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unimarket/utilities/utilities.dart';
 
 import '../models/transaction/transaction_items_model.dart';
 import '../models/transaction/transaction_model.dart';
@@ -53,21 +56,46 @@ class TransactionProvider extends ChangeNotifier {
   confirmTransaction(
       {required int transactionItemId,
       productPrice,
-      required String sellerId}) async {
+      required String sellerId,
+      required int productId,
+      required String productCategory,
+      String? fileName}) async {
     //Jika Produk Digital, Ada Proses Download!
     //Proses unduh disini ->
     //.........................................
     //Selain itu Langsung Ubah Status Saja!
-    //Ubah Status Menjadi isConfirmed
-    await supabase.from('transactions_item').update({
-      'isConfirmed': true,
-    }).match({
-      'id': transactionItemId,
-    });
-    //Masukkan Saldo Ke Penjual
-    await supabase.from('profiles').update({
-      'saldo': productPrice,
-    }).eq('id', sellerId);
+    if (productCategory == 'Produk Digital') {
+      try {
+        final Uint8List file = await supabase.storage
+            .from('product-files')
+            .download('$sellerId/$productId/${fileName!.split('/').last}');
+        var downloadedFile = await writeFile(file, fileName.split('/').last);
+
+        //Ubah Status Menjadi isConfirmed
+        await supabase.from('transactions_item').update({
+          'isConfirmed': true,
+        }).match({
+          'id': transactionItemId,
+        });
+        //Masukkan Saldo Ke Penjual
+        await supabase.from('profiles').update({
+          'saldo': productPrice,
+        }).eq('id', sellerId);
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      //Ubah Status Menjadi isConfirmed
+      await supabase.from('transactions_item').update({
+        'isConfirmed': true,
+      }).match({
+        'id': transactionItemId,
+      });
+      //Masukkan Saldo Ke Penjual
+      await supabase.from('profiles').update({
+        'saldo': productPrice,
+      }).eq('id', sellerId);
+    }
     //Setelah isConfirmed Tombol Disabled!
     notifyListeners();
   }
@@ -104,5 +132,62 @@ class TransactionProvider extends ChangeNotifier {
       default:
         return null;
     }
+  }
+
+  cancelButtonState(
+      {bool? isCancelled,
+      bool? isConfirmed,
+      bool? isDisabled,
+      String? status,
+      Function()? onPressed}) {
+    //Kalau tidak mau ada return, gunakan break; pada switch case
+    switch (status) {
+      case 'UNPAID':
+        return onPressed;
+      case 'PENDING':
+        return onPressed;
+      case 'EXPIRED':
+        null;
+        break;
+      case 'PAID':
+        {
+          if (isConfirmed == true) {
+            return null;
+          } else if (isConfirmed == false) {
+            return onPressed;
+          } else {
+            return null;
+          }
+        }
+      case 'SETTLED':
+        {
+          if (isConfirmed == true) {
+            return null;
+          } else {
+            return null;
+          }
+        }
+      default:
+        return null;
+    }
+  }
+
+  // cancelTransaction(int transactionItemId, int productPrice) async {
+  //   await supabase.from('transactions_item').delete({
+  //     'isCancelled': true,
+  //     'order_status': 'CANCELLED',
+  //   }).eq('transactions_id', transactionItemId);
+  // }
+
+  refundTransactionItem(int transactionItemId, int productPrice) async {
+    await supabase.from('transactions_item').update({
+      'isCancelled': true,
+      'order_status': 'CANCELLED',
+    }).eq('transactions_id', transactionItemId);
+
+    await supabase.from('profiles').update({
+      'saldo': productPrice,
+    }).eq('id', supabase.auth.currentUser!.id);
+    notifyListeners();
   }
 }

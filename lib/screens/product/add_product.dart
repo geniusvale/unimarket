@@ -228,6 +228,7 @@ class _AddProductState extends State<AddProduct> {
                           isLoading = false;
                           Navigator.of(context, rootNavigator: true).pop();
                           Navigator.pop(context);
+                          setState(() {});
                           snackbar(
                               context, 'Sukses Menambah Produk', Colors.green);
                         } else {
@@ -260,7 +261,11 @@ class _AddProductState extends State<AddProduct> {
                           priceC.clear();
                           descC.clear();
                           isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
                           Navigator.pop(context);
+                          setState(() {});
+                          snackbar(
+                              context, 'Sukses Menambah Produk', Colors.green);
                         } else {
                           return snackbar(context, 'Error', Colors.black);
                         }

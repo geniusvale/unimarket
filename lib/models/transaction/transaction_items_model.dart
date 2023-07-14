@@ -20,6 +20,7 @@ class TransactionItemsModel with _$TransactionItemsModel {
     @JsonKey(name: 'products_id') int? productsId,
     ProductModel? products,
     bool? isConfirmed,
+    bool? isCancelled,
     @JsonKey(name: 'created_at') String? createdAt,
   }) = _TransactionItemsModel;
 

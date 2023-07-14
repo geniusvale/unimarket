@@ -20,6 +20,7 @@ _$_TransactionItemsModel _$$_TransactionItemsModelFromJson(
           ? null
           : ProductModel.fromJson(json['products'] as Map<String, dynamic>),
       isConfirmed: json['isConfirmed'] as bool?,
+      isCancelled: json['isCancelled'] as bool?,
       createdAt: json['created_at'] as String?,
     );
 
@@ -33,5 +34,6 @@ Map<String, dynamic> _$$_TransactionItemsModelToJson(
       'products_id': instance.productsId,
       'products': instance.products,
       'isConfirmed': instance.isConfirmed,
+      'isCancelled': instance.isCancelled,
       'created_at': instance.createdAt,
     };

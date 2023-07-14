@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/models/transaction/transaction_items_model.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -21,6 +22,8 @@ class TransactionDetail extends StatefulWidget {
 }
 
 class _TransactionDetailState extends State<TransactionDetail> {
+  bool? isLoading;
+
   @override
   void initState() {
     super.initState();
@@ -30,6 +33,8 @@ class _TransactionDetailState extends State<TransactionDetail> {
   Widget build(BuildContext context) {
     final transactionProvider =
         Provider.of<TransactionProvider>(context, listen: false);
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Transaksi'),
@@ -62,6 +67,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Flexible(
                                     flex: 1,
@@ -93,6 +99,14 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                               .data![index].products!.name!),
                                           Text(snapshot.data![index].products!
                                               .category!),
+                                          Text(
+                                            'Seller : ${snapshot.data![index].products!.profiles!.username!}',
+                                          ),
+                                          Text(snapshot.data![index]
+                                                      .isCancelled ==
+                                                  true
+                                              ? 'Status : Dibatalkan'
+                                              : ''),
                                         ],
                                       ),
                                     ),
@@ -120,8 +134,80 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        foregroundColor: Colors.white,
+                                        elevation: 0.5,
+                                      ),
+                                      onPressed: snapshot
+                                                  .data![index].isCancelled ==
+                                              true
+                                          ? null
+                                          : transactionProvider
+                                              .cancelButtonState(
+                                              isConfirmed: snapshot
+                                                  .data![index].isConfirmed!,
+                                              status: widget
+                                                  .transactionData.status!,
+                                              onPressed: () async {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          'Refund ?'),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: const Text(
+                                                              'Tidak'),
+                                                        ),
+                                                        ElevatedButton(
+                                                          onPressed: () async {
+                                                            // await transactionProvider
+                                                            //     .cancelTransaction(
+                                                            //   widget
+                                                            //       .transactionId,
+                                                            //   snapshot
+                                                            //       .data![index]
+                                                            //       .products!
+                                                            //       .price!,
+                                                            // );
+                                                            Navigator.pop(
+                                                                context);
+                                                            snackbar(
+                                                              context,
+                                                              'Berhasil Membatalkan, Silahkan Cek Saldo Untuk Pengembalian Dana',
+                                                              Colors.black,
+                                                            );
+                                                          },
+                                                          child:
+                                                              const Text('Ya'),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                                // snackbar(
+                                                //     context, 'Test', Colors.black);
+                                              },
+                                            ),
+                                      child: const Text(
+                                        'Refund',
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 //TOMBOL UNDUH / KONFIRMASI
                                 Expanded(
+                                  flex: 2,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: ElevatedButton(
@@ -131,16 +217,147 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                             snapshot.data![index].isConfirmed!,
                                         status: widget.transactionData.status!,
                                         onPressed: () async {
-                                          await transactionProvider
-                                              .confirmTransaction(
-                                            transactionItemId:
-                                                snapshot.data![index].id,
-                                            productPrice: snapshot
-                                                .data![index].products!.price,
-                                            sellerId: snapshot.data![index]
-                                                .products!.seller_id!,
-                                          );
-                                          setState(() {});
+                                          if (snapshot.data![index].products!
+                                                  .category ==
+                                              'Produk Digital') {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: const Text(
+                                                    'Unduh & Konfirmasi ?'),
+                                                content: Text(
+                                                    'Apakah anda yakin ingin unduh dan konfirmasi pesanan? Dana sebesar ${numberCurrency.format(snapshot.data![index].products!.price)} akan diteruskan ke penjual.'),
+                                                actions: [
+                                                  ElevatedButton(
+                                                    child: const Text('Tidak'),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                  ElevatedButton(
+                                                    child: const Text('Ya'),
+                                                    onPressed: () async {
+                                                      isLoading = true;
+                                                      showGeneralDialog(
+                                                        context: context,
+                                                        pageBuilder: (context,
+                                                                animation,
+                                                                secondaryAnimation) =>
+                                                            loadingIndicator,
+                                                      );
+                                                      await transactionProvider
+                                                          .confirmTransaction(
+                                                        transactionItemId:
+                                                            snapshot
+                                                                .data![index]
+                                                                .id,
+                                                        productPrice: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .price,
+                                                        productCategory:
+                                                            snapshot
+                                                                .data![index]
+                                                                .products!
+                                                                .category!,
+                                                        sellerId: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .seller_id!,
+                                                        productId: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .id!,
+                                                        fileName: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .file_url,
+                                                      );
+                                                      isLoading = false;
+                                                      Navigator.of(context,
+                                                              rootNavigator:
+                                                                  true)
+                                                          .pop();
+                                                      Navigator.pop(context);
+                                                      setState(() {});
+                                                      // Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: const Text(
+                                                    'Unduh & Konfirmasi ?'),
+                                                content: Text(
+                                                    'Apakah anda yakin mengonfirmasi pesanan? Dana sebesar ${numberCurrency.format(snapshot.data![index].products!.price)} akan diteruskan ke penjual.'),
+                                                actions: [
+                                                  ElevatedButton(
+                                                    child: const Text('Tidak'),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                  ElevatedButton(
+                                                    child: const Text('Ya'),
+                                                    onPressed: () async {
+                                                      isLoading = true;
+                                                      showGeneralDialog(
+                                                        context: context,
+                                                        pageBuilder: (context,
+                                                                animation,
+                                                                secondaryAnimation) =>
+                                                            loadingIndicator,
+                                                      );
+                                                      await transactionProvider
+                                                          .confirmTransaction(
+                                                        transactionItemId:
+                                                            snapshot
+                                                                .data![index]
+                                                                .id,
+                                                        productPrice: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .price,
+                                                        productCategory:
+                                                            snapshot
+                                                                .data![index]
+                                                                .products!
+                                                                .category!,
+                                                        sellerId: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .seller_id!,
+                                                        productId: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .id!,
+                                                        fileName: snapshot
+                                                            .data![index]
+                                                            .products!
+                                                            .file_url,
+                                                      );
+                                                      isLoading = false;
+                                                      Navigator.of(context,
+                                                              rootNavigator:
+                                                                  true)
+                                                          .pop();
+                                                      Navigator.pop(context);
+                                                      snackbar(
+                                                          context,
+                                                          'Berhasil Konfirmasi & Unduh',
+                                                          Colors.black);
+                                                      setState(() {});
+                                                      // Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
                                         },
                                       ),
                                       child: snapshot.data![index].products!
@@ -194,7 +411,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                           color: Colors.grey[300],
                           height: 35,
                           child: const Text(
-                            'Rincian Produk',
+                            'Rincian Transaksi',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
@@ -228,7 +445,19 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             )
                           ],
                         ),
-                        const Text('Alamat Pengiriman :'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Expanded(child: Text('Alamat Pengiriman : ')),
+                            Expanded(
+                              child: Text(
+                                '${profileProvider.loggedUserData.address}',
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -255,8 +484,71 @@ class _TransactionDetailState extends State<TransactionDetail> {
                       ],
                     ),
                   ),
-                  //BUTTON BAWAH
-                  // BlueButton()
+                  //BUTTON BAWAH (KALAU BELUM DIBAYAR BISA DIKLIK, ELSE DISABLED!!)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                            ),
+                            child: const Text('BATALKAN PESANAN'),
+                            onPressed: () async {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Batalkan Transaksi ?'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Text(
+                                          'Apakah anda yakin ingin membatalkan transaksi? Semua produk di pesanan ini akan batalkan.')
+                                    ],
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Tidak'),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        isLoading = true;
+                                        showGeneralDialog(
+                                          context: context,
+                                          pageBuilder: (context, animation,
+                                                  secondaryAnimation) =>
+                                              loadingIndicator,
+                                        );
+                                        await xendit.ExpireInvoice(
+                                          invoice_id: widget
+                                              .transactionData.invoicesId!,
+                                        );
+                                        isLoading = false;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                        Navigator.pop(context);
+                                        setState(() {});
+                                      },
+                                      child: const Text('Ya'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
             );

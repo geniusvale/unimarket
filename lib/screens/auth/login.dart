@@ -20,6 +20,7 @@ class _LoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   bool _passwordVisible = true;
   bool kIsWeb = true;
+  bool? isLoading;
 
   @override
   void initState() {
@@ -116,6 +117,13 @@ class _LoginState extends State<Login> {
                         ),
                         onPressed: () async {
                           try {
+                            isLoading = true;
+                            showGeneralDialog(
+                              context: context,
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      loadingIndicator,
+                            );
                             await authProvider.login(
                               email: authProvider.emailC.text,
                               password: authProvider.passwordC.text,
@@ -124,6 +132,8 @@ class _LoginState extends State<Login> {
                             authProvider.passwordC.clear();
                             await profileProvider
                                 .getProfileDataFromAuth(context);
+                            isLoading = false;
+                            Navigator.of(context, rootNavigator: true).pop();
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(

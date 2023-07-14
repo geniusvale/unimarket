@@ -17,8 +17,6 @@ class UpdateProduct extends StatefulWidget {
       : super(key: key);
   int index;
   AsyncSnapshot<List<ProductModel>> snapshot;
-  // ProductModel? snapshot;
-
   @override
   State<UpdateProduct> createState() => _UpdateProductState();
 }
@@ -54,7 +52,11 @@ class _UpdateProductState extends State<UpdateProduct> {
     descC.text = widget.snapshot.data![widget.index].desc!;
     selKategori = widget.snapshot.data![widget.index].category!;
     currentPhotoUrl = widget.snapshot.data![widget.index].img_url!;
-    currentFileUrl = widget.snapshot.data![widget.index].file_url!;
+    if (selKategori == 'Produk Digital') {
+      currentFileUrl = widget.snapshot.data![widget.index].file_url!;
+    } else {
+      null;
+    }
 
     super.initState();
   }

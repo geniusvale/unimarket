@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:xendit/xendit.dart';
+import 'package:dio/dio.dart';
 
 final supabase = Supabase.instance.client;
-
+final dio = Dio();
 final xendit = Xendit(
   apiKey:
       'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',

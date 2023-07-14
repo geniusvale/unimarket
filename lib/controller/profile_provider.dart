@@ -137,5 +137,12 @@ class ProfileProvider extends ChangeNotifier {
       'phone': phone,
       'address': address,
     }).eq('id', supabase.auth.currentUser!.id);
+    _loggedUserData = loggedUserData.copyWith(
+      username: username,
+      email: email,
+      phone: phone,
+      address: address,
+    );
+    notifyListeners();
   }
 }

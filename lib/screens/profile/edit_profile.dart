@@ -20,6 +20,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController nimC = TextEditingController();
   TextEditingController phoneC = TextEditingController();
   TextEditingController addressC = TextEditingController();
+  bool? isLoading;
 
   @override
   void initState() {
@@ -97,13 +98,22 @@ class _EditProfileState extends State<EditProfile> {
                 teks: 'Simpan',
                 onPressed: () async {
                   try {
+                    isLoading = true;
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          loadingIndicator,
+                    );
                     await profileProvider.updateProfileData(
                       username: usernameC.text,
                       email: emailC.text,
                       phone: phoneC.text,
                       address: addressC.text,
                     );
+                    isLoading = false;
+                    Navigator.of(context, rootNavigator: true).pop();
                     Navigator.pop(context);
+                    setState(() {});
                     snackbar(context, 'Berhasil Update Data!', Colors.black);
                   } catch (e) {
                     rethrow;
