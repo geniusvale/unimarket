@@ -74,7 +74,7 @@ class TransactionProvider extends ChangeNotifier {
         //Ubah Status Menjadi isConfirmed
         await supabase.from('transactions_item').update({
           'isConfirmed': true,
-          'order_status': 'CONFIRMED',
+          'status': 'CONFIRMED',
         }).match({
           'id': transactionItemId,
         });
@@ -220,13 +220,14 @@ class TransactionProvider extends ChangeNotifier {
   }
 
   cancelTransaction({required String invoicesId}) async {
-    await xendit.ExpireInvoice(
-      invoice_id: invoicesId,
-    );
-    // await supabase.from('transactions_item').delete({
-    //   'isCancelled': true,
-    //   'order_status': 'CANCELLED',
-    // }).eq('transactions_id', transactionItemId);
+    try {
+      await xendit.ExpireInvoice(
+        invoice_id: invoicesId,
+      );
+    } catch (e) {
+      rethrow;
+    }
+    notifyListeners();
   }
 
   refundTransactionItem(
