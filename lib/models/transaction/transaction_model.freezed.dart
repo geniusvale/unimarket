@@ -30,7 +30,8 @@ mixin _$TransactionModel {
   int? get quantity => throw _privateConstructorUsedError;
   int? get total_price => throw _privateConstructorUsedError;
   String? get payment_url => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
+  @JsonKey(name: 'status')
+  String? get transactionStatus => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String? get createdAt => throw _privateConstructorUsedError;
 
@@ -56,7 +57,7 @@ abstract class $TransactionModelCopyWith<$Res> {
       int? quantity,
       int? total_price,
       String? payment_url,
-      String? status,
+      @JsonKey(name: 'status') String? transactionStatus,
       @JsonKey(name: 'created_at') String? createdAt});
 }
 
@@ -82,7 +83,7 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
     Object? quantity = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
-    Object? status = freezed,
+    Object? transactionStatus = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(_value.copyWith(
@@ -122,9 +123,9 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
           ? _value.payment_url
           : payment_url // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      transactionStatus: freezed == transactionStatus
+          ? _value.transactionStatus
+          : transactionStatus // ignore: cast_nullable_to_non_nullable
               as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
@@ -152,7 +153,7 @@ abstract class _$$_TransactionModelCopyWith<$Res>
       int? quantity,
       int? total_price,
       String? payment_url,
-      String? status,
+      @JsonKey(name: 'status') String? transactionStatus,
       @JsonKey(name: 'created_at') String? createdAt});
 }
 
@@ -176,7 +177,7 @@ class __$$_TransactionModelCopyWithImpl<$Res>
     Object? quantity = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
-    Object? status = freezed,
+    Object? transactionStatus = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(_$_TransactionModel(
@@ -216,9 +217,9 @@ class __$$_TransactionModelCopyWithImpl<$Res>
           ? _value.payment_url
           : payment_url // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      transactionStatus: freezed == transactionStatus
+          ? _value.transactionStatus
+          : transactionStatus // ignore: cast_nullable_to_non_nullable
               as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
@@ -243,7 +244,7 @@ class _$_TransactionModel
       this.quantity,
       this.total_price,
       this.payment_url,
-      this.status,
+      @JsonKey(name: 'status') this.transactionStatus,
       @JsonKey(name: 'created_at') this.createdAt});
 
   factory _$_TransactionModel.fromJson(Map<String, dynamic> json) =>
@@ -269,14 +270,15 @@ class _$_TransactionModel
   @override
   final String? payment_url;
   @override
-  final String? status;
+  @JsonKey(name: 'status')
+  final String? transactionStatus;
   @override
   @JsonKey(name: 'created_at')
   final String? createdAt;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TransactionModel(id: $id, userId: $userId, address: $address, phone: $phone, email: $email, invoicesId: $invoicesId, quantity: $quantity, total_price: $total_price, payment_url: $payment_url, status: $status, createdAt: $createdAt)';
+    return 'TransactionModel(id: $id, userId: $userId, address: $address, phone: $phone, email: $email, invoicesId: $invoicesId, quantity: $quantity, total_price: $total_price, payment_url: $payment_url, transactionStatus: $transactionStatus, createdAt: $createdAt)';
   }
 
   @override
@@ -293,7 +295,7 @@ class _$_TransactionModel
       ..add(DiagnosticsProperty('quantity', quantity))
       ..add(DiagnosticsProperty('total_price', total_price))
       ..add(DiagnosticsProperty('payment_url', payment_url))
-      ..add(DiagnosticsProperty('status', status))
+      ..add(DiagnosticsProperty('transactionStatus', transactionStatus))
       ..add(DiagnosticsProperty('createdAt', createdAt));
   }
 
@@ -315,15 +317,27 @@ class _$_TransactionModel
                 other.total_price == total_price) &&
             (identical(other.payment_url, payment_url) ||
                 other.payment_url == payment_url) &&
-            (identical(other.status, status) || other.status == status) &&
+            (identical(other.transactionStatus, transactionStatus) ||
+                other.transactionStatus == transactionStatus) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, userId, address, phone,
-      email, invoicesId, quantity, total_price, payment_url, status, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      userId,
+      address,
+      phone,
+      email,
+      invoicesId,
+      quantity,
+      total_price,
+      payment_url,
+      transactionStatus,
+      createdAt);
 
   @JsonKey(ignore: true)
   @override
@@ -350,7 +364,7 @@ abstract class _TransactionModel implements TransactionModel {
           final int? quantity,
           final int? total_price,
           final String? payment_url,
-          final String? status,
+          @JsonKey(name: 'status') final String? transactionStatus,
           @JsonKey(name: 'created_at') final String? createdAt}) =
       _$_TransactionModel;
 
@@ -377,7 +391,8 @@ abstract class _TransactionModel implements TransactionModel {
   @override
   String? get payment_url;
   @override
-  String? get status;
+  @JsonKey(name: 'status')
+  String? get transactionStatus;
   @override
   @JsonKey(name: 'created_at')
   String? get createdAt;

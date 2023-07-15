@@ -32,6 +32,8 @@ mixin _$TransactionItemsModel {
   ProductModel? get products => throw _privateConstructorUsedError;
   bool? get isConfirmed => throw _privateConstructorUsedError;
   bool? get isCancelled => throw _privateConstructorUsedError;
+  @JsonKey(name: 'status')
+  String? get transactionItemStatus => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String? get createdAt => throw _privateConstructorUsedError;
 
@@ -56,6 +58,7 @@ abstract class $TransactionItemsModelCopyWith<$Res> {
       ProductModel? products,
       bool? isConfirmed,
       bool? isCancelled,
+      @JsonKey(name: 'status') String? transactionItemStatus,
       @JsonKey(name: 'created_at') String? createdAt});
 
   $ProfileModelCopyWith<$Res>? get profiles;
@@ -84,6 +87,7 @@ class _$TransactionItemsModelCopyWithImpl<$Res,
     Object? products = freezed,
     Object? isConfirmed = freezed,
     Object? isCancelled = freezed,
+    Object? transactionItemStatus = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(_value.copyWith(
@@ -119,6 +123,10 @@ class _$TransactionItemsModelCopyWithImpl<$Res,
           ? _value.isCancelled
           : isCancelled // ignore: cast_nullable_to_non_nullable
               as bool?,
+      transactionItemStatus: freezed == transactionItemStatus
+          ? _value.transactionItemStatus
+          : transactionItemStatus // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -168,6 +176,7 @@ abstract class _$$_TransactionItemsModelCopyWith<$Res>
       ProductModel? products,
       bool? isConfirmed,
       bool? isCancelled,
+      @JsonKey(name: 'status') String? transactionItemStatus,
       @JsonKey(name: 'created_at') String? createdAt});
 
   @override
@@ -195,6 +204,7 @@ class __$$_TransactionItemsModelCopyWithImpl<$Res>
     Object? products = freezed,
     Object? isConfirmed = freezed,
     Object? isCancelled = freezed,
+    Object? transactionItemStatus = freezed,
     Object? createdAt = freezed,
   }) {
     return _then(_$_TransactionItemsModel(
@@ -230,6 +240,10 @@ class __$$_TransactionItemsModelCopyWithImpl<$Res>
           ? _value.isCancelled
           : isCancelled // ignore: cast_nullable_to_non_nullable
               as bool?,
+      transactionItemStatus: freezed == transactionItemStatus
+          ? _value.transactionItemStatus
+          : transactionItemStatus // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -250,6 +264,7 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
       this.products,
       this.isConfirmed,
       this.isCancelled,
+      @JsonKey(name: 'status') this.transactionItemStatus,
       @JsonKey(name: 'created_at') this.createdAt});
 
   factory _$_TransactionItemsModel.fromJson(Map<String, dynamic> json) =>
@@ -275,12 +290,15 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
   @override
   final bool? isCancelled;
   @override
+  @JsonKey(name: 'status')
+  final String? transactionItemStatus;
+  @override
   @JsonKey(name: 'created_at')
   final String? createdAt;
 
   @override
   String toString() {
-    return 'TransactionItemsModel(id: $id, transactionId: $transactionId, userId: $userId, profiles: $profiles, productsId: $productsId, products: $products, isConfirmed: $isConfirmed, isCancelled: $isCancelled, createdAt: $createdAt)';
+    return 'TransactionItemsModel(id: $id, transactionId: $transactionId, userId: $userId, profiles: $profiles, productsId: $productsId, products: $products, isConfirmed: $isConfirmed, isCancelled: $isCancelled, transactionItemStatus: $transactionItemStatus, createdAt: $createdAt)';
   }
 
   @override
@@ -302,14 +320,26 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
                 other.isConfirmed == isConfirmed) &&
             (identical(other.isCancelled, isCancelled) ||
                 other.isCancelled == isCancelled) &&
+            (identical(other.transactionItemStatus, transactionItemStatus) ||
+                other.transactionItemStatus == transactionItemStatus) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, transactionId, userId,
-      profiles, productsId, products, isConfirmed, isCancelled, createdAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      transactionId,
+      userId,
+      profiles,
+      productsId,
+      products,
+      isConfirmed,
+      isCancelled,
+      transactionItemStatus,
+      createdAt);
 
   @JsonKey(ignore: true)
   @override
@@ -336,6 +366,7 @@ abstract class _TransactionItemsModel implements TransactionItemsModel {
           final ProductModel? products,
           final bool? isConfirmed,
           final bool? isCancelled,
+          @JsonKey(name: 'status') final String? transactionItemStatus,
           @JsonKey(name: 'created_at') final String? createdAt}) =
       _$_TransactionItemsModel;
 
@@ -361,6 +392,9 @@ abstract class _TransactionItemsModel implements TransactionItemsModel {
   bool? get isConfirmed;
   @override
   bool? get isCancelled;
+  @override
+  @JsonKey(name: 'status')
+  String? get transactionItemStatus;
   @override
   @JsonKey(name: 'created_at')
   String? get createdAt;

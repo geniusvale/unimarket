@@ -55,7 +55,8 @@ class _TransactionsState extends State<Transactions> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Status : ${snapshot.data![index].status!}'),
+                            Text(
+                                'Status : ${snapshot.data![index].transactionStatus!}'),
                             Text(DateFormat('d MMM yyyy').format(date)),
                           ],
                         ),

@@ -22,7 +22,7 @@ class TransactionModel with _$TransactionModel {
     int? quantity,
     int? total_price,
     String? payment_url,
-    String? status,
+    @JsonKey(name: 'status') String? transactionStatus,
     @JsonKey(name: 'created_at') String? createdAt,
   }) = _TransactionModel;
 

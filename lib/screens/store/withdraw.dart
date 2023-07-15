@@ -85,6 +85,8 @@ class _WithdrawState extends State<Withdraw> {
                                   onPressed: () async {
                                     await storeProvider.withdraw(
                                       context: context,
+                                      isSeller: profileProvider
+                                          .loggedUserData.isSeller!,
                                       username: profileProvider
                                           .loggedUserData.username!,
                                       amount: profileProvider

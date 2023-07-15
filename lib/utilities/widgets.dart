@@ -143,3 +143,26 @@ class BlueButton extends StatelessWidget {
     );
   }
 }
+
+myAlertDialog({
+  required BuildContext context,
+  required String title,
+  required String content,
+  required Function() onCancel,
+  required Function() onPressed,
+}) {
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        ElevatedButton(child: const Text('Tidak'), onPressed: onCancel),
+        ElevatedButton(
+          child: const Text('Ya'),
+          onPressed: onPressed,
+        ),
+      ],
+    ),
+  );
+}

@@ -71,6 +71,12 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               // storeProvider.getMyOrderJson();
+              final currentSaldo = await supabase
+                  .from('profiles')
+                  .select('saldo')
+                  .eq('id', supabase.auth.currentUser!.id)
+                  .single();
+              print(currentSaldo);
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',

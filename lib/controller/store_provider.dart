@@ -27,13 +27,16 @@ class StoreProvider extends ChangeNotifier {
     required BuildContext context,
     required String username,
     required int amount,
+    required bool isSeller,
   }) async {
     final dateTime = DateTime.now();
     final String formattedDateTime = DateFormat.yMd().format(dateTime);
     int randomId = Random().nextInt(100);
     //Buat req api payout ke xendit
     final payout = await xendit.createPayOutLink(
-        external_id: 'WD-$randomId/$username/$formattedDateTime',
+        external_id: isSeller == true
+            ? 'WD-$randomId/$username/$formattedDateTime'
+            : 'REFUND-$randomId/$username/$formattedDateTime',
         amount: amount,
         email: supabase.auth.currentUser!.email!);
     print(payout);

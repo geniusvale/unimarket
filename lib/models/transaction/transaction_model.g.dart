@@ -17,7 +17,7 @@ _$_TransactionModel _$$_TransactionModelFromJson(Map<String, dynamic> json) =>
       quantity: json['quantity'] as int?,
       total_price: json['total_price'] as int?,
       payment_url: json['payment_url'] as String?,
-      status: json['status'] as String?,
+      transactionStatus: json['status'] as String?,
       createdAt: json['created_at'] as String?,
     );
 
@@ -32,6 +32,6 @@ Map<String, dynamic> _$$_TransactionModelToJson(_$_TransactionModel instance) =>
       'quantity': instance.quantity,
       'total_price': instance.total_price,
       'payment_url': instance.payment_url,
-      'status': instance.status,
+      'status': instance.transactionStatus,
       'created_at': instance.createdAt,
     };

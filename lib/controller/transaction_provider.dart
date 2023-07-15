@@ -74,6 +74,7 @@ class TransactionProvider extends ChangeNotifier {
         //Ubah Status Menjadi isConfirmed
         await supabase.from('transactions_item').update({
           'isConfirmed': true,
+          'order_status': 'CONFIRMED',
         }).match({
           'id': transactionItemId,
         });
@@ -101,51 +102,18 @@ class TransactionProvider extends ChangeNotifier {
   }
 
   buttonConfirmedState(
-      {bool? isConfirmed, String? status, Function()? onPressed}) {
-    //Kalau tidak mau ada return, gunakan break; pada switch case
-    switch (status) {
-      case 'UNPAID':
-        null;
-        break;
-      case 'PENDING':
-        null;
-        break;
-      case 'EXPIRED':
-        null;
-        break;
-      case 'PAID':
-        {
-          if (isConfirmed == true) {
-            return null;
-          } else {
-            return onPressed;
-          }
-        }
-      case 'SETTLED':
-        {
-          if (isConfirmed == true) {
-            return null;
-          } else {
-            return onPressed;
-          }
-        }
-      default:
-        return null;
-    }
-  }
-
-  cancelButtonState(
-      {bool? isCancelled,
-      bool? isConfirmed,
-      bool? isDisabled,
+      {bool? isConfirmed,
+      bool? isCancelled,
       String? status,
       Function()? onPressed}) {
     //Kalau tidak mau ada return, gunakan break; pada switch case
     switch (status) {
       case 'UNPAID':
-        return onPressed;
+        null;
+        break;
       case 'PENDING':
-        return onPressed;
+        null;
+        break;
       case 'EXPIRED':
         null;
         break;
@@ -153,8 +121,55 @@ class TransactionProvider extends ChangeNotifier {
         {
           if (isConfirmed == true) {
             return null;
-          } else if (isConfirmed == false) {
+          } else if (isCancelled == true) {
+            return null;
+          } else {
             return onPressed;
+          }
+        }
+      case 'SETTLED':
+        {
+          if (isConfirmed == true) {
+            return null;
+          } else if (isCancelled == true) {
+            return null;
+          } else {
+            return onPressed;
+          }
+        }
+      default:
+        return null;
+    }
+  }
+
+  refundButtonState(
+      {required bool isCancelled,
+      required bool isConfirmed,
+      required String paymentStatus,
+      required String transactionItemStatus,
+      required Function()? onPressed}) {
+    //Kalau tidak mau ada return, gunakan break; pada switch case
+    switch (paymentStatus) {
+      case 'UNPAID':
+        null;
+        break;
+      case 'PENDING':
+        {
+          null;
+          break;
+        }
+      case 'EXPIRED':
+        null;
+        break;
+      case 'PAID':
+        {
+          if (isConfirmed == true) {
+            return null;
+          } else if (isConfirmed == false &&
+              transactionItemStatus == 'PENDING') {
+            return onPressed;
+          } else if (isCancelled == true) {
+            return null;
           } else {
             return null;
           }
@@ -162,6 +177,11 @@ class TransactionProvider extends ChangeNotifier {
       case 'SETTLED':
         {
           if (isConfirmed == true) {
+            return null;
+          } else if (isConfirmed == false &&
+              transactionItemStatus == 'PENDING') {
+            return onPressed;
+          } else if (isCancelled == true) {
             return null;
           } else {
             return null;
@@ -172,21 +192,61 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
-  // cancelTransaction(int transactionItemId, int productPrice) async {
-  //   await supabase.from('transactions_item').delete({
-  //     'isCancelled': true,
-  //     'order_status': 'CANCELLED',
-  //   }).eq('transactions_id', transactionItemId);
-  // }
+  cancelTransactionButtonState({
+    required String paymentStatus,
+    required Function()? onPressed,
+  }) {
+    switch (paymentStatus) {
+      case 'SETTLED':
+        null;
+        break;
+      case 'PAID':
+        null;
+        break;
+      case 'UNPAID':
+        {
+          return onPressed;
+        }
+      case 'PENDING':
+        {
+          return onPressed;
+        }
+      case 'EXPIRED':
+        null;
+        break;
+      default:
+        return null;
+    }
+  }
 
-  refundTransactionItem(int transactionItemId, int productPrice) async {
+  cancelTransaction({required String invoicesId}) async {
+    await xendit.ExpireInvoice(
+      invoice_id: invoicesId,
+    );
+    // await supabase.from('transactions_item').delete({
+    //   'isCancelled': true,
+    //   'order_status': 'CANCELLED',
+    // }).eq('transactions_id', transactionItemId);
+  }
+
+  refundTransactionItem(
+      {required int transactionItemId, required int productPrice}) async {
     await supabase.from('transactions_item').update({
       'isCancelled': true,
-      'order_status': 'CANCELLED',
-    }).eq('transactions_id', transactionItemId);
+      'status': 'CANCELLED',
+    }).eq('id', transactionItemId);
+
+    final currentSaldo = await supabase
+        .from('profiles')
+        .select('saldo')
+        .eq('id', supabase.auth.currentUser!.id)
+        .single();
+    print(currentSaldo);
+
+    final newSaldo = currentSaldo['saldo'] + productPrice;
 
     await supabase.from('profiles').update({
-      'saldo': productPrice,
+      'saldo': newSaldo,
     }).eq('id', supabase.auth.currentUser!.id);
     notifyListeners();
   }
