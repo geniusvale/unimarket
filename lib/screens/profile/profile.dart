@@ -59,7 +59,6 @@ class _ProfileState extends State<Profile> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final sellerRequestProvider =
         Provider.of<SellerRequestProvider>(context, listen: false);
-    // print(sellerRequestProvider.getSellerRequestList());
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
@@ -74,48 +73,55 @@ class _ProfileState extends State<Profile> {
                   children: [
                     //Kalau Tidak Ada Login, Gambar Harus Ada Replacement
                     GestureDetector(
-                      onTap: () async {
-                        if (profileProvider.loggedUserData.avatar_url == null) {
-                          try {
-                            isLoading = true;
-                            showGeneralDialog(
-                              context: context,
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      loadingIndicator,
-                            );
-                            await profileProvider.uploadFotoProfil();
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            setState(() {});
-                          } catch (e) {
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            snackbar(context, e.toString(), Colors.black);
-                          }
-                        } else {
-                          try {
-                            isLoading = true;
-                            showGeneralDialog(
-                              context: context,
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      loadingIndicator,
-                            );
-                            await profileProvider.updateFotoProfil(
-                              currentAvatarUrl:
-                                  profileProvider.loggedUserData.avatar_url!,
-                            );
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            setState(() {});
-                          } catch (e) {
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            snackbar(context, e.toString(), Colors.black);
-                          }
-                        }
-                      },
+                      onTap: authProvider.unAuthorized == true
+                          ? null
+                          : () async {
+                              if (profileProvider.loggedUserData.avatar_url ==
+                                  null) {
+                                try {
+                                  isLoading = true;
+                                  showGeneralDialog(
+                                    context: context,
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        loadingIndicator,
+                                  );
+                                  await profileProvider.uploadFotoProfil();
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  setState(() {});
+                                } catch (e) {
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  snackbar(context, e.toString(), Colors.black);
+                                }
+                              } else {
+                                try {
+                                  isLoading = true;
+                                  showGeneralDialog(
+                                    context: context,
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        loadingIndicator,
+                                  );
+                                  await profileProvider.updateFotoProfil(
+                                    currentAvatarUrl: profileProvider
+                                        .loggedUserData.avatar_url!,
+                                  );
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  setState(() {});
+                                } catch (e) {
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  snackbar(context, e.toString(), Colors.black);
+                                }
+                              }
+                            },
                       child: ClipOval(
                         child: SizedBox(
                           height: 100,

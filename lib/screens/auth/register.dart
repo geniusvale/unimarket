@@ -7,6 +7,7 @@ import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/screens/homepage.dart';
 
 import '../../utilities/constants.dart';
+import '../../utilities/widgets.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);

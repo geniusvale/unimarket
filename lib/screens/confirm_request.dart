@@ -5,6 +5,7 @@ import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/models/seller_request/seller_request_model.dart';
 import 'package:unimarket/utilities/constants.dart';
 import '../controller/seller_request_provider.dart';
+import '../utilities/widgets.dart';
 
 class ConfirmSellerRequest extends StatefulWidget {
   const ConfirmSellerRequest({Key? key}) : super(key: key);

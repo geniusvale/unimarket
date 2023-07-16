@@ -12,6 +12,7 @@ import '../../controller/auth_provider.dart';
 import '../../controller/product_provider.dart';
 import '../../models/product/product_model.dart';
 import '../../utilities/constants.dart';
+import '../../utilities/widgets.dart';
 import '../auth/login.dart';
 
 class DetailProduct extends StatefulWidget {
@@ -77,7 +78,6 @@ class _DetailProductState extends State<DetailProduct> {
                       fit: BoxFit.fitHeight,
                       imageUrl:
                           '${widget.snapshot.data![widget.index].img_url}',
-                      // 'https://picsum.photos/id/${widget.index + randomNumber}/200/200',
                       progressIndicatorBuilder:
                           (context, url, downloadProgress) {
                         return CircularProgressIndicator(
@@ -113,6 +113,15 @@ class _DetailProductState extends State<DetailProduct> {
                     ),
                   ),
                   formSpacer,
+                  ActionChip(
+                    label:
+                        Text('${widget.snapshot.data![widget.index].category}'),
+                    labelStyle: const TextStyle(color: Colors.black),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
+                  ),
+                  formSpacer,
                   const Text(
                     'Informasi Penjual',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -130,9 +139,6 @@ class _DetailProductState extends State<DetailProduct> {
                               ? SvgPicture.asset('assets/images/blankpp.svg')
                               : Image.network(widget.snapshot
                                   .data![widget.index].profiles!.avatar_url!),
-                          // CachedNetworkImage(
-                          //     imageUrl:
-                          //         profileProvider.loggedUserData.avatar_url!),
                         ),
                       ),
                       const SizedBox(width: 5),

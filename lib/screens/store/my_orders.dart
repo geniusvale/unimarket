@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:unimarket/controller/store_provider.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:unimarket/models/transaction/transaction_items_model.dart';
@@ -21,14 +22,40 @@ class _MyOrdersState extends State<MyOrders> {
         future: storeProvider.getMyOrder(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return ListView.builder(
+            return ListView.separated(
               itemCount: snapshot.data!.length,
+              separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(
                     snapshot.data![index].products!.name!,
                   ),
-                  subtitle: Text(snapshot.data![index].profiles!.username!),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pembeli : ${snapshot.data![index].profiles!.username!}',
+                      ),
+                      Text(
+                        'Status Pesanan : ${snapshot.data![index].transactionItemStatus!}',
+                      ),
+                    ],
+                  ),
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        numberCurrency
+                            .format(snapshot.data![index].products!.price),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        DateFormat('dd MMMM yy').format(
+                          DateTime.parse(snapshot.data![index].createdAt!),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             );

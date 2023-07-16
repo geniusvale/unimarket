@@ -6,6 +6,7 @@ import '../../controller/profile_provider.dart';
 import '../../controller/store_provider.dart';
 import '../../models/withdraw/withdraw_model.dart';
 import '../../utilities/constants.dart';
+import '../../utilities/widgets.dart';
 
 class Withdraw extends StatefulWidget {
   const Withdraw({Key? key}) : super(key: key);
@@ -29,11 +30,12 @@ class _WithdrawState extends State<Withdraw> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            //HEADER
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(16),
               // color: Colors.grey,
               width: double.infinity,
-              height: 60,
+              height: 70,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -109,7 +111,7 @@ class _WithdrawState extends State<Withdraw> {
               ),
             ),
             const Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(16),
               child: Text(
                 'Riwayat Penarikan :',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),

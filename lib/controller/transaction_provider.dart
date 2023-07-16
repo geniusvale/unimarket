@@ -78,9 +78,17 @@ class TransactionProvider extends ChangeNotifier {
         }).match({
           'id': transactionItemId,
         });
+
+        final currentSellerSaldo = await supabase
+            .from('profiles')
+            .select('saldo')
+            .eq('id', sellerId)
+            .single();
+        final newSellerSaldo = currentSellerSaldo['saldo'] + productPrice;
+
         //Masukkan Saldo Ke Penjual
         await supabase.from('profiles').update({
-          'saldo': productPrice,
+          'saldo': newSellerSaldo,
         }).eq('id', sellerId);
       } catch (e) {
         rethrow;
@@ -92,9 +100,17 @@ class TransactionProvider extends ChangeNotifier {
       }).match({
         'id': transactionItemId,
       });
+
+      final currentSellerSaldo = await supabase
+          .from('profiles')
+          .select('saldo')
+          .eq('id', sellerId)
+          .single();
+      final newSellerSaldo = currentSellerSaldo['saldo'] + productPrice;
+
       //Masukkan Saldo Ke Penjual
       await supabase.from('profiles').update({
-        'saldo': productPrice,
+        'saldo': newSellerSaldo,
       }).eq('id', sellerId);
     }
     //Setelah isConfirmed Tombol Disabled!
