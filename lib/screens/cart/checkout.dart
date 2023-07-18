@@ -31,6 +31,8 @@ class _CheckoutState extends State<Checkout> {
         providers.Provider.of<CartProvider>(context, listen: true);
     final profileProvider =
         providers.Provider.of<ProfileProvider>(context, listen: true);
+    String? formattedUserAlamat =
+        '${profileProvider.loggedUserData!.address?.alamat} ${profileProvider.loggedUserData!.address?.type} ${profileProvider.loggedUserData!.address?.city_name}';
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
@@ -110,8 +112,9 @@ class _CheckoutState extends State<Checkout> {
                       ),
                       title: const Text('Alamat Pengiriman'),
                       subtitle: Text(
-                        profileProvider.loggedUserData!.address!.city_name ??
-                            'Lengkapi Data',
+                        profileProvider.loggedUserData!.address == null
+                            ? 'Lengkapi Data'
+                            : formattedUserAlamat,
                       ),
                       trailing: const Icon(Icons.chevron_right_rounded),
                     ),
@@ -162,7 +165,7 @@ class _CheckoutState extends State<Checkout> {
                       teks: 'BUAT PESANAN',
                       onPressed: () async {
                         if (profileProvider.loggedUserData!.address != null &&
-                            profileProvider.loggedUserData!.phone != null) {
+                            profileProvider.loggedUserData!.phone!.isNotEmpty) {
                           isLoading = true;
                           showGeneralDialog(
                             context: context,
@@ -180,7 +183,10 @@ class _CheckoutState extends State<Checkout> {
                           Navigator.of(context, rootNavigator: true).pop();
                         } else {
                           return snackbar(
-                              context, 'Harap Lengkapi Data!', Colors.red);
+                            context,
+                            'Harap Lengkapi Data & Nomor HP!',
+                            Colors.red,
+                          );
                         }
                       },
                     ),

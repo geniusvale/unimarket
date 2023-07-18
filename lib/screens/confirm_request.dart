@@ -71,8 +71,11 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                             await sellerRequestProvider.acceptSellerRequest(
                               nim: snapshot.data![index].nim!,
                               userId: snapshot.data![index].profiles!.id,
-                              phone: snapshot.data![index].profiles!.phone,
-                              address: snapshot.data![index].profiles!.address,
+                              phone: snapshot.data![index].phone,
+                              alamat: snapshot.data![index].alamat,
+                              cityId: snapshot.data![index].city_id,
+                              cityName: snapshot.data![index].city_name,
+                              cityType: snapshot.data![index].type,
                             );
                             snackbar(
                                 context, 'Konfirmasi Berhasil!', Colors.green);

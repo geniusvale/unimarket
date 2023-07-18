@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +17,7 @@ import 'package:unimarket/utilities/constants.dart';
 import 'package:unimarket/utilities/widgets.dart';
 
 import '../../controller/auth_provider.dart';
+import '../../models/address/city_model.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -30,6 +33,9 @@ class _ProfileState extends State<Profile> {
   final nimC = TextEditingController();
   final phoneC = TextEditingController();
   final addressC = TextEditingController();
+  TextEditingController? cityIdC = TextEditingController();
+  TextEditingController? cityNameC = TextEditingController();
+  TextEditingController? cityTypeC = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool? isLoading;
 
@@ -276,8 +282,10 @@ class _ProfileState extends State<Profile> {
                                       margin: const EdgeInsets.fromLTRB(
                                           16, 16, 16, 16),
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          handleBar,
+                                          Center(child: handleBar),
                                           formSpacer,
                                           TextFormField(
                                             controller: nimC,
@@ -323,6 +331,59 @@ class _ProfileState extends State<Profile> {
                                             },
                                           ),
                                           formSpacer,
+                                          const Text('Pilih Kota :'),
+                                          DropdownSearch<CityModel>(
+                                            asyncItems: (String filter) async {
+                                              final response = await Dio().get(
+                                                "https://api.rajaongkir.com/starter/city",
+                                                options: Options(headers: {
+                                                  'key': rajaOngkirKey
+                                                }),
+                                              );
+                                              final list =
+                                                  response.data['rajaongkir']
+                                                      ['results'] as List;
+                                              List<CityModel> data = list
+                                                  .map((e) =>
+                                                      CityModel.fromJson(e))
+                                                  .toList();
+                                              print(response);
+                                              return data;
+                                            },
+                                            onChanged: (CityModel? data) {
+                                              cityIdC?.text = data!.city_id!;
+                                              cityNameC?.text =
+                                                  data!.city_name!;
+                                              cityTypeC?.text = data!.type!;
+                                              print(data);
+                                            },
+                                            selectedItem: CityModel(
+                                              city_id: profileProvider
+                                                      .loggedUserData!
+                                                      .address
+                                                      ?.city_id ??
+                                                  '',
+                                              city_name: cityNameC?.text ?? '',
+                                              type: cityTypeC?.text ?? '',
+                                            ),
+                                            dropdownBuilder:
+                                                (context, selectedItem) {
+                                              return Text(
+                                                '${selectedItem?.type} ${selectedItem?.city_name}',
+                                              );
+                                            },
+                                            itemAsString: (item) =>
+                                                '${item.type} ${item.city_name!}',
+                                            popupProps: const PopupProps.dialog(
+                                              showSearchBox: true,
+                                              searchFieldProps: TextFieldProps(
+                                                decoration: InputDecoration(
+                                                    hintText: 'Cari Kota...'),
+                                              ),
+                                            ),
+                                            dropdownButtonProps:
+                                                const DropdownButtonProps(),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -333,14 +394,13 @@ class _ProfileState extends State<Profile> {
                                         onPressed: () async {
                                           try {
                                             if (_formKey.currentState!
-                                                .validate()) {
+                                                    .validate() &&
+                                                cityIdC!.text != '' &&
+                                                cityNameC!.text != '' &&
+                                                cityTypeC!.text != '') {
                                               final check =
                                                   await sellerRequestProvider
-                                                      .checkIfHasRequested(
-                                                nimC.text,
-                                                phoneC.text,
-                                                addressC.text,
-                                              );
+                                                      .checkIfHasRequested();
                                               if (check == true) {
                                                 Navigator.pop(context);
                                                 snackbar(
@@ -353,7 +413,10 @@ class _ProfileState extends State<Profile> {
                                                     .submitRequest(
                                                   nim: nimC.text,
                                                   phone: phoneC.text,
-                                                  address: addressC.text,
+                                                  alamat: addressC.text,
+                                                  cityId: cityIdC!.text,
+                                                  cityName: cityNameC!.text,
+                                                  type: cityTypeC!.text,
                                                 );
                                                 Navigator.pop(context);
                                                 snackbar(
@@ -362,6 +425,24 @@ class _ProfileState extends State<Profile> {
                                                   Colors.green,
                                                 );
                                               }
+                                            } else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    const AlertDialog(
+                                                  content: SizedBox(
+                                                    width: 100,
+                                                    height: 100,
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Harap isi semua data!',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
                                             }
                                           } catch (e) {
                                             Navigator.pop(context);

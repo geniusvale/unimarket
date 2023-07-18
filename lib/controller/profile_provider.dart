@@ -20,7 +20,7 @@ class ProfileProvider extends ChangeNotifier {
       final res = await supabase
           .from('profiles')
           .select('*, address:address_id(*)')
-          .eq('id', supabase.auth.currentUser!.id)
+          .eq('id', supabase.auth.currentSession!.user.id)
           .single();
       loggedUserData = ProfileModel.fromJson(res);
       print(res);

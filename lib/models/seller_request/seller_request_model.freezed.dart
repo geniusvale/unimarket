@@ -21,8 +21,13 @@ SellerRequestModel _$SellerRequestModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$SellerRequestModel {
   int get id => throw _privateConstructorUsedError;
-  ProfileModel? get profiles => throw _privateConstructorUsedError;
   String? get nim => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get alamat => throw _privateConstructorUsedError;
+  String? get city_id => throw _privateConstructorUsedError;
+  String? get city_name => throw _privateConstructorUsedError;
+  String? get type => throw _privateConstructorUsedError;
+  ProfileModel? get profiles => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +41,15 @@ abstract class $SellerRequestModelCopyWith<$Res> {
           SellerRequestModel value, $Res Function(SellerRequestModel) then) =
       _$SellerRequestModelCopyWithImpl<$Res, SellerRequestModel>;
   @useResult
-  $Res call({int id, ProfileModel? profiles, String? nim});
+  $Res call(
+      {int id,
+      String? nim,
+      String? phone,
+      String? alamat,
+      String? city_id,
+      String? city_name,
+      String? type,
+      ProfileModel? profiles});
 
   $ProfileModelCopyWith<$Res>? get profiles;
 }
@@ -55,22 +68,47 @@ class _$SellerRequestModelCopyWithImpl<$Res, $Val extends SellerRequestModel>
   @override
   $Res call({
     Object? id = null,
-    Object? profiles = freezed,
     Object? nim = freezed,
+    Object? phone = freezed,
+    Object? alamat = freezed,
+    Object? city_id = freezed,
+    Object? city_name = freezed,
+    Object? type = freezed,
+    Object? profiles = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      profiles: freezed == profiles
-          ? _value.profiles
-          : profiles // ignore: cast_nullable_to_non_nullable
-              as ProfileModel?,
       nim: freezed == nim
           ? _value.nim
           : nim // ignore: cast_nullable_to_non_nullable
               as String?,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      alamat: freezed == alamat
+          ? _value.alamat
+          : alamat // ignore: cast_nullable_to_non_nullable
+              as String?,
+      city_id: freezed == city_id
+          ? _value.city_id
+          : city_id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      city_name: freezed == city_name
+          ? _value.city_name
+          : city_name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
     ) as $Val);
   }
 
@@ -95,7 +133,15 @@ abstract class _$$_SellerRequestModelCopyWith<$Res>
       __$$_SellerRequestModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, ProfileModel? profiles, String? nim});
+  $Res call(
+      {int id,
+      String? nim,
+      String? phone,
+      String? alamat,
+      String? city_id,
+      String? city_name,
+      String? type,
+      ProfileModel? profiles});
 
   @override
   $ProfileModelCopyWith<$Res>? get profiles;
@@ -113,22 +159,47 @@ class __$$_SellerRequestModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? profiles = freezed,
     Object? nim = freezed,
+    Object? phone = freezed,
+    Object? alamat = freezed,
+    Object? city_id = freezed,
+    Object? city_name = freezed,
+    Object? type = freezed,
+    Object? profiles = freezed,
   }) {
     return _then(_$_SellerRequestModel(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      profiles: freezed == profiles
-          ? _value.profiles
-          : profiles // ignore: cast_nullable_to_non_nullable
-              as ProfileModel?,
       nim: freezed == nim
           ? _value.nim
           : nim // ignore: cast_nullable_to_non_nullable
               as String?,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      alamat: freezed == alamat
+          ? _value.alamat
+          : alamat // ignore: cast_nullable_to_non_nullable
+              as String?,
+      city_id: freezed == city_id
+          ? _value.city_id
+          : city_id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      city_name: freezed == city_name
+          ? _value.city_name
+          : city_name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
     ));
   }
 }
@@ -138,7 +209,15 @@ class __$$_SellerRequestModelCopyWithImpl<$Res>
 class _$_SellerRequestModel
     with DiagnosticableTreeMixin
     implements _SellerRequestModel {
-  const _$_SellerRequestModel({required this.id, this.profiles, this.nim});
+  const _$_SellerRequestModel(
+      {required this.id,
+      this.nim,
+      this.phone,
+      this.alamat,
+      this.city_id,
+      this.city_name,
+      this.type,
+      this.profiles});
 
   factory _$_SellerRequestModel.fromJson(Map<String, dynamic> json) =>
       _$$_SellerRequestModelFromJson(json);
@@ -146,13 +225,23 @@ class _$_SellerRequestModel
   @override
   final int id;
   @override
-  final ProfileModel? profiles;
-  @override
   final String? nim;
+  @override
+  final String? phone;
+  @override
+  final String? alamat;
+  @override
+  final String? city_id;
+  @override
+  final String? city_name;
+  @override
+  final String? type;
+  @override
+  final ProfileModel? profiles;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'SellerRequestModel(id: $id, profiles: $profiles, nim: $nim)';
+    return 'SellerRequestModel(id: $id, nim: $nim, phone: $phone, alamat: $alamat, city_id: $city_id, city_name: $city_name, type: $type, profiles: $profiles)';
   }
 
   @override
@@ -161,8 +250,13 @@ class _$_SellerRequestModel
     properties
       ..add(DiagnosticsProperty('type', 'SellerRequestModel'))
       ..add(DiagnosticsProperty('id', id))
-      ..add(DiagnosticsProperty('profiles', profiles))
-      ..add(DiagnosticsProperty('nim', nim));
+      ..add(DiagnosticsProperty('nim', nim))
+      ..add(DiagnosticsProperty('phone', phone))
+      ..add(DiagnosticsProperty('alamat', alamat))
+      ..add(DiagnosticsProperty('city_id', city_id))
+      ..add(DiagnosticsProperty('city_name', city_name))
+      ..add(DiagnosticsProperty('type', type))
+      ..add(DiagnosticsProperty('profiles', profiles));
   }
 
   @override
@@ -171,14 +265,21 @@ class _$_SellerRequestModel
         (other.runtimeType == runtimeType &&
             other is _$_SellerRequestModel &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.nim, nim) || other.nim == nim) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.alamat, alamat) || other.alamat == alamat) &&
+            (identical(other.city_id, city_id) || other.city_id == city_id) &&
+            (identical(other.city_name, city_name) ||
+                other.city_name == city_name) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.profiles, profiles) ||
-                other.profiles == profiles) &&
-            (identical(other.nim, nim) || other.nim == nim));
+                other.profiles == profiles));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, profiles, nim);
+  int get hashCode => Object.hash(
+      runtimeType, id, nim, phone, alamat, city_id, city_name, type, profiles);
 
   @JsonKey(ignore: true)
   @override
@@ -198,8 +299,13 @@ class _$_SellerRequestModel
 abstract class _SellerRequestModel implements SellerRequestModel {
   const factory _SellerRequestModel(
       {required final int id,
-      final ProfileModel? profiles,
-      final String? nim}) = _$_SellerRequestModel;
+      final String? nim,
+      final String? phone,
+      final String? alamat,
+      final String? city_id,
+      final String? city_name,
+      final String? type,
+      final ProfileModel? profiles}) = _$_SellerRequestModel;
 
   factory _SellerRequestModel.fromJson(Map<String, dynamic> json) =
       _$_SellerRequestModel.fromJson;
@@ -207,9 +313,19 @@ abstract class _SellerRequestModel implements SellerRequestModel {
   @override
   int get id;
   @override
-  ProfileModel? get profiles;
-  @override
   String? get nim;
+  @override
+  String? get phone;
+  @override
+  String? get alamat;
+  @override
+  String? get city_id;
+  @override
+  String? get city_name;
+  @override
+  String? get type;
+  @override
+  ProfileModel? get profiles;
   @override
   @JsonKey(ignore: true)
   _$$_SellerRequestModelCopyWith<_$_SellerRequestModel> get copyWith =>

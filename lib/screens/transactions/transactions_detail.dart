@@ -36,6 +36,8 @@ class _TransactionDetailState extends State<TransactionDetail> {
         Provider.of<TransactionProvider>(context, listen: false);
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
+    String? formattedUserAlamat =
+        '${profileProvider.loggedUserData!.address?.alamat} ${profileProvider.loggedUserData!.address?.type} ${profileProvider.loggedUserData!.address?.city_name}';
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Transaksi'),
@@ -424,7 +426,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             const Expanded(child: Text('Alamat Pengiriman : ')),
                             Expanded(
                               child: Text(
-                                '${profileProvider.loggedUserData!.address}',
+                                formattedUserAlamat,
                                 textAlign: TextAlign.right,
                               ),
                             ),
