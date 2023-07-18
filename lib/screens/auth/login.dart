@@ -25,14 +25,11 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback(
-    //   (_) {},
-    // );
-    checkIsLoggedIn(context);
+    checkIsLoggedIn();
     super.initState();
   }
 
-  checkIsLoggedIn(BuildContext context) async {
+  checkIsLoggedIn() async {
     final loginState = await SharedPreferences.getInstance();
     final isLoggedIn = loginState.getBool('isLoggedIn') ?? false;
     final profileProvider =
@@ -42,7 +39,7 @@ class _LoginState extends State<Login> {
     //Kalau Ada Sesi Login, Auto Ke Halaman HomePage
     if (isLoggedIn == true) {
       //INIT dan Ambil Data Profil
-      await profileProvider.getProfileDataFromAuth(context);
+      await profileProvider.getProfileDataFromAuth();
       authProvider.unAuthorized = false;
       Navigator.pushReplacement(
         context,
@@ -131,8 +128,7 @@ class _LoginState extends State<Login> {
                             );
                             authProvider.emailC.clear();
                             authProvider.passwordC.clear();
-                            await profileProvider
-                                .getProfileDataFromAuth(context);
+                            await profileProvider.getProfileDataFromAuth();
                             isLoading = false;
                             Navigator.of(context, rootNavigator: true).pop();
                             Navigator.pushReplacement(

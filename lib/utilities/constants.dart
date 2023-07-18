@@ -10,6 +10,7 @@ final xendit = Xendit(
   apiKey:
       'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
 );
+const rajaOngkirKey = '11d1c93b841dcbc68ad4456734b24533';
 
 // final appTheme = ThemeData(
 //   useMaterial3: true,
@@ -100,5 +101,3 @@ modal(BuildContext context) {
     },
   );
 }
-
-

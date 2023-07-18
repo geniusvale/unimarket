@@ -50,8 +50,7 @@ class _TransactionsState extends State<Transactions> {
                         //     ),
                         //   ),
                         // ),
-                        //Harusnya Tampil ExternalID dari Xendit
-                        title: Text('Transaksi : ${snapshot.data![index].id}'),
+                        title: Text('#${snapshot.data![index].externalId}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

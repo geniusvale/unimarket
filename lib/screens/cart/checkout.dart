@@ -110,7 +110,7 @@ class _CheckoutState extends State<Checkout> {
                       ),
                       title: const Text('Alamat Pengiriman'),
                       subtitle: Text(
-                        profileProvider.loggedUserData.address ??
+                        profileProvider.loggedUserData!.address!.city_name ??
                             'Lengkapi Data',
                       ),
                       trailing: const Icon(Icons.chevron_right_rounded),
@@ -161,8 +161,8 @@ class _CheckoutState extends State<Checkout> {
                       padding: 8,
                       teks: 'BUAT PESANAN',
                       onPressed: () async {
-                        if (profileProvider.loggedUserData.address != null &&
-                            profileProvider.loggedUserData.phone != null) {
+                        if (profileProvider.loggedUserData!.address != null &&
+                            profileProvider.loggedUserData!.phone != null) {
                           isLoading = true;
                           showGeneralDialog(
                             context: context,
@@ -173,6 +173,7 @@ class _CheckoutState extends State<Checkout> {
                           await cartProvider.makeOrderAndPay(
                             context: context,
                             snapshotData: widget.snapshotData!,
+                            userData: profileProvider.loggedUserData!,
                             subtotal: widget.subtotal!,
                           );
                           isLoading = false;

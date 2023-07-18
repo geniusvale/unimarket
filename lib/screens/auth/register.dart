@@ -19,6 +19,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   bool _passwordVisible = true;
   bool kIsWeb = true;
+  bool? isLoading;
   final formKey = GlobalKey<FormState>();
   final usernameC = TextEditingController();
   final emailC = TextEditingController();
@@ -113,15 +114,24 @@ class _RegisterState extends State<Register> {
                         onPressed: () async {
                           try {
                             if (formKey.currentState!.validate()) {
+                              isLoading = true;
+                              showGeneralDialog(
+                                context: context,
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        loadingIndicator,
+                              );
                               await authProvider.register(
                                 usernameC.text,
                                 emailC.text,
                                 passwordC.text,
                               );
-                              await profileProvider
-                                  .getProfileDataFromAuth(context);
+                              await profileProvider.getProfileDataFromAuth();
+                              isLoading = false;
+                              Navigator.of(context, rootNavigator: true).pop();
                               snackbar(context, 'Akun Berhasil Dibuat!',
                                   Colors.black);
+
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

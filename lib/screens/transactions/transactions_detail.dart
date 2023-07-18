@@ -424,7 +424,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             const Expanded(child: Text('Alamat Pengiriman : ')),
                             Expanded(
                               child: Text(
-                                '${profileProvider.loggedUserData.address}',
+                                '${profileProvider.loggedUserData!.address}',
                                 textAlign: TextAlign.right,
                               ),
                             ),

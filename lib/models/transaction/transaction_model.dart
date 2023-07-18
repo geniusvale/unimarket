@@ -19,6 +19,7 @@ class TransactionModel with _$TransactionModel {
     String? phone,
     String? email,
     @JsonKey(name: 'invoices_id') String? invoicesId,
+    @JsonKey(name: 'external_id') String? externalId,
     int? quantity,
     int? total_price,
     String? payment_url,

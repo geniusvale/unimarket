@@ -76,7 +76,7 @@ class _ProfileState extends State<Profile> {
                       onTap: authProvider.unAuthorized == true
                           ? null
                           : () async {
-                              if (profileProvider.loggedUserData.avatar_url ==
+                              if (profileProvider.loggedUserData!.avatar_url ==
                                   null) {
                                 try {
                                   isLoading = true;
@@ -108,7 +108,7 @@ class _ProfileState extends State<Profile> {
                                   );
                                   await profileProvider.updateFotoProfil(
                                     currentAvatarUrl: profileProvider
-                                        .loggedUserData.avatar_url!,
+                                        .loggedUserData!.avatar_url!,
                                   );
                                   isLoading = false;
                                   Navigator.of(context, rootNavigator: true)
@@ -126,11 +126,11 @@ class _ProfileState extends State<Profile> {
                         child: SizedBox(
                           height: 100,
                           width: 100,
-                          child: profileProvider.loggedUserData.avatar_url ==
+                          child: profileProvider.loggedUserData!.avatar_url ==
                                   null
                               ? SvgPicture.asset('assets/images/blankpp.svg')
                               : Image.network(
-                                  profileProvider.loggedUserData.avatar_url!,
+                                  profileProvider.loggedUserData!.avatar_url!,
                                   fit: BoxFit.fill,
                                 ),
                           // CachedNetworkImage(
@@ -186,16 +186,16 @@ class _ProfileState extends State<Profile> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    profileProvider.loggedUserData.username
+                                    profileProvider.loggedUserData!.username
                                         .toString(),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Text(profileProvider.loggedUserData.email
+                                  Text(profileProvider.loggedUserData!.email
                                       .toString()),
                                   const Text('STATUS'),
                                   Text(
-                                    'Saldo : ${numberCurrency.format(profileProvider.loggedUserData.saldo ?? 0)}',
+                                    'Saldo : ${numberCurrency.format(profileProvider.loggedUserData!.saldo ?? 0)}',
                                   ),
                                 ],
                               ),
@@ -233,8 +233,8 @@ class _ProfileState extends State<Profile> {
                 },
               ),
               Visibility(
-                visible: profileProvider.loggedUserData.isSeller == false &&
-                    profileProvider.loggedUserData.isAdmin == false,
+                visible: profileProvider.loggedUserData!.isSeller == false &&
+                    profileProvider.loggedUserData!.isAdmin == false,
                 child: ListTile(
                   leading: SvgPicture.asset(
                     'assets/icons/edit.svg',
@@ -387,7 +387,7 @@ class _ProfileState extends State<Profile> {
               ),
               //Untuk Admin, Perbaiki dan Implementasi Nanti!
               Visibility(
-                visible: profileProvider.loggedUserData.isAdmin == true,
+                visible: profileProvider.loggedUserData!.isAdmin == true,
                 child: ListTile(
                   leading: SvgPicture.asset(
                     'assets/icons/list-check.svg',
@@ -417,7 +417,7 @@ class _ProfileState extends State<Profile> {
               ),
               //Kalau Tidak Ada Login, Redirect Ke Login Page
               Visibility(
-                visible: profileProvider.loggedUserData.isSeller == true,
+                visible: profileProvider.loggedUserData!.isSeller == true,
                 child: ListTile(
                   leading: SvgPicture.asset(
                     'assets/icons/shop.svg',

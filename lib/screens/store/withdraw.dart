@@ -40,15 +40,15 @@ class _WithdrawState extends State<Withdraw> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Saldo : ${numberCurrency.format(profileProvider.loggedUserData.saldo ?? 0)}',
+                    'Saldo : ${numberCurrency.format(profileProvider.loggedUserData!.saldo ?? 0)}',
                     style: const TextStyle(
                         fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
                     child: const Text('Tarik Dana'),
                     onPressed: () async {
-                      if (profileProvider.loggedUserData.saldo == 0 &&
-                          profileProvider.loggedUserData.saldo! < 50000) {
+                      if (profileProvider.loggedUserData!.saldo == 0 &&
+                          profileProvider.loggedUserData!.saldo! < 50000) {
                         return snackbar(
                             context,
                             'Saldo Tidak Cukup! Minimal Penarikan Rp.50,000',
@@ -66,7 +66,7 @@ class _WithdrawState extends State<Withdraw> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                        'Anda akan menarik saldo sejumlah :\n${numberCurrency.format(profileProvider.loggedUserData.saldo! - 2500)}'),
+                                        'Anda akan menarik saldo sejumlah :\n${numberCurrency.format(profileProvider.loggedUserData!.saldo! - 2500)}'),
                                     Text(
                                         'Biaya penarikan : ${numberCurrency.format(2500)}'),
                                     formSpacer,
@@ -88,11 +88,11 @@ class _WithdrawState extends State<Withdraw> {
                                     await storeProvider.withdraw(
                                       context: context,
                                       isSeller: profileProvider
-                                          .loggedUserData.isSeller!,
+                                          .loggedUserData!.isSeller!,
                                       username: profileProvider
-                                          .loggedUserData.username!,
+                                          .loggedUserData!.username!,
                                       amount: profileProvider
-                                              .loggedUserData.saldo! -
+                                              .loggedUserData!.saldo! -
                                           2500,
                                     );
                                   },

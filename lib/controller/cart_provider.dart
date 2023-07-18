@@ -4,6 +4,7 @@ import 'package:unimarket/models/cart/cart_items/cart_items_model.dart';
 import 'package:unimarket/screens/cart/xendit_webview.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../models/profile/profile_model.dart';
 import '../utilities/constants.dart';
 
 class CartProvider extends ChangeNotifier {
@@ -109,12 +110,13 @@ class CartProvider extends ChangeNotifier {
   makeOrderAndPay(
       {required BuildContext context,
       required List<CartItemsModel> snapshotData,
+      required ProfileModel userData,
       required int subtotal}) async {
     //Make new transactions to db
     await supabase.from('transactions').insert({
       'users_id': supabase.auth.currentUser!.id,
-      'address': '',
-      'phone': '',
+      'address': userData.address,
+      'phone': userData.phone,
       'email': supabase.auth.currentUser!.email,
       'total_price': subtotal,
       'payment_url': '',
@@ -158,7 +160,7 @@ class CartProvider extends ChangeNotifier {
       endpoint: 'POST https://api.xendit.co/v2/invoices',
       headers: {'for-user-id': ''},
       parameters: {
-        'external_id': 'INV-${transactionId['id']}-$formattedDateTime',
+        'external_id': 'INV-${transactionId['id']}-${userData.username}-$formattedDateTime',
         'amount': subtotal,
         'payer_email': supabase.auth.currentUser!.email,
         'description': "Invoice #123"
@@ -173,6 +175,7 @@ class CartProvider extends ChangeNotifier {
     await supabase.from('transactions').update({
       'payment_url': paymentUrl,
       'invoices_id': res['id'],
+      'external_id' : res['external_id'],
     }).eq(
       'id',
       '${transactionId['id']}',

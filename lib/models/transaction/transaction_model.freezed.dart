@@ -27,6 +27,8 @@ mixin _$TransactionModel {
   String? get email => throw _privateConstructorUsedError;
   @JsonKey(name: 'invoices_id')
   String? get invoicesId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'external_id')
+  String? get externalId => throw _privateConstructorUsedError;
   int? get quantity => throw _privateConstructorUsedError;
   int? get total_price => throw _privateConstructorUsedError;
   String? get payment_url => throw _privateConstructorUsedError;
@@ -54,6 +56,7 @@ abstract class $TransactionModelCopyWith<$Res> {
       String? phone,
       String? email,
       @JsonKey(name: 'invoices_id') String? invoicesId,
+      @JsonKey(name: 'external_id') String? externalId,
       int? quantity,
       int? total_price,
       String? payment_url,
@@ -80,6 +83,7 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
     Object? phone = freezed,
     Object? email = freezed,
     Object? invoicesId = freezed,
+    Object? externalId = freezed,
     Object? quantity = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
@@ -110,6 +114,10 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
       invoicesId: freezed == invoicesId
           ? _value.invoicesId
           : invoicesId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      externalId: freezed == externalId
+          ? _value.externalId
+          : externalId // ignore: cast_nullable_to_non_nullable
               as String?,
       quantity: freezed == quantity
           ? _value.quantity
@@ -150,6 +158,7 @@ abstract class _$$_TransactionModelCopyWith<$Res>
       String? phone,
       String? email,
       @JsonKey(name: 'invoices_id') String? invoicesId,
+      @JsonKey(name: 'external_id') String? externalId,
       int? quantity,
       int? total_price,
       String? payment_url,
@@ -174,6 +183,7 @@ class __$$_TransactionModelCopyWithImpl<$Res>
     Object? phone = freezed,
     Object? email = freezed,
     Object? invoicesId = freezed,
+    Object? externalId = freezed,
     Object? quantity = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
@@ -204,6 +214,10 @@ class __$$_TransactionModelCopyWithImpl<$Res>
       invoicesId: freezed == invoicesId
           ? _value.invoicesId
           : invoicesId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      externalId: freezed == externalId
+          ? _value.externalId
+          : externalId // ignore: cast_nullable_to_non_nullable
               as String?,
       quantity: freezed == quantity
           ? _value.quantity
@@ -241,6 +255,7 @@ class _$_TransactionModel
       this.phone,
       this.email,
       @JsonKey(name: 'invoices_id') this.invoicesId,
+      @JsonKey(name: 'external_id') this.externalId,
       this.quantity,
       this.total_price,
       this.payment_url,
@@ -264,6 +279,9 @@ class _$_TransactionModel
   @JsonKey(name: 'invoices_id')
   final String? invoicesId;
   @override
+  @JsonKey(name: 'external_id')
+  final String? externalId;
+  @override
   final int? quantity;
   @override
   final int? total_price;
@@ -278,7 +296,7 @@ class _$_TransactionModel
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TransactionModel(id: $id, userId: $userId, address: $address, phone: $phone, email: $email, invoicesId: $invoicesId, quantity: $quantity, total_price: $total_price, payment_url: $payment_url, transactionStatus: $transactionStatus, createdAt: $createdAt)';
+    return 'TransactionModel(id: $id, userId: $userId, address: $address, phone: $phone, email: $email, invoicesId: $invoicesId, externalId: $externalId, quantity: $quantity, total_price: $total_price, payment_url: $payment_url, transactionStatus: $transactionStatus, createdAt: $createdAt)';
   }
 
   @override
@@ -292,6 +310,7 @@ class _$_TransactionModel
       ..add(DiagnosticsProperty('phone', phone))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('invoicesId', invoicesId))
+      ..add(DiagnosticsProperty('externalId', externalId))
       ..add(DiagnosticsProperty('quantity', quantity))
       ..add(DiagnosticsProperty('total_price', total_price))
       ..add(DiagnosticsProperty('payment_url', payment_url))
@@ -311,6 +330,8 @@ class _$_TransactionModel
             (identical(other.email, email) || other.email == email) &&
             (identical(other.invoicesId, invoicesId) ||
                 other.invoicesId == invoicesId) &&
+            (identical(other.externalId, externalId) ||
+                other.externalId == externalId) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
             (identical(other.total_price, total_price) ||
@@ -333,6 +354,7 @@ class _$_TransactionModel
       phone,
       email,
       invoicesId,
+      externalId,
       quantity,
       total_price,
       payment_url,
@@ -361,6 +383,7 @@ abstract class _TransactionModel implements TransactionModel {
           final String? phone,
           final String? email,
           @JsonKey(name: 'invoices_id') final String? invoicesId,
+          @JsonKey(name: 'external_id') final String? externalId,
           final int? quantity,
           final int? total_price,
           final String? payment_url,
@@ -384,6 +407,9 @@ abstract class _TransactionModel implements TransactionModel {
   @override
   @JsonKey(name: 'invoices_id')
   String? get invoicesId;
+  @override
+  @JsonKey(name: 'external_id')
+  String? get externalId;
   @override
   int? get quantity;
   @override

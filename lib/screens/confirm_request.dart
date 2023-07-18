@@ -38,7 +38,9 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                       child: snapshot.data![index].profiles!.avatar_url == null
                           ? SvgPicture.asset('assets/images/blankpp.svg')
                           : Image.network(
-                              snapshot.data![index].profiles!.avatar_url!),
+                              snapshot.data![index].profiles!.avatar_url!,
+                              fit: BoxFit.fill,
+                            ),
                     ),
                   ),
                   title: Text(snapshot.data![index].profiles!.username!),
