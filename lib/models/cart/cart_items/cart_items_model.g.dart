@@ -8,7 +8,7 @@ part of 'cart_items_model.dart';
 
 _$_CartItemsModel _$$_CartItemsModelFromJson(Map<String, dynamic> json) =>
     _$_CartItemsModel(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       cart_id: json['cart_id'] as int?,
       product_id: json['product_id'] as int?,
       products: json['products'] == null

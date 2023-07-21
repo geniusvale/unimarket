@@ -287,10 +287,37 @@ class _DetailProductState extends State<DetailProduct> {
                         final isSameProduct =
                             await cartProvider.checkIfHasSameCartItems(
                           productId: widget.snapshot.data![widget.index].id!,
+                          sellerId:
+                              widget.snapshot.data![widget.index].seller_id!,
+                          productCategory:
+                              widget.snapshot.data![widget.index].category,
+                          context: context,
                         );
+                        print('isSameProduct $isSameProduct');
                         if (isSameProduct == true) {
                           snackbar(
-                              context, 'Sudah Ada di Keranjang!', Colors.black);
+                            context,
+                            'Sudah Ada di Keranjang!',
+                            Colors.black,
+                          );
+                        } else if (isSameProduct == false &&
+                            widget.snapshot.data![widget.index].category ==
+                                'Produk Fisik') {
+                          final checkDifferentProdukFisikSeller =
+                              await cartProvider.checkAlreadyProdukFisikInCart(
+                            cartId: cartProvider.currentCartId,
+                            productCategory:
+                                widget.snapshot.data![widget.index].category,
+                            sellerId:
+                                widget.snapshot.data![widget.index].seller_id,
+                          );
+                          if (checkDifferentProdukFisikSeller == true) {
+                            snackbar(
+                              context,
+                              'Hanya bisa menambah produk fisik dari seller yang sama yang sudah ada di keranjang!',
+                              Colors.black,
+                            );
+                          }
                         } else {
                           try {
                             await cartProvider.addToCart(

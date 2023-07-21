@@ -1,14 +1,22 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:unimarket/models/cart/cart_items/cart_items_model.dart';
+import 'package:unimarket/models/courier/courier_model.dart';
 import 'package:unimarket/screens/cart/xendit_webview.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../models/profile/profile_model.dart';
 import '../utilities/constants.dart';
 
 class CartProvider extends ChangeNotifier {
   int? currentCartId;
+  List<CartItemsModel>? data = [];
+  // int newSubtotal = cartProvider.jumlahkanSubtotal(data);
+  // subtotal = newSubtotal;
+  List<CartItemsModel> filteredCartItemData = [];
+
+  int currentOngkirVal = 0;
+  String? currentShipmentService;
 
   Future<bool> checkIfHasCart(BuildContext context) async {
     bool? hasCart;
@@ -35,29 +43,64 @@ class CartProvider extends ChangeNotifier {
     return hasCart = true;
   }
 
-  Future<bool> checkIfHasSameCartItems({required int productId}) async {
+  Future<bool> checkIfHasSameCartItems({
+    required int productId,
+    String? sellerId,
+    String? productCategory,
+    required BuildContext context,
+  }) async {
+    //Mengambil CartID
     final getCartId = await supabase.from('cart').select<List<Map>>('id').match(
       {'users_id': supabase.auth.currentUser!.id},
     );
-    print('cekcek $getCartId');
+    print('CART ID $getCartId');
     final cartId = getCartId[0]['id'];
     currentCartId = cartId;
     notifyListeners();
+    //MENGAMBIL ITEM DUPLIKAT
     final result = await supabase
         .from('cart_items')
-        .select<List<Map>>('cart_id, product_id')
+        .select<List<Map>>('*, cart_id, product_id')
         .match(
       {
         'cart_id': cartId,
         'product_id': productId,
       },
     );
+
     print('same cartItem result $result');
+    //Kalau Gak Ada Yang Sama dan Bukan Produk Fisik
     if (result.isEmpty) {
-      print('Tidak ada cartItem yang sama');
+      print('Tidak ada Item yang sama');
       return false;
     } else {
       return true;
+    }
+  }
+
+  Future<bool> checkAlreadyProdukFisikInCart(
+      {int? cartId, String? productCategory, String? sellerId}) async {
+    //Mengambil CartID
+    final getCartId = await supabase.from('cart').select<List<Map>>('id').match(
+      {'users_id': supabase.auth.currentUser!.id},
+    );
+    final cartId = getCartId[0]['id'];
+    notifyListeners();
+    //MENGAMBIL APAKAH SUDAH ADA PRODUK FISIK DI CART
+    final anyProdukFisikInCart = await supabase
+        .from('cart_items')
+        .select<List<Map>>(
+          'cart_id, product_id, products:product_id(category, seller_id)',
+        )
+        .match({
+      'cart_id': cartId,
+      'products.category': productCategory,
+    });
+    if (anyProdukFisikInCart.first['products']['seller_id'] != sellerId &&
+        productCategory == 'Produk Fisik') {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -89,17 +132,30 @@ class CartProvider extends ChangeNotifier {
     return newSubtotal;
   }
 
+  int jumlahkanBeratGram(List<CartItemsModel> data) {
+    int newTotalGram = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].products!.category == 'Produk Fisik') {
+        int? value = data[i].products!.weight;
+        newTotalGram += value!;
+      }
+    }
+    // notifyListeners();
+    return newTotalGram;
+  }
+
   Future<List<CartItemsModel>> getMyCart() async {
     final result = await supabase
         .from('cart_items')
         .select<List<Map<String, dynamic>>>(
-          '*, products!inner(*)',
+          '*, products:product_id(*, profiles:seller_id(*, address:address_id(*)))',
         ) //Inner Join Langsung Ke ForeignKey Table
         .match({'user_id': supabase.auth.currentUser!.id});
-    final data = result.map((e) => CartItemsModel.fromJson(e)).toList();
+    final item = result.map((e) => CartItemsModel.fromJson(e)).toList();
     // print(result);
+    data!.addAll(item);
     notifyListeners();
-    return data;
+    return item;
   }
 
   deleteCartItems(int cartItemsId) async {
@@ -160,7 +216,8 @@ class CartProvider extends ChangeNotifier {
       endpoint: 'POST https://api.xendit.co/v2/invoices',
       headers: {'for-user-id': ''},
       parameters: {
-        'external_id': 'INV-${transactionId['id']}-${userData.username}-$formattedDateTime',
+        'external_id':
+            'INV-${transactionId['id']}-${userData.username}-$formattedDateTime',
         'amount': subtotal,
         'payer_email': supabase.auth.currentUser!.email,
         'description': "Invoice #123"
@@ -175,12 +232,11 @@ class CartProvider extends ChangeNotifier {
     await supabase.from('transactions').update({
       'payment_url': paymentUrl,
       'invoices_id': res['id'],
-      'external_id' : res['external_id'],
+      'external_id': res['external_id'],
     }).eq(
       'id',
       '${transactionId['id']}',
     );
-
     //LAUNCH TO WEBVIEW
     try {
       await Navigator.push(
@@ -189,17 +245,64 @@ class CartProvider extends ChangeNotifier {
           builder: (context) => XenditWebview(url: paymentUrl),
         ),
       );
-      // await launchUrlString(
-      //   paymentUrl,
-      //   mode: LaunchMode.inAppWebView, //enables WebView
-      //   webViewConfiguration: const WebViewConfiguration(
-      //     enableJavaScript: true,
-      //   ),
-      // );
     } catch (e) {
       rethrow;
     }
     //Kembali ke halaman dan refresh dari webview???
     //Mengatur Callback???
+  }
+
+  hitungOngkir(
+      {BuildContext? context,
+      String? originId,
+      String? destinationId,
+      String? gram,
+      String? kurir}) async {
+    try {
+      final response = await Dio().post(
+        "https://api.rajaongkir.com/starter/cost",
+        data: {
+          'origin': originId,
+          'destination': destinationId,
+          'weight': gram,
+          'courier': kurir,
+        },
+        options: Options(
+          headers: {'key': rajaOngkirKey},
+          contentType: 'application/x-www-form-urlencoded',
+        ),
+      );
+      final list = response.data['rajaongkir']['results'] as List<dynamic>;
+      List<CourierModel> listAllCourierInfo =
+          list.map((e) => CourierModel.fromJson(e)).toList();
+      CourierModel courier = listAllCourierInfo[0];
+      int ongkirValue = 0;
+      await showModalBottomSheet(
+        context: context!,
+        builder: (ctx) {
+          return ListView.builder(
+            itemCount: courier.costs!.length,
+            itemBuilder: (ctx2, index) => ListTile(
+              onTap: () {
+                ongkirValue = courier.costs![index].cost![0].value!;
+                Navigator.of(context).pop();
+              },
+              title: Text('${courier.costs![index].description}'),
+              subtitle: Text('${courier.costs![index].service}'),
+              trailing: Text(
+                numberCurrency.format(courier.costs![index].cost![0].value),
+              ),
+            ),
+          );
+        },
+      );
+      print('Ongkir Value : $ongkirValue');
+      currentOngkirVal = ongkirValue;
+      notifyListeners();
+      // return ongkirValue;
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -72,11 +71,18 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               // storeProvider.getMyOrderJson();
-              final response = await Dio().get(
-                "https://api.rajaongkir.com/starter/city",
-                options: Options(headers: {'key': rajaOngkirKey}),
+              // final response = await Dio().get(
+              //   "https://api.rajaongkir.com/starter/city",
+              //   options: Options(headers: {'key': rajaOngkirKey}),
+              // );
+              // print(response.data);
+              final ongkir = await cartProvider.hitungOngkir(
+                originId: '153',
+                destinationId: '153',
+                gram: '100',
+                kurir: 'jne',
               );
-              print(response.data);
+              print('INI HASIL ONGKIR : $ongkir');
             },
             icon: SvgPicture.asset(
               'assets/icons/bell.svg',

@@ -12,9 +12,10 @@ part 'product_model.g.dart';
 @freezed
 class ProductModel with _$ProductModel {
   const factory ProductModel({
-    required int? id,
+    int? id,
     String? name,
     int? price,
+    int? weight,
     String? img_url,
     String? file_url,
     String? desc,

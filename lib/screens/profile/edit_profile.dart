@@ -139,6 +139,10 @@ class _EditProfileState extends State<EditProfile> {
                     decoration: InputDecoration(hintText: 'Cari Kota...'),
                   ),
                 ),
+                dropdownDecoratorProps: const DropDownDecoratorProps(
+                  dropdownSearchDecoration:
+                      InputDecoration(hintText: 'Pilih kota...'),
+                ),
               ),
               formSpacer,
               BlueButton(

@@ -64,7 +64,7 @@ class _CheckoutState extends State<Checkout> {
             ],
           ),
           Flexible(
-            flex: 1,
+            flex: 2,
             fit: FlexFit.tight,
             child: ListView.separated(
               itemCount: widget.snapshotData!.length,
@@ -94,105 +94,102 @@ class _CheckoutState extends State<Checkout> {
           Flexible(
             flex: 1,
             fit: FlexFit.tight,
-            child: SizedBox(
-              height: 120,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Divider(),
-                    ListTile(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EditProfile(),
-                        ),
-                      ),
-                      title: const Text('Alamat Pengiriman'),
-                      subtitle: Text(
-                        profileProvider.loggedUserData!.address == null
-                            ? 'Lengkapi Data'
-                            : formattedUserAlamat,
-                      ),
-                      trailing: const Icon(Icons.chevron_right_rounded),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(height: 1),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfile(),
                     ),
-                    const Divider(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Ongkos Kirim : '),
-                          Text(numberCurrency.format(0)),
-                        ],
-                      ),
-                    ),
-                    //Jika ada barang fisik, maka hitung ongkos kirim nya! Buat fungsi IF nanti.
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Jumlah : '),
-                          Text('${widget.snapshotData!.length} Item'),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Subtotal : ',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            numberCurrency.format(widget.subtotal),
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                    formSpacer,
-                    BlueButton(
-                      padding: 8,
-                      teks: 'BUAT PESANAN',
-                      onPressed: () async {
-                        if (profileProvider.loggedUserData!.address != null &&
-                            profileProvider.loggedUserData!.phone!.isNotEmpty) {
-                          isLoading = true;
-                          showGeneralDialog(
-                            context: context,
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    loadingIndicator,
-                          );
-                          await cartProvider.makeOrderAndPay(
-                            context: context,
-                            snapshotData: widget.snapshotData!,
-                            userData: profileProvider.loggedUserData!,
-                            subtotal: widget.subtotal!,
-                          );
-                          isLoading = false;
-                          Navigator.of(context, rootNavigator: true).pop();
-                        } else {
-                          return snackbar(
-                            context,
-                            'Harap Lengkapi Data & Nomor HP!',
-                            Colors.red,
-                          );
-                        }
-                      },
-                    ),
-                  ],
+                  ),
+                  title: const Text('Alamat Pengiriman'),
+                  subtitle: Text(
+                    profileProvider.loggedUserData!.address == null
+                        ? 'Lengkapi Data'
+                        : formattedUserAlamat,
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
                 ),
-              ),
+                const Divider(height: 1),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Ongkos Kirim : '),
+                      Text(
+                        numberCurrency.format(cartProvider.currentOngkirVal),
+                      ),
+                    ],
+                  ),
+                ),
+                //Jika ada barang fisik, maka hitung ongkos kirim nya! Buat fungsi IF nanti.
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Jumlah : '),
+                      Text('${widget.snapshotData!.length} Item'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Subtotal : ',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        numberCurrency.format(
+                          widget.subtotal! + cartProvider.currentOngkirVal,
+                        ),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                BlueButton(
+                  padding: 8,
+                  teks: 'BUAT PESANAN',
+                  onPressed: () async {
+                    if (profileProvider.loggedUserData!.address != null &&
+                        profileProvider.loggedUserData!.phone!.isNotEmpty) {
+                      isLoading = true;
+                      showGeneralDialog(
+                        context: context,
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            loadingIndicator,
+                      );
+                      await cartProvider.makeOrderAndPay(
+                        context: context,
+                        snapshotData: widget.snapshotData!,
+                        userData: profileProvider.loggedUserData!,
+                        subtotal: widget.subtotal!,
+                      );
+                      isLoading = false;
+                      Navigator.of(context, rootNavigator: true).pop();
+                    } else {
+                      return snackbar(
+                        context,
+                        'Harap Lengkapi Data & Nomor HP!',
+                        Colors.red,
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ],

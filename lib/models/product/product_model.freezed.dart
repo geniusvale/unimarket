@@ -23,6 +23,7 @@ mixin _$ProductModel {
   int? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   int? get price => throw _privateConstructorUsedError;
+  int? get weight => throw _privateConstructorUsedError;
   String? get img_url => throw _privateConstructorUsedError;
   String? get file_url => throw _privateConstructorUsedError;
   String? get desc => throw _privateConstructorUsedError;
@@ -46,6 +47,7 @@ abstract class $ProductModelCopyWith<$Res> {
       {int? id,
       String? name,
       int? price,
+      int? weight,
       String? img_url,
       String? file_url,
       String? desc,
@@ -72,6 +74,7 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
     Object? id = freezed,
     Object? name = freezed,
     Object? price = freezed,
+    Object? weight = freezed,
     Object? img_url = freezed,
     Object? file_url = freezed,
     Object? desc = freezed,
@@ -91,6 +94,10 @@ class _$ProductModelCopyWithImpl<$Res, $Val extends ProductModel>
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
+              as int?,
+      weight: freezed == weight
+          ? _value.weight
+          : weight // ignore: cast_nullable_to_non_nullable
               as int?,
       img_url: freezed == img_url
           ? _value.img_url
@@ -144,6 +151,7 @@ abstract class _$$_ProductModelCopyWith<$Res>
       {int? id,
       String? name,
       int? price,
+      int? weight,
       String? img_url,
       String? file_url,
       String? desc,
@@ -169,6 +177,7 @@ class __$$_ProductModelCopyWithImpl<$Res>
     Object? id = freezed,
     Object? name = freezed,
     Object? price = freezed,
+    Object? weight = freezed,
     Object? img_url = freezed,
     Object? file_url = freezed,
     Object? desc = freezed,
@@ -188,6 +197,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
       price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
+              as int?,
+      weight: freezed == weight
+          ? _value.weight
+          : weight // ignore: cast_nullable_to_non_nullable
               as int?,
       img_url: freezed == img_url
           ? _value.img_url
@@ -221,9 +234,10 @@ class __$$_ProductModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
   const _$_ProductModel(
-      {required this.id,
+      {this.id,
       this.name,
       this.price,
+      this.weight,
       this.img_url,
       this.file_url,
       this.desc,
@@ -241,6 +255,8 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
   @override
   final int? price;
   @override
+  final int? weight;
+  @override
   final String? img_url;
   @override
   final String? file_url;
@@ -255,7 +271,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProductModel(id: $id, name: $name, price: $price, img_url: $img_url, file_url: $file_url, desc: $desc, seller_id: $seller_id, profiles: $profiles, category: $category)';
+    return 'ProductModel(id: $id, name: $name, price: $price, weight: $weight, img_url: $img_url, file_url: $file_url, desc: $desc, seller_id: $seller_id, profiles: $profiles, category: $category)';
   }
 
   @override
@@ -266,6 +282,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('price', price))
+      ..add(DiagnosticsProperty('weight', weight))
       ..add(DiagnosticsProperty('img_url', img_url))
       ..add(DiagnosticsProperty('file_url', file_url))
       ..add(DiagnosticsProperty('desc', desc))
@@ -282,6 +299,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.price, price) || other.price == price) &&
+            (identical(other.weight, weight) || other.weight == weight) &&
             (identical(other.img_url, img_url) || other.img_url == img_url) &&
             (identical(other.file_url, file_url) ||
                 other.file_url == file_url) &&
@@ -296,7 +314,7 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, price, img_url,
+  int get hashCode => Object.hash(runtimeType, id, name, price, weight, img_url,
       file_url, desc, seller_id, profiles, category);
 
   @JsonKey(ignore: true)
@@ -315,9 +333,10 @@ class _$_ProductModel with DiagnosticableTreeMixin implements _ProductModel {
 
 abstract class _ProductModel implements ProductModel {
   const factory _ProductModel(
-      {required final int? id,
+      {final int? id,
       final String? name,
       final int? price,
+      final int? weight,
       final String? img_url,
       final String? file_url,
       final String? desc,
@@ -334,6 +353,8 @@ abstract class _ProductModel implements ProductModel {
   String? get name;
   @override
   int? get price;
+  @override
+  int? get weight;
   @override
   String? get img_url;
   @override
