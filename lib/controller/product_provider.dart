@@ -20,6 +20,7 @@ class ProductsProvider extends ChangeNotifier {
       yourFileName,
       yourPhotoName,
       int? price,
+      int? weight,
       File? yourFile,
       File? yourPhoto}) async {
     if (category == 'Produk Digital') {
@@ -28,6 +29,7 @@ class ProductsProvider extends ChangeNotifier {
         {
           'name': name,
           'price': price,
+          'weight': weight,
           'desc': desc,
           'category': category,
           'seller_id': userId
@@ -69,6 +71,7 @@ class ProductsProvider extends ChangeNotifier {
         {
           'name': name,
           'price': price,
+          'weight': weight,
           'desc': desc,
           'category': category,
           'seller_id': userId
@@ -134,7 +137,7 @@ class ProductsProvider extends ChangeNotifier {
   //Hapus Produk
   deleteProduct(
       {required int productId,
-      required String fileName,
+      String? fileName,
       required String photoName}) async {
     await supabase.from('products').delete().match({'id': productId});
     await supabase.storage
@@ -157,11 +160,18 @@ class ProductsProvider extends ChangeNotifier {
           actions: [
             ElevatedButton(
               onPressed: () async {
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      loadingIndicator,
+                );
                 await ProductsProvider().deleteProduct(
                   productId: snapshot.data![index].id ?? 0,
-                  fileName: snapshot.data![index].file_url!.split('/').last,
+                  fileName:
+                      snapshot.data![index].file_url?.split('/').last ?? '',
                   photoName: snapshot.data![index].img_url!.split('/').last,
                 );
+                Navigator.of(context, rootNavigator: true).pop();
                 Navigator.pop(context);
               },
               child: const Text('Oke'),
@@ -188,6 +198,7 @@ class ProductsProvider extends ChangeNotifier {
     String? newFileName,
     String? newPhotoName,
     int? currentPrice,
+    int? currentWeight,
     File? newFile,
     File? newPhoto,
   }) async {
@@ -197,6 +208,7 @@ class ProductsProvider extends ChangeNotifier {
         {
           'name': currentName,
           'price': currentPrice,
+          'weight': currentWeight,
           'desc': currentDesc,
           'category': currentCategory,
         },
@@ -267,6 +279,7 @@ class ProductsProvider extends ChangeNotifier {
         {
           'name': currentName,
           'price': currentPrice,
+          'weight': currentWeight,
           'desc': currentDesc,
           'category': currentCategory,
         },

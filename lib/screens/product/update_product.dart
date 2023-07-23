@@ -26,6 +26,7 @@ class _UpdateProductState extends State<UpdateProduct> {
   TextEditingController nameC = TextEditingController();
   TextEditingController priceC = TextEditingController();
   TextEditingController descC = TextEditingController();
+  TextEditingController weightC = TextEditingController();
   File? pickedPhoto;
   String? pickedPhotoName;
   File? pickedFile;
@@ -49,6 +50,8 @@ class _UpdateProductState extends State<UpdateProduct> {
     // TODO: implement initState
     nameC.text = widget.snapshot.data![widget.index].name!;
     priceC.text = widget.snapshot.data![widget.index].price!.toString();
+    weightC.text =
+        widget.snapshot.data![widget.index].weight?.toString() ?? '0';
     descC.text = widget.snapshot.data![widget.index].desc!;
     selKategori = widget.snapshot.data![widget.index].category!;
     currentPhotoUrl = widget.snapshot.data![widget.index].img_url!;
@@ -175,19 +178,21 @@ class _UpdateProductState extends State<UpdateProduct> {
               FormField(
                 builder: (field) {
                   return DropdownButtonFormField<String>(
-                      decoration: formDecor(hint: ''),
-                      value: selKategori,
-                      items: kategori.map((String item) {
-                        return DropdownMenuItem<String>(
-                          child: Text(item),
-                          value: item,
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selKategori = value.toString();
-                        });
-                      });
+                    decoration: formDecor(hint: ''),
+                    value: selKategori,
+                    items: kategori.map((String item) {
+                      return DropdownMenuItem<String>(
+                        child: Text(item),
+                        value: item,
+                      );
+                    }).toList(),
+                    onChanged: null,
+                    // (value) {
+                    //   setState(() {
+                    //     selKategori = value.toString();
+                    //   });
+                    // },
+                  );
                 },
               ),
               formSpacer,
@@ -237,6 +242,21 @@ class _UpdateProductState extends State<UpdateProduct> {
                   }
                   return null;
                 },
+              ),
+              formSpacer,
+              Visibility(
+                visible: selKategori == 'Produk Fisik' ? true : false,
+                child: TextFormField(
+                  controller: weightC,
+                  keyboardType: TextInputType.number,
+                  decoration: formDecor(hint: 'Berat dalam Gram (gr)'),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Berat Tidak Boleh Kosong!';
+                    }
+                    return null;
+                  },
+                ),
               ),
               formSpacer,
               TextFormField(

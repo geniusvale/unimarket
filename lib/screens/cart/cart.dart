@@ -91,6 +91,9 @@ class _CartState extends State<Cart> {
             List<CartItemsModel> products = snapshot.data!;
             Map<String, List<CartItemsModel>> groupedProducts =
                 groupProductsBySellerId(products);
+            int newTotalGram = cartProvider.jumlahkanBeratGram(products);
+            totalGram = newTotalGram;
+            int currentSellerGram = newTotalGram;
             // sellers =
             //     groupProductsBySellerId(products);
             return Column(
@@ -98,7 +101,7 @@ class _CartState extends State<Cart> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                  flex: 3,
+                  flex: 2,
                   child: ListView.separated(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                     shrinkWrap: true,
@@ -111,11 +114,7 @@ class _CartState extends State<Cart> {
                       String sellerId = groupedProducts.keys.elementAt(index);
                       List<CartItemsModel> sellerProducts =
                           groupedProducts[sellerId]!;
-                      int newTotalGram =
-                          cartProvider.jumlahkanBeratGram(sellerProducts);
-                      totalGram = newTotalGram;
-                      int currentSellerGram = newTotalGram;
-                      String currentCourierCode = '';
+
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,98 +194,91 @@ class _CartState extends State<Cart> {
                               );
                             },
                           ),
-                          //BUTTON OR ANYTHING FOR CEK ONGKIR
-                          Visibility(
-                            visible: sellerProducts.any((element) =>
-                                    element.products!.category ==
-                                    'Produk Fisik')
-                                ? true
-                                : false,
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  DropdownSearch<CourierModel>(
-                                    popupProps: const PopupProps.dialog(
-                                      dialogProps: DialogProps(),
-                                    ),
-                                    items: const [
-                                      CourierModel(
-                                          code: 'jne',
-                                          name: 'Jalur Nugraha Ekakurir (JNE)'),
-                                      CourierModel(
-                                          code: 'tiki',
-                                          name: 'Titipan Kilat (TIKI)'),
-                                      CourierModel(
-                                          code: 'pos',
-                                          name: 'PT Pos Indonesia (Persero)'),
-                                    ],
-                                    onChanged: (value) {
-                                      print('onChanged $value');
-                                      currentCourierCode = value!.code!;
-                                      CourierModel(
-                                        code: value.code,
-                                        name: value.name,
-                                      );
-                                    },
-                                    itemAsString: (item) => '${item.name}',
-                                    dropdownDecoratorProps:
-                                        const DropDownDecoratorProps(
-                                      dropdownSearchDecoration: InputDecoration(
-                                          hintText: 'Pilih kurir...'),
-                                    ),
-                                  ),
-                                  formSpacer,
-                                  providers.Consumer<CartProvider>(
-                                    builder: (context, value, child) => Text(
-                                      'Ongkir : ${value.currentOngkirVal}',
-                                    ),
-                                  )
-                                ],
-                              ),
-                              trailing: TextButton(
-                                child: const Text('Cek Ongkir'),
-                                onPressed: () async {
-                                  if (currentCourierCode != '' ||
-                                      currentCourierCode != '' &&
-                                          profileProvider
-                                                  .loggedUserData!.address ==
-                                              null) {
-                                    final ongkir =
-                                        await cartProvider.hitungOngkir(
-                                      context: context,
-                                      originId: profileProvider
-                                          .loggedUserData!.address!.city_id,
-                                      destinationId: products[index]
-                                          .products!
-                                          .profiles!
-                                          .address!
-                                          .city_id,
-                                      gram: currentSellerGram.toString(),
-                                      kurir: currentCourierCode,
-                                    );
-                                    print(
-                                      'Current Ongkir Val : ${cartProvider.currentOngkirVal}',
-                                    );
-                                  } else {
-                                    snackbar(
-                                      context,
-                                      'Harap Pilih Kurir!',
-                                      Colors.red,
-                                    );
-                                    null;
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                          formSpacer,
                         ],
                       );
                     },
+                  ),
+                ),
+                const Divider(height: 1),
+                //BUTTON OR ANYTHING FOR CEK ONGKIR
+                Visibility(
+                  visible: products.any((element) =>
+                          element.products!.category == 'Produk Fisik')
+                      ? true
+                      : false,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DropdownSearch<CourierModel>(
+                          popupProps: const PopupProps.dialog(
+                            dialogProps: DialogProps(),
+                          ),
+                          items: const [
+                            CourierModel(
+                                code: 'jne',
+                                name: 'Jalur Nugraha Ekakurir (JNE)'),
+                            CourierModel(
+                                code: 'tiki', name: 'Titipan Kilat (TIKI)'),
+                            CourierModel(
+                                code: 'pos',
+                                name: 'PT Pos Indonesia (Persero)'),
+                          ],
+                          onChanged: (value) {
+                            print('onChanged $value');
+                            cartProvider.currentCourierData = CourierModel(
+                              code: value!.code,
+                              name: value.name,
+                            );
+                          },
+                          selectedItem: cartProvider.currentCourierData,
+                          itemAsString: (item) => '${item.name}',
+                          dropdownDecoratorProps: const DropDownDecoratorProps(
+                            dropdownSearchDecoration:
+                                InputDecoration(hintText: 'Pilih kurir...'),
+                          ),
+                        ),
+                        formSpacer,
+                        providers.Consumer<CartProvider>(
+                          builder: (context, value, child) => Text(
+                            'Ongkir : ${value.currentOngkirVal}',
+                          ),
+                        )
+                      ],
+                    ),
+                    trailing: TextButton(
+                      child: const Text('Cek Ongkir'),
+                      onPressed: () async {
+                        if (cartProvider.currentCourierData!.code != '' ||
+                            cartProvider.currentCourierData!.code != '' &&
+                                profileProvider.loggedUserData!.address ==
+                                    null) {
+                          await cartProvider.hitungOngkir(
+                            context: context,
+                            //ID Kota Cirebon, Alamat dari UCIC sebagai Origin.
+                            originId: '109',
+                            //ID Kota, Alamat Pembeli
+                            destinationId: profileProvider
+                                .loggedUserData!.address!.city_id,
+                            gram: currentSellerGram.toString(),
+                            kurir: cartProvider.currentCourierData!.code,
+                          );
+                          print(
+                            'Current Ongkir Val : ${cartProvider.currentOngkirVal}',
+                          );
+                        } else {
+                          snackbar(
+                            context,
+                            'Harap Pilih Kurir!',
+                            Colors.red,
+                          );
+                          null;
+                        }
+                      },
+                    ),
                   ),
                 ),
                 //BAGIAN BAWAH
@@ -345,15 +337,32 @@ class _CartState extends State<Cart> {
                         teks: 'CHECKOUT',
                         padding: 8,
                         onPressed: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Checkout(
-                                snapshotData: snapshot.data!,
-                                subtotal: subtotal,
-                              ),
-                            ),
-                          );
+                          try {
+                            if (products.any((element) =>
+                                    element.products!.category ==
+                                    'Produk Fisik') &&
+                                cartProvider.currentOngkirVal == 0 &&
+                                profileProvider.loggedUserData!.address ==
+                                    null) {
+                              throw Error();
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Checkout(
+                                    snapshotData: snapshot.data!,
+                                    subtotal: subtotal,
+                                  ),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            snackbar(
+                              context,
+                              'Cek Ongkir & Isi Alamat Terlebih Dahulu!',
+                              Colors.red,
+                            );
+                          }
                         },
                       ),
                     ],

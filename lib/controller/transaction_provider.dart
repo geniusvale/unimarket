@@ -240,6 +240,8 @@ class TransactionProvider extends ChangeNotifier {
       await xendit.ExpireInvoice(
         invoice_id: invoicesId,
       );
+      //Status Akan Berubah Saat Kembali GET DATA TRANSAKSI,
+      //Karena mengupdate status pembayaran.
     } catch (e) {
       rethrow;
     }

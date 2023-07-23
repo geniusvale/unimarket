@@ -176,10 +176,13 @@ class _CheckoutState extends State<Checkout> {
                         context: context,
                         snapshotData: widget.snapshotData!,
                         userData: profileProvider.loggedUserData!,
+                        ongkir: cartProvider.currentOngkirVal,
                         subtotal: widget.subtotal!,
                       );
                       isLoading = false;
                       Navigator.of(context, rootNavigator: true).pop();
+                      cartProvider.currentCourierData == null;
+                      cartProvider.currentOngkirVal == 0;
                     } else {
                       return snackbar(
                         context,

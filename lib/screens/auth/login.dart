@@ -7,6 +7,7 @@ import 'package:unimarket/screens/auth/register.dart';
 import 'package:unimarket/screens/homepage.dart';
 import 'package:unimarket/utilities/constants.dart';
 
+import '../../controller/home_provider.dart';
 import '../../controller/profile_provider.dart';
 import '../../utilities/widgets.dart';
 
@@ -55,6 +56,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
     return Scaffold(
@@ -131,6 +133,7 @@ class _LoginState extends State<Login> {
                             await profileProvider.getProfileDataFromAuth();
                             isLoading = false;
                             Navigator.of(context, rootNavigator: true).pop();
+                            await homeProvider.changePage(1);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -138,6 +141,8 @@ class _LoginState extends State<Login> {
                               ),
                             );
                           } catch (e) {
+                            isLoading = false;
+                            Navigator.of(context, rootNavigator: true).pop();
                             snackbar(context, e.toString(), Colors.black);
                           }
                         },
@@ -147,48 +152,54 @@ class _LoginState extends State<Login> {
                   ],
                 ),
                 formSpacer,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Divider(
-                        color: Colors.grey[300],
-                        thickness: 1,
+                Visibility(
+                  visible: false,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey[300],
+                          thickness: 1,
+                        ),
                       ),
-                    ),
-                    formSpacer,
-                    const Text('Or'),
-                    formSpacer,
-                    Expanded(
-                      child: Divider(
-                        color: Colors.grey[300],
-                        thickness: 1,
+                      formSpacer,
+                      const Text('Or'),
+                      formSpacer,
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey[300],
+                          thickness: 1,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 formSpacer,
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          textStyle: const TextStyle(color: Colors.white),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: borderRadiusStd),
-                        ),
-                        onPressed: () async {},
-                        icon: SvgPicture.asset(
-                          'assets/icons/google.svg',
-                          height: 16,
-                        ),
-                        label: const Text(
-                          'Google',
-                          style: TextStyle(color: Colors.black),
+                Visibility(
+                  visible: false,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            textStyle: const TextStyle(color: Colors.white),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: borderRadiusStd),
+                          ),
+                          onPressed: () async {},
+                          icon: SvgPicture.asset(
+                            'assets/icons/google.svg',
+                            height: 16,
+                          ),
+                          label: const Text(
+                            'Google',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 formSpacer,
                 Container(

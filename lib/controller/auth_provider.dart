@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unimarket/controller/home_provider.dart';
 
 import '../utilities/constants.dart';
+import 'profile_provider.dart';
 
 class AuthProvider extends ChangeNotifier {
   bool kIsWeb = true;
@@ -66,6 +67,7 @@ class AuthProvider extends ChangeNotifier {
       unAuthorized = true;
       HomeProvider().pageController.dispose();
       HomeProvider().currentIndex = 0;
+      ProfileProvider().loggedUserData = null;
       notifyListeners();
     } catch (e) {
       rethrow;

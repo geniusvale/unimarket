@@ -17,6 +17,7 @@ class CartProvider extends ChangeNotifier {
 
   int currentOngkirVal = 0;
   String? currentShipmentService;
+  CourierModel? currentCourierData;
 
   Future<bool> checkIfHasCart(BuildContext context) async {
     bool? hasCart;
@@ -167,16 +168,18 @@ class CartProvider extends ChangeNotifier {
       {required BuildContext context,
       required List<CartItemsModel> snapshotData,
       required ProfileModel userData,
-      required int subtotal}) async {
+      required int subtotal,
+      required int ongkir}) async {
     //Make new transactions to db
     await supabase.from('transactions').insert({
       'users_id': supabase.auth.currentUser!.id,
-      'address': userData.address,
+      'address_id': userData.address!.id,
       'phone': userData.phone,
       'email': supabase.auth.currentUser!.email,
       'total_price': subtotal,
       'payment_url': '',
       'quantity': snapshotData.length,
+      'ongkir': ongkir,
       'status': 'UNPAID',
     });
     //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.

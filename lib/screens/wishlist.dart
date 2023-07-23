@@ -54,6 +54,13 @@ class _WishlistState extends State<Wishlist> {
                         return Card(
                           elevation: 0.3,
                           child: InkWell(
+                            onLongPress: () async {
+                              await wishlistProvider.showDeleteProduct(
+                                context,
+                                snapshot,
+                                index,
+                              );
+                            },
                             onTap: () {
                               Navigator.push(
                                 context,

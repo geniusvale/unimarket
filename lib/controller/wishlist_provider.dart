@@ -42,4 +42,51 @@ class WishlistProvider extends ChangeNotifier {
       return true;
     }
   }
+
+  //Hapus Wishlist
+  deleteWishlist({
+    required int productId,
+  }) async {
+    await supabase.from('wishlist').delete().match({
+      'products_id': productId,
+      'users_id': supabase.auth.currentUser!.id,
+    });
+    notifyListeners();
+    //WORKING GOOD
+  }
+
+  showDeleteProduct(BuildContext context,
+      AsyncSnapshot<List<ProductModel>> snapshot, int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Hapus?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      loadingIndicator,
+                );
+                await WishlistProvider().deleteWishlist(
+                  productId: snapshot.data![index].id ?? 0,
+                );
+                Navigator.of(context, rootNavigator: true).pop();
+                Navigator.pop(context);
+              },
+              child: const Text('Oke'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Batal'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
