@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/models/transaction/transaction_items_model.dart';
+import 'package:unimarket/screens/homepage.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:unimarket/utilities/widgets.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../controller/home_provider.dart';
 import '../../controller/transaction_provider.dart';
 import '../../models/transaction/transaction_model.dart';
 import '../cart/xendit_webview.dart';
@@ -32,6 +34,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeProvider>(context);
     final transactionProvider =
         Provider.of<TransactionProvider>(context, listen: false);
     final profileProvider =
@@ -503,7 +506,14 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                       Navigator.of(context, rootNavigator: true)
                                           .pop();
                                       Navigator.pop(context);
-                                      setState(() {});
+                                      homeProvider.changePage(2);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HomePage(),
+                                        ),
+                                      );
                                     },
                                   );
                                 },

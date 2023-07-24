@@ -67,6 +67,7 @@ class AuthProvider extends ChangeNotifier {
       unAuthorized = true;
       HomeProvider().pageController.dispose();
       HomeProvider().currentIndex = 0;
+      HomeProvider().changePage(0);
       ProfileProvider().loggedUserData = null;
       notifyListeners();
     } catch (e) {

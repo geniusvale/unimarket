@@ -31,6 +31,7 @@ class _CartState extends State<Cart> {
   int subtotal = 0;
   int totalGram = 0;
   int currentOngkirVal = 0;
+  bool? isLoading;
 
   @override
   void initState() {
@@ -256,6 +257,13 @@ class _CartState extends State<Cart> {
                             cartProvider.currentCourierData!.code != '' &&
                                 profileProvider.loggedUserData!.address ==
                                     null) {
+                          isLoading = true;
+                          showGeneralDialog(
+                            context: context,
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    loadingIndicator,
+                          );
                           await cartProvider.hitungOngkir(
                             context: context,
                             //ID Kota Cirebon, Alamat dari UCIC sebagai Origin.
@@ -266,9 +274,7 @@ class _CartState extends State<Cart> {
                             gram: currentSellerGram.toString(),
                             kurir: cartProvider.currentCourierData!.code,
                           );
-                          print(
-                            'Current Ongkir Val : ${cartProvider.currentOngkirVal}',
-                          );
+                          Navigator.of(context, rootNavigator: true).pop();
                         } else {
                           snackbar(
                             context,
@@ -337,30 +343,25 @@ class _CartState extends State<Cart> {
                         teks: 'CHECKOUT',
                         padding: 8,
                         onPressed: () async {
-                          try {
-                            if (products.any((element) =>
-                                    element.products!.category ==
-                                    'Produk Fisik') &&
-                                cartProvider.currentOngkirVal == 0 &&
-                                profileProvider.loggedUserData!.address ==
-                                    null) {
-                              throw Error();
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Checkout(
-                                    snapshotData: snapshot.data!,
-                                    subtotal: subtotal,
-                                  ),
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            snackbar(
+                          if (products.any((element) =>
+                                      element.products!.category ==
+                                      'Produk Fisik') &&
+                                  cartProvider.currentOngkirVal == 0 ||
+                              profileProvider.loggedUserData!.address == null) {
+                            return snackbar(
                               context,
                               'Cek Ongkir & Isi Alamat Terlebih Dahulu!',
                               Colors.red,
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Checkout(
+                                  snapshotData: snapshot.data!,
+                                  subtotal: subtotal + currentOngkirVal,
+                                ),
+                              ),
                             );
                           }
                         },

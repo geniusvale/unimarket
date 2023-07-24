@@ -9,7 +9,7 @@ import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/screens/auth/register.dart';
-import 'package:unimarket/screens/confirm_request.dart';
+import 'package:unimarket/screens/admin/confirm_request.dart';
 import 'package:unimarket/screens/profile/edit_profile.dart';
 import 'package:unimarket/screens/store/store.dart';
 import 'package:unimarket/screens/store/withdraw.dart';
@@ -18,6 +18,7 @@ import 'package:unimarket/utilities/widgets.dart';
 
 import '../../controller/auth_provider.dart';
 import '../../models/address/city_model.dart';
+import '../admin/manage_shipment_receipt.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -495,7 +496,6 @@ class _ProfileState extends State<Profile> {
                   },
                 ),
               ),
-              //Kalau Tidak Ada Login, Redirect Ke Login Page
               Visibility(
                 visible: profileProvider.loggedUserData?.isSeller == true,
                 child: ListTile(
@@ -505,6 +505,36 @@ class _ProfileState extends State<Profile> {
                     height: 20,
                   ),
                   title: const Text('Kelola Toko'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    //Kalau Tidak Ada Login, Redirect Ke Login Page
+                    if (authProvider.unAuthorized == true) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Login(),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Store(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Visibility(
+                visible: profileProvider.loggedUserData?.isAdmin == true,
+                child: ListTile(
+                  leading: SvgPicture.asset(
+                    'assets/icons/truck-side.svg',
+                    width: 20,
+                    height: 20,
+                  ),
+                  title: const Text('Kelola Pengiriman & Resi Transaksi'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
                     if (authProvider.unAuthorized == true) {
@@ -518,7 +548,7 @@ class _ProfileState extends State<Profile> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Store(),
+                          builder: (context) => const ManageShipmentReceipt(),
                         ),
                       );
                     }

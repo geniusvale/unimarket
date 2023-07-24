@@ -164,12 +164,14 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  makeOrderAndPay(
-      {required BuildContext context,
-      required List<CartItemsModel> snapshotData,
-      required ProfileModel userData,
-      required int subtotal,
-      required int ongkir}) async {
+  makeOrderAndPay({
+    required BuildContext context,
+    required List<CartItemsModel> snapshotData,
+    required ProfileModel userData,
+    required int subtotal,
+    required int ongkir,
+    String? shippingInfo,
+  }) async {
     //Make new transactions to db
     await supabase.from('transactions').insert({
       'users_id': supabase.auth.currentUser!.id,
@@ -180,6 +182,7 @@ class CartProvider extends ChangeNotifier {
       'payment_url': '',
       'quantity': snapshotData.length,
       'ongkir': ongkir,
+      'shipping_info': shippingInfo,
       'status': 'UNPAID',
     });
     //informasi alamat nomor telepon dll lengkapi dihalaman edit profil.
@@ -288,6 +291,9 @@ class CartProvider extends ChangeNotifier {
             itemBuilder: (ctx2, index) => ListTile(
               onTap: () {
                 ongkirValue = courier.costs![index].cost![0].value!;
+                currentShipmentService = currentCourierData!.name! +
+                    courier.costs![index].description! +
+                    courier.costs![index].service!;
                 Navigator.of(context).pop();
               },
               title: Text('${courier.costs![index].description}'),

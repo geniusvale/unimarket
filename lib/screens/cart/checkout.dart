@@ -111,6 +111,8 @@ class _CheckoutState extends State<Checkout> {
                     profileProvider.loggedUserData!.address == null
                         ? 'Lengkapi Data'
                         : formattedUserAlamat,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                 ),
@@ -177,7 +179,9 @@ class _CheckoutState extends State<Checkout> {
                         snapshotData: widget.snapshotData!,
                         userData: profileProvider.loggedUserData!,
                         ongkir: cartProvider.currentOngkirVal,
-                        subtotal: widget.subtotal!,
+                        shippingInfo: cartProvider.currentShipmentService ?? '',
+                        subtotal:
+                            widget.subtotal! + cartProvider.currentOngkirVal,
                       );
                       isLoading = false;
                       Navigator.of(context, rootNavigator: true).pop();
