@@ -40,7 +40,7 @@ class _ProfileState extends State<Profile> {
   final _formKey = GlobalKey<FormState>();
   bool? isLoading;
 
-  //CEK NANTI, BELUM DIIMPLEMENT!
+  //CEK NANTI!
   checkIfHasRequestedForSeller(BuildContext context) async {
     final sellerRequestProvider =
         Provider.of<SellerRequestProvider>(context, listen: false);
@@ -55,7 +55,14 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     checkIfHasRequestedForSeller(context);
+    phoneC.text = profileProvider.loggedUserData?.phone ?? '';
+    addressC.text = profileProvider.loggedUserData?.address?.alamat ?? '';
+    cityIdC?.text = profileProvider.loggedUserData?.address?.city_id ?? '';
+    cityNameC?.text = profileProvider.loggedUserData?.address?.city_name ?? '';
+    cityTypeC?.text = profileProvider.loggedUserData?.address?.type ?? '';
     super.initState();
   }
 
@@ -72,6 +79,7 @@ class _ProfileState extends State<Profile> {
           setState(() {});
         },
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
               Padding(

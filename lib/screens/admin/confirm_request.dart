@@ -25,79 +25,85 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
       appBar: AppBar(
         title: const Text('Konfirmasi Request Penjual'),
       ),
-      body: FutureBuilder<List<SellerRequestModel>>(
-        future: sellerRequestProvider.getSellerRequestList(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return ListView.builder(
-              itemCount: sellerRequestProvider.allRequest?.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    child: ClipOval(
-                      child: snapshot.data![index].profiles!.avatar_url == null
-                          ? SvgPicture.asset('assets/images/blankpp.svg')
-                          : Image.network(
-                              snapshot.data![index].profiles!.avatar_url!,
-                              fit: BoxFit.fill,
-                            ),
-                    ),
-                  ),
-                  title: Text(snapshot.data![index].profiles!.username!),
-                  subtitle: Text(snapshot.data![index].nim!),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          try {
-                            await sellerRequestProvider.declineSellerRequest(
-                              snapshot.data![index].profiles!.id,
-                            );
-                            snackbar(context, 'Request Ditolak', Colors.red);
-                            setState(() {});
-                          } catch (e) {
-                            snackbar(context, 'error', Colors.red);
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.cancel_outlined,
-                          color: Colors.red,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          try {
-                            await sellerRequestProvider.acceptSellerRequest(
-                              nim: snapshot.data![index].nim!,
-                              userId: snapshot.data![index].profiles!.id,
-                              phone: snapshot.data![index].phone,
-                              alamat: snapshot.data![index].alamat,
-                              cityId: snapshot.data![index].city_id,
-                              cityName: snapshot.data![index].city_name,
-                              cityType: snapshot.data![index].type,
-                            );
-                            snackbar(
-                                context, 'Konfirmasi Berhasil!', Colors.green);
-                            setState(() {});
-                          } catch (e) {
-                            snackbar(context, e.toString(), Colors.black);
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.check_circle_outlined,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          } else {
-            return loadingIndicator;
-          }
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {});
         },
+        child: FutureBuilder<List<SellerRequestModel>>(
+          future: sellerRequestProvider.getSellerRequestList(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return ListView.builder(
+                itemCount: sellerRequestProvider.allRequest?.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: CircleAvatar(
+                      child: ClipOval(
+                        child:
+                            snapshot.data![index].profiles!.avatar_url == null
+                                ? SvgPicture.asset('assets/images/blankpp.svg')
+                                : Image.network(
+                                    snapshot.data![index].profiles!.avatar_url!,
+                                    fit: BoxFit.fill,
+                                  ),
+                      ),
+                    ),
+                    title: Text(snapshot.data![index].profiles!.username!),
+                    subtitle: Text(snapshot.data![index].nim!),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            try {
+                              await sellerRequestProvider.declineSellerRequest(
+                                snapshot.data![index].profiles!.id,
+                              );
+                              snackbar(context, 'Request Ditolak', Colors.red);
+                              setState(() {});
+                            } catch (e) {
+                              snackbar(context, 'error', Colors.red);
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.red,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            try {
+                              await sellerRequestProvider.acceptSellerRequest(
+                                nim: snapshot.data![index].nim!,
+                                userId: snapshot.data![index].profiles!.id,
+                                phone: snapshot.data![index].phone,
+                                alamat: snapshot.data![index].alamat,
+                                cityId: snapshot.data![index].city_id,
+                                cityName: snapshot.data![index].city_name,
+                                cityType: snapshot.data![index].type,
+                              );
+                              snackbar(context, 'Konfirmasi Berhasil!',
+                                  Colors.green);
+                              setState(() {});
+                            } catch (e) {
+                              snackbar(context, e.toString(), Colors.black);
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.check_circle_outlined,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            } else {
+              return loadingIndicator;
+            }
+          },
+        ),
       ),
     );
   }

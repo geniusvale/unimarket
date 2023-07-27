@@ -1,8 +1,10 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unimarket/controller/auth_provider.dart';
+import 'package:unimarket/screens/auth/forgot_password.dart';
 import 'package:unimarket/screens/auth/register.dart';
 import 'package:unimarket/screens/homepage.dart';
 import 'package:unimarket/utilities/constants.dart';
@@ -77,6 +79,10 @@ class _LoginState extends State<Login> {
                     border: OutlineInputBorder(borderRadius: borderRadiusStd),
                     hintText: 'Email',
                   ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => !EmailValidator.validate(value!)
+                      ? 'Format Email Salah!'
+                      : null,
                 ),
                 formSpacer,
                 TextFormField(
@@ -152,6 +158,25 @@ class _LoginState extends State<Login> {
                   ],
                 ),
                 formSpacer,
+                //TIDAK DIIMPLEMENT
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   children: [
+                //     Expanded(
+                //       child: TextButton(
+                //         child: const Text('Lupa Password'),
+                //         onPressed: () {
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => const ForgotPassword(),
+                //             ),
+                //           );
+                //         },
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 Visibility(
                   visible: false,
                   child: Row(
@@ -175,7 +200,6 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
-                formSpacer,
                 Visibility(
                   visible: false,
                   child: Row(

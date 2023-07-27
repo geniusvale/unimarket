@@ -226,7 +226,12 @@ class CartProvider extends ChangeNotifier {
             'INV-${transactionId['id']}-${userData.username}-$formattedDateTime',
         'amount': subtotal,
         'payer_email': supabase.auth.currentUser!.email,
-        'description': "Invoice #123"
+        'description': "Invoice #123",
+        'customer': {
+          'given_names': userData.username,
+          'email': supabase.auth.currentUser!.email,
+          'mobile_number': userData.phone,
+        },
       },
     );
     print(res);

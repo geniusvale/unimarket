@@ -68,28 +68,15 @@ class _HomePageState extends State<HomePage> {
           icon: const Icon(Icons.search_rounded),
         ),
         actions: [
-          IconButton(
-            onPressed: () async {
-              // storeProvider.getMyOrderJson();
-              // final response = await Dio().get(
-              //   "https://api.rajaongkir.com/starter/city",
-              //   options: Options(headers: {'key': rajaOngkirKey}),
-              // );
-              // print(response.data);
-              final ongkir = await cartProvider.hitungOngkir(
-                originId: '153',
-                destinationId: '153',
-                gram: '100',
-                kurir: 'jne',
-              );
-              print('INI HASIL ONGKIR : $ongkir');
-            },
-            icon: SvgPicture.asset(
-              'assets/icons/bell.svg',
-              width: 20,
-              height: 20,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: () async {
+          //   },
+          //   icon: SvgPicture.asset(
+          //     'assets/icons/bell.svg',
+          //     width: 20,
+          //     height: 20,
+          //   ),
+          // ),
           IconButton(
             onPressed: () {
               if (authProvider.unAuthorized == true) {
