@@ -248,7 +248,7 @@ class _MyOrdersDetailState extends State<MyOrdersDetail> {
                           onPressed: () async {
                             try {
                               await launchUrlString(
-                                'whatsapp://send?phone=${snapshot.profiles!.phone}&text=${Uri.parse('message')}',
+                                'whatsapp://send?phone=62${snapshot.profiles!.phone}&text=${Uri.parse('message')}',
                                 // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.transactionItems![widget.index].profiles!.phone!.replaceAll('0', '')}',
                                 mode: LaunchMode.externalApplication,
                               );
