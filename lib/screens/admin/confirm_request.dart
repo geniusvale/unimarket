@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/models/seller_request/seller_request_model.dart';
-import 'package:unimarket/utilities/constants.dart';
 import '../../controller/seller_request_provider.dart';
 import '../../utilities/widgets.dart';
 
@@ -32,7 +31,19 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
         child: FutureBuilder<List<SellerRequestModel>>(
           future: sellerRequestProvider.getSellerRequestList(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text('Tidak Ada Request Penjual'),
+              );
+            } else {
               return ListView.builder(
                 itemCount: sellerRequestProvider.allRequest?.length,
                 itemBuilder: (context, index) {
@@ -99,8 +110,6 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                   );
                 },
               );
-            } else {
-              return loadingIndicator;
             }
           },
         ),

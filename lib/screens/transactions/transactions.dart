@@ -31,7 +31,19 @@ class _TransactionsState extends State<Transactions> {
               child: FutureBuilder<List<TransactionModel>>(
                 future: transactionProvider.getTransaction(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Tidak Ada Transaksi'),
+                    );
+                  } else {
                     return ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: snapshot.data!.length,
@@ -92,8 +104,6 @@ class _TransactionsState extends State<Transactions> {
                         );
                       },
                     );
-                  } else {
-                    return loadingIndicator;
                   }
                 },
               ),

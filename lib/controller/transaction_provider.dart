@@ -13,7 +13,8 @@ class TransactionProvider extends ChangeNotifier {
     final result = await supabase
         .from('transactions')
         .select<List<Map<String, dynamic>>>()
-        .eq('users_id', supabase.auth.currentUser!.id);
+        .eq('users_id', supabase.auth.currentUser!.id)
+        .order('created_at');
     final transaction =
         result.map((e) => TransactionModel.fromJson(e)).toList();
     //UPDATE STATUS DARI XENDIT
@@ -39,7 +40,8 @@ class TransactionProvider extends ChangeNotifier {
           .from('transactions_item')
           .select<List<Map<String, dynamic>>>(
               '*, products:products_id(*, profiles:seller_id(*)) ')
-          .eq('transactions_id', transactionId);
+          .eq('transactions_id', transactionId)
+          .order('created_at');
       final itemDetail = result
           .map(
             (e) => TransactionItemsModel.fromJson(e),

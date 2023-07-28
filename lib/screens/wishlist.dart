@@ -39,8 +39,19 @@ class _WishlistState extends State<Wishlist> {
               child: FutureBuilder<List<ProductModel>>(
                 future: wishlistProvider.getWishlist(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      authProvider.unAuthorized == false) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Tidak Ada Wishlist'),
+                    );
+                  } else {
                     return RefreshIndicator(
                       onRefresh: () async {
                         setState(() {});
@@ -131,8 +142,6 @@ class _WishlistState extends State<Wishlist> {
                         },
                       ),
                     );
-                  } else {
-                    return loadingIndicator;
                   }
                 },
               ),

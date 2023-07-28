@@ -6,21 +6,19 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../../utilities/constants.dart';
 import '../../utilities/widgets.dart';
 
-class ManageShipmentReceiptDetail extends StatefulWidget {
-  ManageShipmentReceiptDetail({Key? key, required this.snapshot})
-      : super(key: key);
+class MyOrdersDetail extends StatefulWidget {
+  MyOrdersDetail({Key? key, required this.snapshot}) : super(key: key);
 
   TransactionModel snapshot;
 
   @override
-  State<ManageShipmentReceiptDetail> createState() =>
-      _ManageShipmentReceiptDetailState();
+  State<MyOrdersDetail> createState() => _MyOrdersDetailState();
 }
 
-class _ManageShipmentReceiptDetailState
-    extends State<ManageShipmentReceiptDetail> {
+class _MyOrdersDetailState extends State<MyOrdersDetail> {
   bool? isLoading;
   final resiC = TextEditingController();
+  int? total;
 
   @override
   void initState() {
@@ -33,11 +31,12 @@ class _ManageShipmentReceiptDetailState
     final snapshot = widget.snapshot;
     String? formattedUserAlamat =
         '${snapshot.address?.alamat} ${snapshot.address?.type} ${snapshot.address?.city_name}';
-    // final manageShipmentReceiptDetailProvider =
+    // final MyOrdersDetailProvider =
     //     Provider.of<ManageShipmentReceiptProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Pengiriman & Resi Transaksi'),
+        title: const Text('Detail Pesanan'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -132,27 +131,7 @@ class _ManageShipmentReceiptDetailState
                               ),
                             ),
                             //ROW 2
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                padding: const EdgeInsets.all(8),
-                              ),
-                              onPressed: () async {
-                                try {
-                                  await launchUrlString(
-                                    'whatsapp://send?phone=${snapshot.transactionItems![index].products!.profiles!.phone}&text=${Uri.parse('message')}',
-                                    // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.transactionItems![widget.index].profiles!.phone!.replaceAll('0', '')}',
-                                    mode: LaunchMode.externalApplication,
-                                  );
-                                } catch (e) {
-                                  snackbar(
-                                    context,
-                                    e.toString(),
-                                    Colors.black,
-                                  );
-                                }
-                              },
-                              child: const Text('Hubungi Penjual'),
-                            ),
+
                             // const Divider(height: 1),
                           ],
                         ),
@@ -262,43 +241,31 @@ class _ManageShipmentReceiptDetailState
                   Row(
                     children: [
                       Expanded(
-                        flex: 3,
-                        child: TextFormField(
-                          controller: resiC,
-                          decoration: formDecor(hint: 'Nomor Resi...'),
-                          // validator: (value) {
-                          //   if (value!.isEmpty) {
-                          //     return 'Nama Produk Tidak Boleh Kosong!';
-                          //   }
-                          //   return null;
-                          // },
-                        ),
-                      ),
-                      Expanded(
                         child: TextButton(
-                          child: const Text(
-                            'Update Resi',
-                            textAlign: TextAlign.center,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(8),
                           ),
                           onPressed: () async {
-                            isLoading = true;
-                            showGeneralDialog(
-                              context: context,
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      loadingIndicator,
-                            );
-                            await supabase.from('transactions').update({
-                              'resi': resiC.text,
-                            }).eq('id', snapshot.id);
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            Navigator.pop(context);
+                            try {
+                              await launchUrlString(
+                                'whatsapp://send?phone=${snapshot.profiles!.phone}&text=${Uri.parse('message')}',
+                                // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.transactionItems![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                                mode: LaunchMode.externalApplication,
+                              );
+                            } catch (e) {
+                              snackbar(
+                                context,
+                                e.toString(),
+                                Colors.black,
+                              );
+                            }
                           },
+                          child: const Text('Hubungi Pembeli'),
                         ),
                       ),
                     ],
                   ),
+                  formSpacer,
                 ],
               ),
             ),

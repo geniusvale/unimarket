@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/profile/profile_model.dart';
 import '../utilities/constants.dart';
@@ -107,6 +108,15 @@ class ProfileProvider extends ChangeNotifier {
       required String cityName,
       required String cityType}) async {
     //Update data umumnya
+    await supabase.auth.updateUser(
+      UserAttributes(
+        // email: email,
+        data: {'username': username},
+      ),
+    );
+
+    // print('INI RESPONSE UPDT ${updt.user!.email}');
+
     await supabase.from('profiles').update({
       'username': username,
       'email': email,

@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:unimarket/screens/auth/reset_password.dart';
 import 'package:unimarket/utilities/widgets.dart';
 
 import '../../utilities/constants.dart';
@@ -43,7 +44,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
               formSpacer,
               BlueButton(
-                teks: 'Kirim Link Reset Password',
+                teks: 'Kirim Token Reset Password',
                 padding: 0,
                 onPressed: () async {
                   if (formKey.currentState!.validate()) {
@@ -52,7 +53,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       builder: (context) => AlertDialog(
                         content: Container(
                           child: const Text(
-                              'Silahkan Cek Email & Folder Spam Jika Tidak Ada Untuk Link Reset!'),
+                            'Silahkan Cek Email & Folder Spam Untuk TOKEN nya Jika Tidak Ada di Kotak Masuk!',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     );
@@ -63,6 +66,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   } else {
                     null;
                   }
+                },
+              ),
+              formSpacer,
+              TextButton(
+                child: const Text('Sudah Punya Token? Reset Password Anda'),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ResetPassword(),
+                    ),
+                  );
                 },
               ),
             ],

@@ -66,6 +66,7 @@ class _EditProfileState extends State<EditProfile> {
               formSpacer,
               const Text('Email'),
               TextFormField(
+                enabled: false,
                 controller: emailC,
                 decoration: formDecor(hint: 'Email'),
                 validator: (value) => !EmailValidator.validate(value!)

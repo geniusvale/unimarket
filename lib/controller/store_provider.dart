@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../models/transaction/transaction_items_model.dart';
+import '../models/transaction/transaction_model.dart';
 import '../models/withdraw/withdraw_model.dart';
 import '../screens/cart/xendit_webview.dart';
 import '../utilities/constants.dart';
@@ -11,13 +11,16 @@ import '../utilities/constants.dart';
 class StoreProvider extends ChangeNotifier {
   int tabIndex = 0;
 
-  Future<List<TransactionItemsModel>> getMyOrder() async {
+  Future<List<TransactionModel>> getMyOrder() async {
     final result = await supabase
-        .from('transactions_item')
-        .select('*, products!inner(*), profiles:users_id(*)')
-        .eq('products.seller_id', supabase.auth.currentUser!.id);
+        .from('transactions')
+        .select(
+            '*, profiles:users_id(*), address(*), transactions_item(*, products!inner(*, profiles(*)))')
+        .eq('transactions_item.products.seller_id',
+            supabase.auth.currentUser!.id)
+        .order('created_at');
     final data = result
-        .map<TransactionItemsModel>((e) => TransactionItemsModel.fromJson(e))
+        .map<TransactionModel>((e) => TransactionModel.fromJson(e))
         .toList();
     print(data);
     return data;

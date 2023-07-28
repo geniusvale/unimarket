@@ -192,7 +192,19 @@ class _HomeState extends State<Home> {
               FutureBuilder<List<ProductModel>>(
                 future: productsProvider.getProduct(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Tidak Ada Produk'),
+                    );
+                  } else {
                     return MasonryGridView.builder(
                       shrinkWrap: true,
                       physics: const ScrollPhysics(),
@@ -205,8 +217,6 @@ class _HomeState extends State<Home> {
                         return ProductCard(index: index, snapshot: snapshot);
                       },
                     );
-                  } else {
-                    return loadingIndicator;
                   }
                 },
               ),

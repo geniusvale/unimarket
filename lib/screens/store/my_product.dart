@@ -43,7 +43,19 @@ class _MyProductState extends State<MyProduct> {
       body: FutureBuilder<List<ProductModel>>(
         future: productProvider.getMyStoreProduct(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text('Anda Belum Memiliki Produk'),
+            );
+          } else {
             return MasonryGridView.builder(
               padding: const EdgeInsets.all(16),
               shrinkWrap: true,
@@ -141,8 +153,6 @@ class _MyProductState extends State<MyProduct> {
                 );
               },
             );
-          } else {
-            return loadingIndicator;
           }
         },
       ),

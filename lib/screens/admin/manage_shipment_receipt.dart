@@ -37,12 +37,19 @@ class _ManageShipmentReceiptState extends State<ManageShipmentReceipt> {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
               );
+            } else if (snapshot.data!.isEmpty) {
+              return const Center(
+                child:
+                    Text('Tidak Ada Transaksi Produk Fisik yang Sudah Dibayar'),
+              );
             } else {
               return Column(
                 children: [
-                  ListView.builder(
+                  ListView.separated(
                     shrinkWrap: true,
                     itemCount: snapshot.data?.length ?? 0,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
                     itemBuilder: (context, index) {
                       return ListTile(
                         onTap: () => Navigator.push(
@@ -52,9 +59,6 @@ class _ManageShipmentReceiptState extends State<ManageShipmentReceipt> {
                               snapshot: snapshot.data![index],
                             ),
                           ),
-                        ),
-                        leading: CircleAvatar(
-                          child: Text(index.toString()),
                         ),
                         title: Text(
                           'Transaksi : ${snapshot.data![index].externalId!}',

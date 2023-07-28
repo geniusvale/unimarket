@@ -24,6 +24,7 @@ mixin _$TransactionItemsModel {
   int get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'transactions_id')
   int? get transactionId => throw _privateConstructorUsedError;
+  TransactionModel? get transactions => throw _privateConstructorUsedError;
   @JsonKey(name: 'users_id')
   String? get userId => throw _privateConstructorUsedError;
   ProfileModel? get profiles => throw _privateConstructorUsedError;
@@ -52,6 +53,7 @@ abstract class $TransactionItemsModelCopyWith<$Res> {
   $Res call(
       {int id,
       @JsonKey(name: 'transactions_id') int? transactionId,
+      TransactionModel? transactions,
       @JsonKey(name: 'users_id') String? userId,
       ProfileModel? profiles,
       @JsonKey(name: 'products_id') int? productsId,
@@ -61,6 +63,7 @@ abstract class $TransactionItemsModelCopyWith<$Res> {
       @JsonKey(name: 'status') String? transactionItemStatus,
       @JsonKey(name: 'created_at') String? createdAt});
 
+  $TransactionModelCopyWith<$Res>? get transactions;
   $ProfileModelCopyWith<$Res>? get profiles;
   $ProductModelCopyWith<$Res>? get products;
 }
@@ -81,6 +84,7 @@ class _$TransactionItemsModelCopyWithImpl<$Res,
   $Res call({
     Object? id = null,
     Object? transactionId = freezed,
+    Object? transactions = freezed,
     Object? userId = freezed,
     Object? profiles = freezed,
     Object? productsId = freezed,
@@ -99,6 +103,10 @@ class _$TransactionItemsModelCopyWithImpl<$Res,
           ? _value.transactionId
           : transactionId // ignore: cast_nullable_to_non_nullable
               as int?,
+      transactions: freezed == transactions
+          ? _value.transactions
+          : transactions // ignore: cast_nullable_to_non_nullable
+              as TransactionModel?,
       userId: freezed == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -132,6 +140,18 @@ class _$TransactionItemsModelCopyWithImpl<$Res,
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $TransactionModelCopyWith<$Res>? get transactions {
+    if (_value.transactions == null) {
+      return null;
+    }
+
+    return $TransactionModelCopyWith<$Res>(_value.transactions!, (value) {
+      return _then(_value.copyWith(transactions: value) as $Val);
+    });
   }
 
   @override
@@ -170,6 +190,7 @@ abstract class _$$_TransactionItemsModelCopyWith<$Res>
   $Res call(
       {int id,
       @JsonKey(name: 'transactions_id') int? transactionId,
+      TransactionModel? transactions,
       @JsonKey(name: 'users_id') String? userId,
       ProfileModel? profiles,
       @JsonKey(name: 'products_id') int? productsId,
@@ -179,6 +200,8 @@ abstract class _$$_TransactionItemsModelCopyWith<$Res>
       @JsonKey(name: 'status') String? transactionItemStatus,
       @JsonKey(name: 'created_at') String? createdAt});
 
+  @override
+  $TransactionModelCopyWith<$Res>? get transactions;
   @override
   $ProfileModelCopyWith<$Res>? get profiles;
   @override
@@ -198,6 +221,7 @@ class __$$_TransactionItemsModelCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? transactionId = freezed,
+    Object? transactions = freezed,
     Object? userId = freezed,
     Object? profiles = freezed,
     Object? productsId = freezed,
@@ -216,6 +240,10 @@ class __$$_TransactionItemsModelCopyWithImpl<$Res>
           ? _value.transactionId
           : transactionId // ignore: cast_nullable_to_non_nullable
               as int?,
+      transactions: freezed == transactions
+          ? _value.transactions
+          : transactions // ignore: cast_nullable_to_non_nullable
+              as TransactionModel?,
       userId: freezed == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -258,6 +286,7 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
   const _$_TransactionItemsModel(
       {required this.id,
       @JsonKey(name: 'transactions_id') this.transactionId,
+      this.transactions,
       @JsonKey(name: 'users_id') this.userId,
       this.profiles,
       @JsonKey(name: 'products_id') this.productsId,
@@ -275,6 +304,8 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
   @override
   @JsonKey(name: 'transactions_id')
   final int? transactionId;
+  @override
+  final TransactionModel? transactions;
   @override
   @JsonKey(name: 'users_id')
   final String? userId;
@@ -298,7 +329,7 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
 
   @override
   String toString() {
-    return 'TransactionItemsModel(id: $id, transactionId: $transactionId, userId: $userId, profiles: $profiles, productsId: $productsId, products: $products, isConfirmed: $isConfirmed, isCancelled: $isCancelled, transactionItemStatus: $transactionItemStatus, createdAt: $createdAt)';
+    return 'TransactionItemsModel(id: $id, transactionId: $transactionId, transactions: $transactions, userId: $userId, profiles: $profiles, productsId: $productsId, products: $products, isConfirmed: $isConfirmed, isCancelled: $isCancelled, transactionItemStatus: $transactionItemStatus, createdAt: $createdAt)';
   }
 
   @override
@@ -309,6 +340,8 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.transactionId, transactionId) ||
                 other.transactionId == transactionId) &&
+            (identical(other.transactions, transactions) ||
+                other.transactions == transactions) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.profiles, profiles) ||
                 other.profiles == profiles) &&
@@ -332,6 +365,7 @@ class _$_TransactionItemsModel implements _TransactionItemsModel {
       runtimeType,
       id,
       transactionId,
+      transactions,
       userId,
       profiles,
       productsId,
@@ -360,6 +394,7 @@ abstract class _TransactionItemsModel implements TransactionItemsModel {
   const factory _TransactionItemsModel(
           {required final int id,
           @JsonKey(name: 'transactions_id') final int? transactionId,
+          final TransactionModel? transactions,
           @JsonKey(name: 'users_id') final String? userId,
           final ProfileModel? profiles,
           @JsonKey(name: 'products_id') final int? productsId,
@@ -378,6 +413,8 @@ abstract class _TransactionItemsModel implements TransactionItemsModel {
   @override
   @JsonKey(name: 'transactions_id')
   int? get transactionId;
+  @override
+  TransactionModel? get transactions;
   @override
   @JsonKey(name: 'users_id')
   String? get userId;

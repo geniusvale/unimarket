@@ -127,11 +127,24 @@ class _WithdrawState extends State<Withdraw> {
                 future: storeProvider.getWithdrawHistory(),
                 builder: (context, snapshot) {
                   print(snapshot.data);
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Tidak Ada Riwayat Penarikan'),
+                    );
+                  } else {
                     return ListView.separated(
                       shrinkWrap: true,
                       itemCount: snapshot.data!.length,
+                      separatorBuilder: (context, index) =>
+                          const Divider(height: 1),
                       itemBuilder: (context, index) {
                         return ListTile(
                           title: Text(snapshot.data![index].external_id!),
@@ -160,16 +173,7 @@ class _WithdrawState extends State<Withdraw> {
                           ),
                         );
                       },
-                      separatorBuilder: (context, index) =>
-                          const Divider(height: 1),
                     );
-                  } else if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('Tidak Ada Data!'),
-                    );
-                  } else {
-                    return loadingIndicator;
                   }
                 },
               )

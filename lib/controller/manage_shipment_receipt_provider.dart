@@ -10,7 +10,9 @@ class ManageShipmentReceiptProvider extends ChangeNotifier {
         .select<List<Map<String, dynamic>>>(
             '*, profiles:users_id(*), address(*), transactions_item(*, products!inner(*, profiles(*)))')
         .neq('ongkir', 0)
-        .eq('transactions_item.products.category', 'Produk Fisik');
+        .eq('transactions_item.products.category', 'Produk Fisik')
+        .filter('status', 'in', '("PAID","SETTLED")')
+        .order('created_at');
     print(result);
     final data = result.map((e) => TransactionModel.fromJson(e)).toList();
     return data;

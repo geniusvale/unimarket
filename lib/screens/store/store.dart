@@ -16,10 +16,17 @@ class _StoreState extends State<Store> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        endDrawer: const Drawer(),
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Toko Anda'),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                setState(() {});
+              },
+              icon: const Icon(Icons.refresh_rounded),
+            )
+          ],
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Produkmu'),
