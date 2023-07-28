@@ -16,6 +16,7 @@ class Withdraw extends StatefulWidget {
 }
 
 class _WithdrawState extends State<Withdraw> {
+  bool? isLoading;
   @override
   Widget build(BuildContext context) {
     final profileProvider =
@@ -91,16 +92,38 @@ class _WithdrawState extends State<Withdraw> {
                                       child: const Text('Batal')),
                                   ElevatedButton(
                                     onPressed: () async {
-                                      await storeProvider.withdraw(
-                                        context: context,
-                                        isSeller: profileProvider
-                                            .loggedUserData!.isSeller!,
-                                        username: profileProvider
-                                            .loggedUserData!.username!,
-                                        amount: profileProvider
-                                                .loggedUserData!.saldo! -
-                                            2500,
-                                      );
+                                      try {
+                                        isLoading = true;
+                                        showGeneralDialog(
+                                          context: context,
+                                          pageBuilder: (context, animation,
+                                                  secondaryAnimation) =>
+                                              loadingIndicator,
+                                        );
+                                        await storeProvider.withdraw(
+                                          context: context,
+                                          isSeller: profileProvider
+                                              .loggedUserData!.isSeller!,
+                                          username: profileProvider
+                                              .loggedUserData!.username!,
+                                          amount: profileProvider
+                                                  .loggedUserData!.saldo! -
+                                              2500,
+                                        );
+                                        await profileProvider
+                                            .getProfileDataFromAuth();
+                                        isLoading = false;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      } catch (e) {
+                                        isLoading = false;
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                        snackbar(context, e.toString(),
+                                            Colors.black);
+                                      }
                                     },
                                     child: const Text('Ya'),
                                   ),
