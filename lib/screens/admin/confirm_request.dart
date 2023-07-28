@@ -4,6 +4,7 @@ import 'package:provider/provider.dart' as providers;
 import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/models/seller_request/seller_request_model.dart';
 import '../../controller/seller_request_provider.dart';
+import '../../utilities/constants.dart';
 import '../../utilities/widgets.dart';
 
 class ConfirmSellerRequest extends StatefulWidget {
@@ -48,6 +49,57 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                 itemCount: sellerRequestProvider.allRequest?.length,
                 itemBuilder: (context, index) {
                   return ListTile(
+                    onTap: () {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (ctx) {
+                          return SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.all(16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Center(child: handleBar),
+                                        formSpacer,
+                                        Text(
+                                          'Nama : ${snapshot.data![index].profiles!.username!}',
+                                        ),
+                                        Text(
+                                          'NIM : ${snapshot.data![index].nim}',
+                                        ),
+                                        Text(
+                                          'Alamat : ${snapshot.data![index].profiles!.address!.alamat!}',
+                                        ),
+                                        Text(
+                                          'Kota : ${snapshot.data![index].profiles!.address!.type} ${snapshot.data![index].profiles!.address!.city_name}',
+                                        ),
+                                        Text(
+                                          'Email : ${snapshot.data![index].profiles!.email}',
+                                        ),
+                                        Text(
+                                          'No HP : ${snapshot.data![index].profiles!.phone}',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                     leading: CircleAvatar(
                       child: ClipOval(
                         child:
@@ -60,7 +112,7 @@ class _ConfirmSellerRequestState extends State<ConfirmSellerRequest> {
                       ),
                     ),
                     title: Text(snapshot.data![index].profiles!.username!),
-                    subtitle: Text(snapshot.data![index].nim!),
+                    subtitle: Text('NIM : ${snapshot.data![index].nim!}'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

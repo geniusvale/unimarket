@@ -35,8 +35,9 @@ class SellerRequestProvider extends ChangeNotifier {
   }
 
   Future<List<SellerRequestModel>> getSellerRequestList() async {
-    final allSellerRequestList =
-        await supabase.from('seller_request').select('*, profiles!inner(*)');
+    final allSellerRequestList = await supabase
+        .from('seller_request')
+        .select('*, profiles!inner(*, address:address_id(*))');
     final allRequestData = allSellerRequestList
         .map<SellerRequestModel>((e) => SellerRequestModel.fromJson(e))
         .toList();
