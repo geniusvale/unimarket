@@ -418,6 +418,14 @@ class _ProfileState extends State<Profile> {
                                                   Colors.red,
                                                 );
                                               } else {
+                                                isLoading = true;
+                                                showGeneralDialog(
+                                                  context: context,
+                                                  pageBuilder: (context,
+                                                          animation,
+                                                          secondaryAnimation) =>
+                                                      loadingIndicator,
+                                                );
                                                 await sellerRequestProvider
                                                     .submitRequest(
                                                   nim: nimC.text,
@@ -427,6 +435,23 @@ class _ProfileState extends State<Profile> {
                                                   cityName: cityNameC!.text,
                                                   type: cityTypeC!.text,
                                                 );
+                                                await profileProvider
+                                                    .updateProfileData(
+                                                  username: profileProvider
+                                                      .loggedUserData!
+                                                      .username!,
+                                                  email: profileProvider
+                                                      .loggedUserData!.email!,
+                                                  phone: phoneC.text,
+                                                  alamat: addressC.text,
+                                                  cityId: cityIdC!.text,
+                                                  cityName: cityNameC!.text,
+                                                  cityType: cityTypeC!.text,
+                                                );
+                                                isLoading = false;
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop();
                                                 Navigator.pop(context);
                                                 snackbar(
                                                   context,
