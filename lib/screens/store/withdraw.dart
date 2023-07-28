@@ -52,11 +52,11 @@ class _WithdrawState extends State<Withdraw> {
                     TextButton(
                       child: const Text('Tarik Dana'),
                       onPressed: () async {
-                        if (profileProvider.loggedUserData!.saldo == 0 &&
-                            profileProvider.loggedUserData!.saldo! < 50000) {
+                        if (profileProvider.loggedUserData!.saldo == 0 ||
+                            profileProvider.loggedUserData!.saldo! < 20000) {
                           return snackbar(
                               context,
-                              'Saldo Tidak Cukup! Minimal Penarikan Rp.50,000',
+                              'Saldo Tidak Cukup! Minimal Penarikan Rp.20,000',
                               Colors.red);
                         } else {
                           await showDialog(
