@@ -21,6 +21,7 @@ class _AddProductState extends State<AddProduct> {
   final nameC = TextEditingController();
   final priceC = TextEditingController();
   final descC = TextEditingController();
+  final weightC = TextEditingController();
   File? pickedPhoto;
   String? pickedPhotoName;
   File? pickedFile;
@@ -174,6 +175,21 @@ class _AddProductState extends State<AddProduct> {
                 },
               ),
               formSpacer,
+              Visibility(
+                visible: selKategori == 'Produk Fisik' ? true : false,
+                child: TextFormField(
+                  controller: weightC,
+                  keyboardType: TextInputType.number,
+                  decoration: formDecor(hint: 'Berat dalam Gram (gr)'),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Berat Tidak Boleh Kosong!';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              formSpacer,
               TextFormField(
                 controller: descC,
                 keyboardType: TextInputType.multiline,
@@ -232,8 +248,8 @@ class _AddProductState extends State<AddProduct> {
                           snackbar(
                               context, 'Sukses Menambah Produk', Colors.green);
                         } else {
-                          return snackbar(
-                              context, 'File Harus Dipilih!', Colors.black);
+                          return snackbar(context, 'File & Foto Harus Dipilih!',
+                              Colors.black);
                         }
                         break;
                       default:
@@ -252,6 +268,7 @@ class _AddProductState extends State<AddProduct> {
                             name: nameC.text,
                             desc: descC.text,
                             price: int.parse(priceC.text),
+                            weight: int.parse(weightC.text),
                             category: selKategori,
                             userId: supabase.auth.currentUser!.id,
                             yourPhoto: pickedPhoto,
@@ -260,6 +277,7 @@ class _AddProductState extends State<AddProduct> {
                           nameC.clear();
                           priceC.clear();
                           descC.clear();
+                          weightC.clear();
                           isLoading = false;
                           Navigator.of(context, rootNavigator: true).pop();
                           Navigator.pop(context);
@@ -267,7 +285,8 @@ class _AddProductState extends State<AddProduct> {
                           snackbar(
                               context, 'Sukses Menambah Produk', Colors.green);
                         } else {
-                          return snackbar(context, 'Error', Colors.black);
+                          return snackbar(
+                              context, 'Harap Isi Semua Data!', Colors.black);
                         }
                     }
                   } catch (e) {

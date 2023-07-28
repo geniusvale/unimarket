@@ -68,22 +68,15 @@ class _HomePageState extends State<HomePage> {
           icon: const Icon(Icons.search_rounded),
         ),
         actions: [
-          IconButton(
-            onPressed: () async {
-              // storeProvider.getMyOrderJson();
-              final currentSaldo = await supabase
-                  .from('profiles')
-                  .select('saldo')
-                  .eq('id', supabase.auth.currentUser!.id)
-                  .single();
-              print(currentSaldo);
-            },
-            icon: SvgPicture.asset(
-              'assets/icons/bell.svg',
-              width: 20,
-              height: 20,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: () async {
+          //   },
+          //   icon: SvgPicture.asset(
+          //     'assets/icons/bell.svg',
+          //     width: 20,
+          //     height: 20,
+          //   ),
+          // ),
           IconButton(
             onPressed: () {
               if (authProvider.unAuthorized == true) {
@@ -199,7 +192,19 @@ class _HomeState extends State<Home> {
               FutureBuilder<List<ProductModel>>(
                 future: productsProvider.getProduct(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Tidak Ada Produk'),
+                    );
+                  } else {
                     return MasonryGridView.builder(
                       shrinkWrap: true,
                       physics: const ScrollPhysics(),
@@ -212,8 +217,6 @@ class _HomeState extends State<Home> {
                         return ProductCard(index: index, snapshot: snapshot);
                       },
                     );
-                  } else {
-                    return loadingIndicator;
                   }
                 },
               ),

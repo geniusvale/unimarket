@@ -11,6 +11,10 @@ _$_TransactionItemsModel _$$_TransactionItemsModelFromJson(
     _$_TransactionItemsModel(
       id: json['id'] as int,
       transactionId: json['transactions_id'] as int?,
+      transactions: json['transactions'] == null
+          ? null
+          : TransactionModel.fromJson(
+              json['transactions'] as Map<String, dynamic>),
       userId: json['users_id'] as String?,
       profiles: json['profiles'] == null
           ? null
@@ -30,6 +34,7 @@ Map<String, dynamic> _$$_TransactionItemsModelToJson(
     <String, dynamic>{
       'id': instance.id,
       'transactions_id': instance.transactionId,
+      'transactions': instance.transactions,
       'users_id': instance.userId,
       'profiles': instance.profiles,
       'products_id': instance.productsId,

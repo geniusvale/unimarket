@@ -20,7 +20,7 @@ CartItemsModel _$CartItemsModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CartItemsModel {
-  int get id => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   int? get cart_id => throw _privateConstructorUsedError;
   int? get product_id => throw _privateConstructorUsedError;
   ProductModel? get products => throw _privateConstructorUsedError;
@@ -39,7 +39,7 @@ abstract class $CartItemsModelCopyWith<$Res> {
       _$CartItemsModelCopyWithImpl<$Res, CartItemsModel>;
   @useResult
   $Res call(
-      {int id,
+      {int? id,
       int? cart_id,
       int? product_id,
       ProductModel? products,
@@ -61,17 +61,17 @@ class _$CartItemsModelCopyWithImpl<$Res, $Val extends CartItemsModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? cart_id = freezed,
     Object? product_id = freezed,
     Object? products = freezed,
     Object? quantity = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       cart_id: freezed == cart_id
           ? _value.cart_id
           : cart_id // ignore: cast_nullable_to_non_nullable
@@ -113,7 +113,7 @@ abstract class _$$_CartItemsModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
+      {int? id,
       int? cart_id,
       int? product_id,
       ProductModel? products,
@@ -134,17 +134,17 @@ class __$$_CartItemsModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? cart_id = freezed,
     Object? product_id = freezed,
     Object? products = freezed,
     Object? quantity = freezed,
   }) {
     return _then(_$_CartItemsModel(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       cart_id: freezed == cart_id
           ? _value.cart_id
           : cart_id // ignore: cast_nullable_to_non_nullable
@@ -171,17 +171,13 @@ class _$_CartItemsModel
     with DiagnosticableTreeMixin
     implements _CartItemsModel {
   const _$_CartItemsModel(
-      {required this.id,
-      this.cart_id,
-      this.product_id,
-      this.products,
-      this.quantity});
+      {this.id, this.cart_id, this.product_id, this.products, this.quantity});
 
   factory _$_CartItemsModel.fromJson(Map<String, dynamic> json) =>
       _$$_CartItemsModelFromJson(json);
 
   @override
-  final int id;
+  final int? id;
   @override
   final int? cart_id;
   @override
@@ -244,7 +240,7 @@ class _$_CartItemsModel
 
 abstract class _CartItemsModel implements CartItemsModel {
   const factory _CartItemsModel(
-      {required final int id,
+      {final int? id,
       final int? cart_id,
       final int? product_id,
       final ProductModel? products,
@@ -254,7 +250,7 @@ abstract class _CartItemsModel implements CartItemsModel {
       _$_CartItemsModel.fromJson;
 
   @override
-  int get id;
+  int? get id;
   @override
   int? get cart_id;
   @override

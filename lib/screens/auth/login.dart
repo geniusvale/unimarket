@@ -1,13 +1,18 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unimarket/controller/auth_provider.dart';
+import 'package:unimarket/screens/auth/forgot_password.dart';
 import 'package:unimarket/screens/auth/register.dart';
+import 'package:unimarket/screens/auth/reset_password.dart';
 import 'package:unimarket/screens/homepage.dart';
 import 'package:unimarket/utilities/constants.dart';
 
+import '../../controller/home_provider.dart';
 import '../../controller/profile_provider.dart';
+import '../../utilities/widgets.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -24,14 +29,11 @@ class _LoginState extends State<Login> {
 
   @override
   void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback(
-    //   (_) {},
-    // );
-    checkIsLoggedIn(context);
+    checkIsLoggedIn();
     super.initState();
   }
 
-  checkIsLoggedIn(BuildContext context) async {
+  checkIsLoggedIn() async {
     final loginState = await SharedPreferences.getInstance();
     final isLoggedIn = loginState.getBool('isLoggedIn') ?? false;
     final profileProvider =
@@ -41,7 +43,7 @@ class _LoginState extends State<Login> {
     //Kalau Ada Sesi Login, Auto Ke Halaman HomePage
     if (isLoggedIn == true) {
       //INIT dan Ambil Data Profil
-      await profileProvider.getProfileDataFromAuth(context);
+      await profileProvider.getProfileDataFromAuth();
       authProvider.unAuthorized = false;
       Navigator.pushReplacement(
         context,
@@ -57,6 +59,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
     return Scaffold(
@@ -77,6 +80,10 @@ class _LoginState extends State<Login> {
                     border: OutlineInputBorder(borderRadius: borderRadiusStd),
                     hintText: 'Email',
                   ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => !EmailValidator.validate(value!)
+                      ? 'Format Email Salah!'
+                      : null,
                 ),
                 formSpacer,
                 TextFormField(
@@ -130,10 +137,10 @@ class _LoginState extends State<Login> {
                             );
                             authProvider.emailC.clear();
                             authProvider.passwordC.clear();
-                            await profileProvider
-                                .getProfileDataFromAuth(context);
+                            await profileProvider.getProfileDataFromAuth();
                             isLoading = false;
                             Navigator.of(context, rootNavigator: true).pop();
+                            await homeProvider.changePage(1);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -141,6 +148,8 @@ class _LoginState extends State<Login> {
                               ),
                             );
                           } catch (e) {
+                            isLoading = false;
+                            Navigator.of(context, rootNavigator: true).pop();
                             snackbar(context, e.toString(), Colors.black);
                           }
                         },
@@ -150,48 +159,72 @@ class _LoginState extends State<Login> {
                   ],
                 ),
                 formSpacer,
+                //TIDAK DIIMPLEMENT
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Divider(
-                        color: Colors.grey[300],
-                        thickness: 1,
-                      ),
-                    ),
-                    formSpacer,
-                    const Text('Or'),
-                    formSpacer,
-                    Expanded(
-                      child: Divider(
-                        color: Colors.grey[300],
-                        thickness: 1,
+                      child: TextButton(
+                        child: const Text('Lupa Password'),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ForgotPassword(),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],
                 ),
-                formSpacer,
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          textStyle: const TextStyle(color: Colors.white),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: borderRadiusStd),
-                        ),
-                        onPressed: () async {},
-                        icon: SvgPicture.asset(
-                          'assets/icons/google.svg',
-                          height: 16,
-                        ),
-                        label: const Text(
-                          'Google',
-                          style: TextStyle(color: Colors.black),
+                Visibility(
+                  visible: false,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey[300],
+                          thickness: 1,
                         ),
                       ),
-                    ),
-                  ],
+                      formSpacer,
+                      const Text('Or'),
+                      formSpacer,
+                      Expanded(
+                        child: Divider(
+                          color: Colors.grey[300],
+                          thickness: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: false,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            textStyle: const TextStyle(color: Colors.white),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: borderRadiusStd),
+                          ),
+                          onPressed: () async {},
+                          icon: SvgPicture.asset(
+                            'assets/icons/google.svg',
+                            height: 16,
+                          ),
+                          label: const Text(
+                            'Google',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 formSpacer,
                 Container(

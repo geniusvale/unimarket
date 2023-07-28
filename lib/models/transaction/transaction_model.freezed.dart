@@ -22,18 +22,30 @@ TransactionModel _$TransactionModelFromJson(Map<String, dynamic> json) {
 mixin _$TransactionModel {
   int get id => throw _privateConstructorUsedError;
   String? get userId => throw _privateConstructorUsedError;
-  String? get address => throw _privateConstructorUsedError;
+  ProfileModel? get profiles => throw _privateConstructorUsedError;
+  @JsonKey(name: 'address_id')
+  int? get addressId => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   @JsonKey(name: 'invoices_id')
   String? get invoicesId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'external_id')
+  String? get externalId => throw _privateConstructorUsedError;
   int? get quantity => throw _privateConstructorUsedError;
+  int? get ongkir => throw _privateConstructorUsedError;
+  @JsonKey(name: 'shipping_info')
+  String? get shippingInfo => throw _privateConstructorUsedError;
   int? get total_price => throw _privateConstructorUsedError;
   String? get payment_url => throw _privateConstructorUsedError;
+  String? get resi => throw _privateConstructorUsedError;
+  AddressModel? get address => throw _privateConstructorUsedError;
   @JsonKey(name: 'status')
   String? get transactionStatus => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'transactions_item')
+  List<TransactionItemsModel>? get transactionItems =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -50,15 +62,32 @@ abstract class $TransactionModelCopyWith<$Res> {
   $Res call(
       {int id,
       String? userId,
-      String? address,
+      ProfileModel? profiles,
+      @JsonKey(name: 'address_id')
+          int? addressId,
       String? phone,
       String? email,
-      @JsonKey(name: 'invoices_id') String? invoicesId,
+      @JsonKey(name: 'invoices_id')
+          String? invoicesId,
+      @JsonKey(name: 'external_id')
+          String? externalId,
       int? quantity,
+      int? ongkir,
+      @JsonKey(name: 'shipping_info')
+          String? shippingInfo,
       int? total_price,
       String? payment_url,
-      @JsonKey(name: 'status') String? transactionStatus,
-      @JsonKey(name: 'created_at') String? createdAt});
+      String? resi,
+      AddressModel? address,
+      @JsonKey(name: 'status')
+          String? transactionStatus,
+      @JsonKey(name: 'created_at')
+          String? createdAt,
+      @JsonKey(name: 'transactions_item')
+          List<TransactionItemsModel>? transactionItems});
+
+  $ProfileModelCopyWith<$Res>? get profiles;
+  $AddressModelCopyWith<$Res>? get address;
 }
 
 /// @nodoc
@@ -76,15 +105,22 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
   $Res call({
     Object? id = null,
     Object? userId = freezed,
-    Object? address = freezed,
+    Object? profiles = freezed,
+    Object? addressId = freezed,
     Object? phone = freezed,
     Object? email = freezed,
     Object? invoicesId = freezed,
+    Object? externalId = freezed,
     Object? quantity = freezed,
+    Object? ongkir = freezed,
+    Object? shippingInfo = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
+    Object? resi = freezed,
+    Object? address = freezed,
     Object? transactionStatus = freezed,
     Object? createdAt = freezed,
+    Object? transactionItems = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -95,10 +131,14 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String?,
-      address: freezed == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
+      addressId: freezed == addressId
+          ? _value.addressId
+          : addressId // ignore: cast_nullable_to_non_nullable
+              as int?,
       phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
@@ -111,10 +151,22 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
           ? _value.invoicesId
           : invoicesId // ignore: cast_nullable_to_non_nullable
               as String?,
+      externalId: freezed == externalId
+          ? _value.externalId
+          : externalId // ignore: cast_nullable_to_non_nullable
+              as String?,
       quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
               as int?,
+      ongkir: freezed == ongkir
+          ? _value.ongkir
+          : ongkir // ignore: cast_nullable_to_non_nullable
+              as int?,
+      shippingInfo: freezed == shippingInfo
+          ? _value.shippingInfo
+          : shippingInfo // ignore: cast_nullable_to_non_nullable
+              as String?,
       total_price: freezed == total_price
           ? _value.total_price
           : total_price // ignore: cast_nullable_to_non_nullable
@@ -123,6 +175,14 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
           ? _value.payment_url
           : payment_url // ignore: cast_nullable_to_non_nullable
               as String?,
+      resi: freezed == resi
+          ? _value.resi
+          : resi // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as AddressModel?,
       transactionStatus: freezed == transactionStatus
           ? _value.transactionStatus
           : transactionStatus // ignore: cast_nullable_to_non_nullable
@@ -131,7 +191,35 @@ class _$TransactionModelCopyWithImpl<$Res, $Val extends TransactionModel>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String?,
+      transactionItems: freezed == transactionItems
+          ? _value.transactionItems
+          : transactionItems // ignore: cast_nullable_to_non_nullable
+              as List<TransactionItemsModel>?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ProfileModelCopyWith<$Res>? get profiles {
+    if (_value.profiles == null) {
+      return null;
+    }
+
+    return $ProfileModelCopyWith<$Res>(_value.profiles!, (value) {
+      return _then(_value.copyWith(profiles: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressModelCopyWith<$Res>? get address {
+    if (_value.address == null) {
+      return null;
+    }
+
+    return $AddressModelCopyWith<$Res>(_value.address!, (value) {
+      return _then(_value.copyWith(address: value) as $Val);
+    });
   }
 }
 
@@ -146,15 +234,34 @@ abstract class _$$_TransactionModelCopyWith<$Res>
   $Res call(
       {int id,
       String? userId,
-      String? address,
+      ProfileModel? profiles,
+      @JsonKey(name: 'address_id')
+          int? addressId,
       String? phone,
       String? email,
-      @JsonKey(name: 'invoices_id') String? invoicesId,
+      @JsonKey(name: 'invoices_id')
+          String? invoicesId,
+      @JsonKey(name: 'external_id')
+          String? externalId,
       int? quantity,
+      int? ongkir,
+      @JsonKey(name: 'shipping_info')
+          String? shippingInfo,
       int? total_price,
       String? payment_url,
-      @JsonKey(name: 'status') String? transactionStatus,
-      @JsonKey(name: 'created_at') String? createdAt});
+      String? resi,
+      AddressModel? address,
+      @JsonKey(name: 'status')
+          String? transactionStatus,
+      @JsonKey(name: 'created_at')
+          String? createdAt,
+      @JsonKey(name: 'transactions_item')
+          List<TransactionItemsModel>? transactionItems});
+
+  @override
+  $ProfileModelCopyWith<$Res>? get profiles;
+  @override
+  $AddressModelCopyWith<$Res>? get address;
 }
 
 /// @nodoc
@@ -170,15 +277,22 @@ class __$$_TransactionModelCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? userId = freezed,
-    Object? address = freezed,
+    Object? profiles = freezed,
+    Object? addressId = freezed,
     Object? phone = freezed,
     Object? email = freezed,
     Object? invoicesId = freezed,
+    Object? externalId = freezed,
     Object? quantity = freezed,
+    Object? ongkir = freezed,
+    Object? shippingInfo = freezed,
     Object? total_price = freezed,
     Object? payment_url = freezed,
+    Object? resi = freezed,
+    Object? address = freezed,
     Object? transactionStatus = freezed,
     Object? createdAt = freezed,
+    Object? transactionItems = freezed,
   }) {
     return _then(_$_TransactionModel(
       id: null == id
@@ -189,10 +303,14 @@ class __$$_TransactionModelCopyWithImpl<$Res>
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
               as String?,
-      address: freezed == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String?,
+      profiles: freezed == profiles
+          ? _value.profiles
+          : profiles // ignore: cast_nullable_to_non_nullable
+              as ProfileModel?,
+      addressId: freezed == addressId
+          ? _value.addressId
+          : addressId // ignore: cast_nullable_to_non_nullable
+              as int?,
       phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
@@ -205,10 +323,22 @@ class __$$_TransactionModelCopyWithImpl<$Res>
           ? _value.invoicesId
           : invoicesId // ignore: cast_nullable_to_non_nullable
               as String?,
+      externalId: freezed == externalId
+          ? _value.externalId
+          : externalId // ignore: cast_nullable_to_non_nullable
+              as String?,
       quantity: freezed == quantity
           ? _value.quantity
           : quantity // ignore: cast_nullable_to_non_nullable
               as int?,
+      ongkir: freezed == ongkir
+          ? _value.ongkir
+          : ongkir // ignore: cast_nullable_to_non_nullable
+              as int?,
+      shippingInfo: freezed == shippingInfo
+          ? _value.shippingInfo
+          : shippingInfo // ignore: cast_nullable_to_non_nullable
+              as String?,
       total_price: freezed == total_price
           ? _value.total_price
           : total_price // ignore: cast_nullable_to_non_nullable
@@ -217,6 +347,14 @@ class __$$_TransactionModelCopyWithImpl<$Res>
           ? _value.payment_url
           : payment_url // ignore: cast_nullable_to_non_nullable
               as String?,
+      resi: freezed == resi
+          ? _value.resi
+          : resi // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as AddressModel?,
       transactionStatus: freezed == transactionStatus
           ? _value.transactionStatus
           : transactionStatus // ignore: cast_nullable_to_non_nullable
@@ -225,6 +363,10 @@ class __$$_TransactionModelCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String?,
+      transactionItems: freezed == transactionItems
+          ? _value._transactionItems
+          : transactionItems // ignore: cast_nullable_to_non_nullable
+              as List<TransactionItemsModel>?,
     ));
   }
 }
@@ -237,15 +379,30 @@ class _$_TransactionModel
   const _$_TransactionModel(
       {required this.id,
       this.userId,
-      this.address,
+      this.profiles,
+      @JsonKey(name: 'address_id')
+          this.addressId,
       this.phone,
       this.email,
-      @JsonKey(name: 'invoices_id') this.invoicesId,
+      @JsonKey(name: 'invoices_id')
+          this.invoicesId,
+      @JsonKey(name: 'external_id')
+          this.externalId,
       this.quantity,
+      this.ongkir,
+      @JsonKey(name: 'shipping_info')
+          this.shippingInfo,
       this.total_price,
       this.payment_url,
-      @JsonKey(name: 'status') this.transactionStatus,
-      @JsonKey(name: 'created_at') this.createdAt});
+      this.resi,
+      this.address,
+      @JsonKey(name: 'status')
+          this.transactionStatus,
+      @JsonKey(name: 'created_at')
+          this.createdAt,
+      @JsonKey(name: 'transactions_item')
+          final List<TransactionItemsModel>? transactionItems})
+      : _transactionItems = transactionItems;
 
   factory _$_TransactionModel.fromJson(Map<String, dynamic> json) =>
       _$$_TransactionModelFromJson(json);
@@ -255,7 +412,10 @@ class _$_TransactionModel
   @override
   final String? userId;
   @override
-  final String? address;
+  final ProfileModel? profiles;
+  @override
+  @JsonKey(name: 'address_id')
+  final int? addressId;
   @override
   final String? phone;
   @override
@@ -264,21 +424,44 @@ class _$_TransactionModel
   @JsonKey(name: 'invoices_id')
   final String? invoicesId;
   @override
+  @JsonKey(name: 'external_id')
+  final String? externalId;
+  @override
   final int? quantity;
+  @override
+  final int? ongkir;
+  @override
+  @JsonKey(name: 'shipping_info')
+  final String? shippingInfo;
   @override
   final int? total_price;
   @override
   final String? payment_url;
+  @override
+  final String? resi;
+  @override
+  final AddressModel? address;
   @override
   @JsonKey(name: 'status')
   final String? transactionStatus;
   @override
   @JsonKey(name: 'created_at')
   final String? createdAt;
+  final List<TransactionItemsModel>? _transactionItems;
+  @override
+  @JsonKey(name: 'transactions_item')
+  List<TransactionItemsModel>? get transactionItems {
+    final value = _transactionItems;
+    if (value == null) return null;
+    if (_transactionItems is EqualUnmodifiableListView)
+      return _transactionItems;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TransactionModel(id: $id, userId: $userId, address: $address, phone: $phone, email: $email, invoicesId: $invoicesId, quantity: $quantity, total_price: $total_price, payment_url: $payment_url, transactionStatus: $transactionStatus, createdAt: $createdAt)';
+    return 'TransactionModel(id: $id, userId: $userId, profiles: $profiles, addressId: $addressId, phone: $phone, email: $email, invoicesId: $invoicesId, externalId: $externalId, quantity: $quantity, ongkir: $ongkir, shippingInfo: $shippingInfo, total_price: $total_price, payment_url: $payment_url, resi: $resi, address: $address, transactionStatus: $transactionStatus, createdAt: $createdAt, transactionItems: $transactionItems)';
   }
 
   @override
@@ -288,15 +471,22 @@ class _$_TransactionModel
       ..add(DiagnosticsProperty('type', 'TransactionModel'))
       ..add(DiagnosticsProperty('id', id))
       ..add(DiagnosticsProperty('userId', userId))
-      ..add(DiagnosticsProperty('address', address))
+      ..add(DiagnosticsProperty('profiles', profiles))
+      ..add(DiagnosticsProperty('addressId', addressId))
       ..add(DiagnosticsProperty('phone', phone))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('invoicesId', invoicesId))
+      ..add(DiagnosticsProperty('externalId', externalId))
       ..add(DiagnosticsProperty('quantity', quantity))
+      ..add(DiagnosticsProperty('ongkir', ongkir))
+      ..add(DiagnosticsProperty('shippingInfo', shippingInfo))
       ..add(DiagnosticsProperty('total_price', total_price))
       ..add(DiagnosticsProperty('payment_url', payment_url))
+      ..add(DiagnosticsProperty('resi', resi))
+      ..add(DiagnosticsProperty('address', address))
       ..add(DiagnosticsProperty('transactionStatus', transactionStatus))
-      ..add(DiagnosticsProperty('createdAt', createdAt));
+      ..add(DiagnosticsProperty('createdAt', createdAt))
+      ..add(DiagnosticsProperty('transactionItems', transactionItems));
   }
 
   @override
@@ -306,21 +496,33 @@ class _$_TransactionModel
             other is _$_TransactionModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.address, address) || other.address == address) &&
+            (identical(other.profiles, profiles) ||
+                other.profiles == profiles) &&
+            (identical(other.addressId, addressId) ||
+                other.addressId == addressId) &&
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.invoicesId, invoicesId) ||
                 other.invoicesId == invoicesId) &&
+            (identical(other.externalId, externalId) ||
+                other.externalId == externalId) &&
             (identical(other.quantity, quantity) ||
                 other.quantity == quantity) &&
+            (identical(other.ongkir, ongkir) || other.ongkir == ongkir) &&
+            (identical(other.shippingInfo, shippingInfo) ||
+                other.shippingInfo == shippingInfo) &&
             (identical(other.total_price, total_price) ||
                 other.total_price == total_price) &&
             (identical(other.payment_url, payment_url) ||
                 other.payment_url == payment_url) &&
+            (identical(other.resi, resi) || other.resi == resi) &&
+            (identical(other.address, address) || other.address == address) &&
             (identical(other.transactionStatus, transactionStatus) ||
                 other.transactionStatus == transactionStatus) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            const DeepCollectionEquality()
+                .equals(other._transactionItems, _transactionItems));
   }
 
   @JsonKey(ignore: true)
@@ -329,15 +531,22 @@ class _$_TransactionModel
       runtimeType,
       id,
       userId,
-      address,
+      profiles,
+      addressId,
       phone,
       email,
       invoicesId,
+      externalId,
       quantity,
+      ongkir,
+      shippingInfo,
       total_price,
       payment_url,
+      resi,
+      address,
       transactionStatus,
-      createdAt);
+      createdAt,
+      const DeepCollectionEquality().hash(_transactionItems));
 
   @JsonKey(ignore: true)
   @override
@@ -357,15 +566,29 @@ abstract class _TransactionModel implements TransactionModel {
   const factory _TransactionModel(
           {required final int id,
           final String? userId,
-          final String? address,
+          final ProfileModel? profiles,
+          @JsonKey(name: 'address_id')
+              final int? addressId,
           final String? phone,
           final String? email,
-          @JsonKey(name: 'invoices_id') final String? invoicesId,
+          @JsonKey(name: 'invoices_id')
+              final String? invoicesId,
+          @JsonKey(name: 'external_id')
+              final String? externalId,
           final int? quantity,
+          final int? ongkir,
+          @JsonKey(name: 'shipping_info')
+              final String? shippingInfo,
           final int? total_price,
           final String? payment_url,
-          @JsonKey(name: 'status') final String? transactionStatus,
-          @JsonKey(name: 'created_at') final String? createdAt}) =
+          final String? resi,
+          final AddressModel? address,
+          @JsonKey(name: 'status')
+              final String? transactionStatus,
+          @JsonKey(name: 'created_at')
+              final String? createdAt,
+          @JsonKey(name: 'transactions_item')
+              final List<TransactionItemsModel>? transactionItems}) =
       _$_TransactionModel;
 
   factory _TransactionModel.fromJson(Map<String, dynamic> json) =
@@ -376,7 +599,10 @@ abstract class _TransactionModel implements TransactionModel {
   @override
   String? get userId;
   @override
-  String? get address;
+  ProfileModel? get profiles;
+  @override
+  @JsonKey(name: 'address_id')
+  int? get addressId;
   @override
   String? get phone;
   @override
@@ -385,17 +611,32 @@ abstract class _TransactionModel implements TransactionModel {
   @JsonKey(name: 'invoices_id')
   String? get invoicesId;
   @override
+  @JsonKey(name: 'external_id')
+  String? get externalId;
+  @override
   int? get quantity;
+  @override
+  int? get ongkir;
+  @override
+  @JsonKey(name: 'shipping_info')
+  String? get shippingInfo;
   @override
   int? get total_price;
   @override
   String? get payment_url;
+  @override
+  String? get resi;
+  @override
+  AddressModel? get address;
   @override
   @JsonKey(name: 'status')
   String? get transactionStatus;
   @override
   @JsonKey(name: 'created_at')
   String? get createdAt;
+  @override
+  @JsonKey(name: 'transactions_item')
+  List<TransactionItemsModel>? get transactionItems;
   @override
   @JsonKey(ignore: true)
   _$$_TransactionModelCopyWith<_$_TransactionModel> get copyWith =>

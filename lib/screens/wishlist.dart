@@ -39,88 +39,109 @@ class _WishlistState extends State<Wishlist> {
               child: FutureBuilder<List<ProductModel>>(
                 future: wishlistProvider.getWishlist(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      authProvider.unAuthorized == false) {
-                    return MasonryGridView.builder(
-                      primary: false,
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      itemCount: snapshot.data?.length ?? 0,
-                      gridDelegate:
-                          const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
-                      itemBuilder: (context, index) {
-                        return Card(
-                          elevation: 0.3,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return DetailProduct(
-                                      index: index,
-                                      snapshot: snapshot,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Center(
-                                  child: SizedBox(
-                                    child: ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(8),
-                                          topRight: Radius.circular(8)),
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            '${snapshot.data?[index].img_url}',
-                                        // 'https://picsum.photos/id/${index + randomNumber}/200/200',
-                                        progressIndicatorBuilder:
-                                            (context, url, downloadProgress) {
-                                          return CircularProgressIndicator(
-                                            value: downloadProgress.progress,
-                                          );
-                                        },
-                                        errorWidget: (context, url, error) {
-                                          return const Icon(
-                                            Icons.broken_image_outlined,
-                                          );
-                                        },
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('Tidak Ada Wishlist'),
+                    );
+                  } else {
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        setState(() {});
+                      },
+                      child: MasonryGridView.builder(
+                        primary: false,
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: snapshot.data?.length ?? 0,
+                        gridDelegate:
+                            const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                        ),
+                        itemBuilder: (context, index) {
+                          return Card(
+                            elevation: 0.3,
+                            child: InkWell(
+                              onLongPress: () async {
+                                await wishlistProvider.showDeleteProduct(
+                                  context,
+                                  snapshot,
+                                  index,
+                                );
+                              },
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return DetailProduct(
+                                        index: index,
+                                        snapshot: snapshot,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: SizedBox(
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(8),
+                                            topRight: Radius.circular(8)),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              '${snapshot.data?[index].img_url}',
+                                          // 'https://picsum.photos/id/${index + randomNumber}/200/200',
+                                          progressIndicatorBuilder:
+                                              (context, url, downloadProgress) {
+                                            return CircularProgressIndicator(
+                                              value: downloadProgress.progress,
+                                            );
+                                          },
+                                          errorWidget: (context, url, error) {
+                                            return const Icon(
+                                              Icons.broken_image_outlined,
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                formSpacer,
-                                Padding(
-                                  padding: formPadding,
-                                  child: Text(
-                                    snapshot.data?[index].name ?? '~Error',
-                                  ),
-                                ),
-                                Padding(
-                                  padding: formPadding,
-                                  child: Text(
-                                    numberCurrency
-                                        .format(snapshot.data![index].price),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  formSpacer,
+                                  Padding(
+                                    padding: formPadding,
+                                    child: Text(
+                                      snapshot.data?[index].name ?? '~Error',
                                     ),
                                   ),
-                                ),
-                                formSpacer
-                              ],
+                                  Padding(
+                                    padding: formPadding,
+                                    child: Text(
+                                      numberCurrency
+                                          .format(snapshot.data![index].price),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  formSpacer
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     );
-                  } else {
-                    return loadingIndicator;
                   }
                 },
               ),

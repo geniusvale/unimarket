@@ -3,9 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:unimarket/controller/cart_provider.dart';
+import 'package:unimarket/controller/manage_shipment_receipt_provider.dart';
 import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/controller/transaction_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
+import 'package:unimarket/utilities/constants.dart';
 
 import 'controller/auth_provider.dart';
 import 'controller/home_provider.dart';
@@ -23,6 +25,16 @@ void main() async {
     url: baseUrl,
     anonKey: anonKey,
   );
+  // final _authSubscription = supabase.auth.onAuthStateChange.listen((data) {
+  //   final AuthChangeEvent event = data.event;
+  //   if (event == AuthChangeEvent.passwordRecovery) {
+  //     // goToNamed(
+  //     //   SetNewPasswordScreen.ROUTE_NAME,
+  //     //   replace: true,
+  //     // );
+  //   }
+  // });
+  // _authSubscription.cancel();
   runApp(
     const MyApp(),
   );
@@ -43,6 +55,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TransactionProvider()),
         ChangeNotifierProvider(create: (_) => SellerRequestProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ManageShipmentReceiptProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -24,7 +24,9 @@ mixin _$ProfileModel {
   String? get username => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
-  String? get address => throw _privateConstructorUsedError;
+  @JsonKey(name: 'address_id')
+  int? get addressId => throw _privateConstructorUsedError;
+  AddressModel? get address => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
   bool? get isSeller => throw _privateConstructorUsedError;
   bool? get isAdmin => throw _privateConstructorUsedError;
@@ -48,12 +50,15 @@ abstract class $ProfileModelCopyWith<$Res> {
       String? username,
       String? email,
       String? phone,
-      String? address,
+      @JsonKey(name: 'address_id') int? addressId,
+      AddressModel? address,
       String? avatar_url,
       bool? isSeller,
       bool? isAdmin,
       String? nim,
       int? saldo});
+
+  $AddressModelCopyWith<$Res>? get address;
 }
 
 /// @nodoc
@@ -73,6 +78,7 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
     Object? username = freezed,
     Object? email = freezed,
     Object? phone = freezed,
+    Object? addressId = freezed,
     Object? address = freezed,
     Object? avatar_url = freezed,
     Object? isSeller = freezed,
@@ -97,10 +103,14 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String?,
+      addressId: freezed == addressId
+          ? _value.addressId
+          : addressId // ignore: cast_nullable_to_non_nullable
+              as int?,
       address: freezed == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as AddressModel?,
       avatar_url: freezed == avatar_url
           ? _value.avatar_url
           : avatar_url // ignore: cast_nullable_to_non_nullable
@@ -123,6 +133,18 @@ class _$ProfileModelCopyWithImpl<$Res, $Val extends ProfileModel>
               as int?,
     ) as $Val);
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AddressModelCopyWith<$Res>? get address {
+    if (_value.address == null) {
+      return null;
+    }
+
+    return $AddressModelCopyWith<$Res>(_value.address!, (value) {
+      return _then(_value.copyWith(address: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -138,12 +160,16 @@ abstract class _$$_ProfileModelCopyWith<$Res>
       String? username,
       String? email,
       String? phone,
-      String? address,
+      @JsonKey(name: 'address_id') int? addressId,
+      AddressModel? address,
       String? avatar_url,
       bool? isSeller,
       bool? isAdmin,
       String? nim,
       int? saldo});
+
+  @override
+  $AddressModelCopyWith<$Res>? get address;
 }
 
 /// @nodoc
@@ -161,6 +187,7 @@ class __$$_ProfileModelCopyWithImpl<$Res>
     Object? username = freezed,
     Object? email = freezed,
     Object? phone = freezed,
+    Object? addressId = freezed,
     Object? address = freezed,
     Object? avatar_url = freezed,
     Object? isSeller = freezed,
@@ -185,10 +212,14 @@ class __$$_ProfileModelCopyWithImpl<$Res>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String?,
+      addressId: freezed == addressId
+          ? _value.addressId
+          : addressId // ignore: cast_nullable_to_non_nullable
+              as int?,
       address: freezed == address
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as AddressModel?,
       avatar_url: freezed == avatar_url
           ? _value.avatar_url
           : avatar_url // ignore: cast_nullable_to_non_nullable
@@ -221,6 +252,7 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       this.username,
       this.email,
       this.phone,
+      @JsonKey(name: 'address_id') this.addressId,
       this.address,
       this.avatar_url,
       this.isSeller,
@@ -240,7 +272,10 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
   @override
   final String? phone;
   @override
-  final String? address;
+  @JsonKey(name: 'address_id')
+  final int? addressId;
+  @override
+  final AddressModel? address;
   @override
   final String? avatar_url;
   @override
@@ -254,7 +289,7 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProfileModel(id: $id, username: $username, email: $email, phone: $phone, address: $address, avatar_url: $avatar_url, isSeller: $isSeller, isAdmin: $isAdmin, nim: $nim, saldo: $saldo)';
+    return 'ProfileModel(id: $id, username: $username, email: $email, phone: $phone, addressId: $addressId, address: $address, avatar_url: $avatar_url, isSeller: $isSeller, isAdmin: $isAdmin, nim: $nim, saldo: $saldo)';
   }
 
   @override
@@ -266,6 +301,7 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
       ..add(DiagnosticsProperty('username', username))
       ..add(DiagnosticsProperty('email', email))
       ..add(DiagnosticsProperty('phone', phone))
+      ..add(DiagnosticsProperty('addressId', addressId))
       ..add(DiagnosticsProperty('address', address))
       ..add(DiagnosticsProperty('avatar_url', avatar_url))
       ..add(DiagnosticsProperty('isSeller', isSeller))
@@ -284,6 +320,8 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
                 other.username == username) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.addressId, addressId) ||
+                other.addressId == addressId) &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.avatar_url, avatar_url) ||
                 other.avatar_url == avatar_url) &&
@@ -297,7 +335,7 @@ class _$_ProfileModel with DiagnosticableTreeMixin implements _ProfileModel {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, username, email, phone,
-      address, avatar_url, isSeller, isAdmin, nim, saldo);
+      addressId, address, avatar_url, isSeller, isAdmin, nim, saldo);
 
   @JsonKey(ignore: true)
   @override
@@ -319,7 +357,8 @@ abstract class _ProfileModel implements ProfileModel {
       final String? username,
       final String? email,
       final String? phone,
-      final String? address,
+      @JsonKey(name: 'address_id') final int? addressId,
+      final AddressModel? address,
       final String? avatar_url,
       final bool? isSeller,
       final bool? isAdmin,
@@ -338,7 +377,10 @@ abstract class _ProfileModel implements ProfileModel {
   @override
   String? get phone;
   @override
-  String? get address;
+  @JsonKey(name: 'address_id')
+  int? get addressId;
+  @override
+  AddressModel? get address;
   @override
   String? get avatar_url;
   @override

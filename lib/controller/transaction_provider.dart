@@ -13,7 +13,8 @@ class TransactionProvider extends ChangeNotifier {
     final result = await supabase
         .from('transactions')
         .select<List<Map<String, dynamic>>>()
-        .eq('users_id', supabase.auth.currentUser!.id);
+        .eq('users_id', supabase.auth.currentUser!.id)
+        .order('created_at');
     final transaction =
         result.map((e) => TransactionModel.fromJson(e)).toList();
     //UPDATE STATUS DARI XENDIT
@@ -39,7 +40,8 @@ class TransactionProvider extends ChangeNotifier {
           .from('transactions_item')
           .select<List<Map<String, dynamic>>>(
               '*, products:products_id(*, profiles:seller_id(*)) ')
-          .eq('transactions_id', transactionId);
+          .eq('transactions_id', transactionId)
+          .order('created_at');
       final itemDetail = result
           .map(
             (e) => TransactionItemsModel.fromJson(e),
@@ -74,13 +76,21 @@ class TransactionProvider extends ChangeNotifier {
         //Ubah Status Menjadi isConfirmed
         await supabase.from('transactions_item').update({
           'isConfirmed': true,
-          'order_status': 'CONFIRMED',
+          'status': 'CONFIRMED',
         }).match({
           'id': transactionItemId,
         });
+
+        final currentSellerSaldo = await supabase
+            .from('profiles')
+            .select('saldo')
+            .eq('id', sellerId)
+            .single();
+        final newSellerSaldo = currentSellerSaldo['saldo'] + productPrice;
+
         //Masukkan Saldo Ke Penjual
         await supabase.from('profiles').update({
-          'saldo': productPrice,
+          'saldo': newSellerSaldo,
         }).eq('id', sellerId);
       } catch (e) {
         rethrow;
@@ -92,9 +102,17 @@ class TransactionProvider extends ChangeNotifier {
       }).match({
         'id': transactionItemId,
       });
+
+      final currentSellerSaldo = await supabase
+          .from('profiles')
+          .select('saldo')
+          .eq('id', sellerId)
+          .single();
+      final newSellerSaldo = currentSellerSaldo['saldo'] + productPrice;
+
       //Masukkan Saldo Ke Penjual
       await supabase.from('profiles').update({
-        'saldo': productPrice,
+        'saldo': newSellerSaldo,
       }).eq('id', sellerId);
     }
     //Setelah isConfirmed Tombol Disabled!
@@ -220,13 +238,16 @@ class TransactionProvider extends ChangeNotifier {
   }
 
   cancelTransaction({required String invoicesId}) async {
-    await xendit.ExpireInvoice(
-      invoice_id: invoicesId,
-    );
-    // await supabase.from('transactions_item').delete({
-    //   'isCancelled': true,
-    //   'order_status': 'CANCELLED',
-    // }).eq('transactions_id', transactionItemId);
+    try {
+      await xendit.ExpireInvoice(
+        invoice_id: invoicesId,
+      );
+      //Status Akan Berubah Saat Kembali GET DATA TRANSAKSI,
+      //Karena mengupdate status pembayaran.
+    } catch (e) {
+      rethrow;
+    }
+    notifyListeners();
   }
 
   refundTransactionItem(

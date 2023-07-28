@@ -12,6 +12,7 @@ import '../../controller/auth_provider.dart';
 import '../../controller/product_provider.dart';
 import '../../models/product/product_model.dart';
 import '../../utilities/constants.dart';
+import '../../utilities/widgets.dart';
 import '../auth/login.dart';
 
 class DetailProduct extends StatefulWidget {
@@ -30,6 +31,7 @@ class _DetailProductState extends State<DetailProduct> {
   bool isNull = true;
   bool isOwnProduct = false;
   bool showWidget = true;
+  bool? isLoading;
 
   @override
   void initState() {
@@ -77,7 +79,6 @@ class _DetailProductState extends State<DetailProduct> {
                       fit: BoxFit.fitHeight,
                       imageUrl:
                           '${widget.snapshot.data![widget.index].img_url}',
-                      // 'https://picsum.photos/id/${widget.index + randomNumber}/200/200',
                       progressIndicatorBuilder:
                           (context, url, downloadProgress) {
                         return CircularProgressIndicator(
@@ -113,6 +114,15 @@ class _DetailProductState extends State<DetailProduct> {
                     ),
                   ),
                   formSpacer,
+                  ActionChip(
+                    label:
+                        Text('${widget.snapshot.data![widget.index].category}'),
+                    labelStyle: const TextStyle(color: Colors.black),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
+                  ),
+                  formSpacer,
                   const Text(
                     'Informasi Penjual',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -130,9 +140,6 @@ class _DetailProductState extends State<DetailProduct> {
                               ? SvgPicture.asset('assets/images/blankpp.svg')
                               : Image.network(widget.snapshot
                                   .data![widget.index].profiles!.avatar_url!),
-                          // CachedNetworkImage(
-                          //     imageUrl:
-                          //         profileProvider.loggedUserData.avatar_url!),
                         ),
                       ),
                       const SizedBox(width: 5),
@@ -191,8 +198,17 @@ class _DetailProductState extends State<DetailProduct> {
                     ),
                     onPressed: () async {
                       try {
+                        isLoading = true;
+                        showGeneralDialog(
+                          context: context,
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  loadingIndicator,
+                        );
                         if (authProvider.unAuthorized == true) {
                           showWidget;
+                          isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -200,6 +216,8 @@ class _DetailProductState extends State<DetailProduct> {
                             ),
                           );
                         } else if (isOwnProduct) {
+                          isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
                           return showDialog(
                             context: context,
                             builder: (context) => const AlertDialog(
@@ -214,6 +232,8 @@ class _DetailProductState extends State<DetailProduct> {
                             productId: widget.snapshot.data![widget.index].id!,
                           );
                           if (isAlreadyWishlished == true) {
+                            isLoading = false;
+                            Navigator.of(context, rootNavigator: true).pop();
                             snackbar(
                                 context, 'Produk Sudah Tersimpan!', Colors.red);
                           } else {
@@ -222,11 +242,15 @@ class _DetailProductState extends State<DetailProduct> {
                               usersId: supabase.auth.currentUser!.id,
                               productId: widget.snapshot.data![widget.index].id,
                             );
+                            isLoading = false;
+                            Navigator.of(context, rootNavigator: true).pop();
                             snackbar(
                                 context, 'Berhasil Menyimpan!', Colors.green);
                           }
                         }
                       } catch (e) {
+                        isLoading = false;
+                        Navigator.of(context, rootNavigator: true).pop();
                         snackbar(context, e.toString(), Colors.black);
                       }
                     },
@@ -259,45 +283,93 @@ class _DetailProductState extends State<DetailProduct> {
                       ),
                     ),
                     onPressed: () async {
-                      if (authProvider.unAuthorized == true) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Login(),
-                          ),
-                        );
-                      } else if (isOwnProduct) {
-                        return showDialog(
+                      try {
+                        isLoading = true;
+                        showGeneralDialog(
                           context: context,
-                          builder: (context) => const AlertDialog(
-                            content: Text(
-                              'Tidak Bisa Menambah Produk Anda Sendiri Ke Keranjang!',
-                              textAlign: TextAlign.center,
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  loadingIndicator,
+                        );
+                        if (authProvider.unAuthorized == true) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Login(),
                             ),
-                          ),
-                        );
-                      } else {
-                        await cartProvider.checkIfHasCart(context);
-                        final isSameProduct =
-                            await cartProvider.checkIfHasSameCartItems(
-                          productId: widget.snapshot.data![widget.index].id!,
-                        );
-                        if (isSameProduct == true) {
-                          snackbar(
-                              context, 'Sudah Ada di Keranjang!', Colors.black);
+                          );
+                        } else if (isOwnProduct) {
+                          isLoading = false;
+                          Navigator.of(context, rootNavigator: true).pop();
+                          return showDialog(
+                            context: context,
+                            builder: (context) => const AlertDialog(
+                              content: Text(
+                                'Tidak Bisa Menambah Produk Anda Sendiri Ke Keranjang!',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
                         } else {
-                          try {
-                            await cartProvider.addToCart(
-                              productId:
-                                  widget.snapshot.data![widget.index].id ?? 0,
-                              usersId: supabase.auth.currentUser!.id,
+                          await cartProvider.checkIfHasCart(context);
+                          final isSameProduct =
+                              await cartProvider.checkIfHasSameCartItems(
+                            productId: widget.snapshot.data![widget.index].id!,
+                            sellerId:
+                                widget.snapshot.data![widget.index].seller_id!,
+                            productCategory:
+                                widget.snapshot.data![widget.index].category,
+                            context: context,
+                          );
+                          print('isSameProduct $isSameProduct');
+                          if (isSameProduct == true) {
+                            isLoading = false;
+                            Navigator.of(context, rootNavigator: true).pop();
+                            snackbar(
+                              context,
+                              'Sudah Ada di Keranjang!',
+                              Colors.black,
                             );
-                            snackbar(context, 'Berhasil Menambah ke Keranjang!',
-                                Colors.black);
-                          } catch (e) {
-                            rethrow;
+                          }
+                          // else if (isSameProduct == false &&
+                          //     widget.snapshot.data![widget.index].category ==
+                          //         'Produk Fisik') {
+                          //   final checkDifferentProdukFisikSeller =
+                          //       await cartProvider.checkAlreadyProdukFisikInCart(
+                          //     cartId: cartProvider.currentCartId,
+                          //     productCategory:
+                          //         widget.snapshot.data![widget.index].category,
+                          //     sellerId:
+                          //         widget.snapshot.data![widget.index].seller_id,
+                          //   );
+                          //   if (checkDifferentProdukFisikSeller == true) {
+                          //     snackbar(
+                          //       context,
+                          //       'Hanya bisa menambah produk fisik dari seller yang sama yang sudah ada di keranjang!',
+                          //       Colors.black,
+                          //     );
+                          //   }
+                          // }
+                          else {
+                            try {
+                              await cartProvider.addToCart(
+                                productId:
+                                    widget.snapshot.data![widget.index].id ?? 0,
+                                usersId: supabase.auth.currentUser!.id,
+                              );
+                              isLoading = false;
+                              Navigator.of(context, rootNavigator: true).pop();
+                              snackbar(
+                                  context,
+                                  'Berhasil Menambah ke Keranjang!',
+                                  Colors.black);
+                            } catch (e) {
+                              rethrow;
+                            }
                           }
                         }
+                      } catch (e) {
+                        rethrow;
                       }
                     },
                     child: const Text('Tambah Ke Keranjang'),

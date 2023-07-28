@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +9,7 @@ import 'package:unimarket/controller/profile_provider.dart';
 import 'package:unimarket/controller/seller_request_provider.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/screens/auth/register.dart';
-import 'package:unimarket/screens/confirm_request.dart';
+import 'package:unimarket/screens/admin/confirm_request.dart';
 import 'package:unimarket/screens/profile/edit_profile.dart';
 import 'package:unimarket/screens/store/store.dart';
 import 'package:unimarket/screens/store/withdraw.dart';
@@ -15,6 +17,8 @@ import 'package:unimarket/utilities/constants.dart';
 import 'package:unimarket/utilities/widgets.dart';
 
 import '../../controller/auth_provider.dart';
+import '../../models/address/city_model.dart';
+import '../admin/manage_shipment_receipt.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -30,16 +34,19 @@ class _ProfileState extends State<Profile> {
   final nimC = TextEditingController();
   final phoneC = TextEditingController();
   final addressC = TextEditingController();
+  TextEditingController? cityIdC = TextEditingController();
+  TextEditingController? cityNameC = TextEditingController();
+  TextEditingController? cityTypeC = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool? isLoading;
 
-  //CEK NANTI, BELUM DIIMPLEMENT!
+  //CEK NANTI!
   checkIfHasRequestedForSeller(BuildContext context) async {
     final sellerRequestProvider =
         Provider.of<SellerRequestProvider>(context, listen: false);
     await sellerRequestProvider.getSellerRequestList();
     if (sellerRequestProvider.allRequest!
-        .contains(supabase.auth.currentUser!.id)) {
+        .contains(supabase.auth.currentUser?.id)) {
       return hideWidget;
     } else {
       return !hideWidget;
@@ -48,7 +55,14 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
     checkIfHasRequestedForSeller(context);
+    phoneC.text = profileProvider.loggedUserData?.phone ?? '';
+    addressC.text = profileProvider.loggedUserData?.address?.alamat ?? '';
+    cityIdC?.text = profileProvider.loggedUserData?.address?.city_id ?? '';
+    cityNameC?.text = profileProvider.loggedUserData?.address?.city_name ?? '';
+    cityTypeC?.text = profileProvider.loggedUserData?.address?.type ?? '';
     super.initState();
   }
 
@@ -59,13 +73,14 @@ class _ProfileState extends State<Profile> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final sellerRequestProvider =
         Provider.of<SellerRequestProvider>(context, listen: false);
-    // print(sellerRequestProvider.getSellerRequestList());
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
+          await profileProvider.getProfileDataFromAuth();
           setState(() {});
         },
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
               Padding(
@@ -74,57 +89,64 @@ class _ProfileState extends State<Profile> {
                   children: [
                     //Kalau Tidak Ada Login, Gambar Harus Ada Replacement
                     GestureDetector(
-                      onTap: () async {
-                        if (profileProvider.loggedUserData.avatar_url == null) {
-                          try {
-                            isLoading = true;
-                            showGeneralDialog(
-                              context: context,
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      loadingIndicator,
-                            );
-                            await profileProvider.uploadFotoProfil();
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            setState(() {});
-                          } catch (e) {
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            snackbar(context, e.toString(), Colors.black);
-                          }
-                        } else {
-                          try {
-                            isLoading = true;
-                            showGeneralDialog(
-                              context: context,
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) =>
-                                      loadingIndicator,
-                            );
-                            await profileProvider.updateFotoProfil(
-                              currentAvatarUrl:
-                                  profileProvider.loggedUserData.avatar_url!,
-                            );
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            setState(() {});
-                          } catch (e) {
-                            isLoading = false;
-                            Navigator.of(context, rootNavigator: true).pop();
-                            snackbar(context, e.toString(), Colors.black);
-                          }
-                        }
-                      },
+                      onTap: authProvider.unAuthorized == true
+                          ? null
+                          : () async {
+                              if (profileProvider.loggedUserData?.avatar_url ==
+                                  null) {
+                                try {
+                                  isLoading = true;
+                                  showGeneralDialog(
+                                    context: context,
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        loadingIndicator,
+                                  );
+                                  await profileProvider.uploadFotoProfil();
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  setState(() {});
+                                } catch (e) {
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  snackbar(context, e.toString(), Colors.black);
+                                }
+                              } else {
+                                try {
+                                  isLoading = true;
+                                  showGeneralDialog(
+                                    context: context,
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        loadingIndicator,
+                                  );
+                                  await profileProvider.updateFotoProfil(
+                                    currentAvatarUrl: profileProvider
+                                        .loggedUserData!.avatar_url!,
+                                  );
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  setState(() {});
+                                } catch (e) {
+                                  isLoading = false;
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pop();
+                                  snackbar(context, e.toString(), Colors.black);
+                                }
+                              }
+                            },
                       child: ClipOval(
                         child: SizedBox(
                           height: 100,
                           width: 100,
-                          child: profileProvider.loggedUserData.avatar_url ==
+                          child: profileProvider.loggedUserData?.avatar_url ==
                                   null
                               ? SvgPicture.asset('assets/images/blankpp.svg')
                               : Image.network(
-                                  profileProvider.loggedUserData.avatar_url!,
+                                  profileProvider.loggedUserData!.avatar_url!,
                                   fit: BoxFit.fill,
                                 ),
                           // CachedNetworkImage(
@@ -180,16 +202,15 @@ class _ProfileState extends State<Profile> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    profileProvider.loggedUserData.username
+                                    profileProvider.loggedUserData!.username
                                         .toString(),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Text(profileProvider.loggedUserData.email
+                                  Text(profileProvider.loggedUserData!.email
                                       .toString()),
-                                  const Text('STATUS'),
                                   Text(
-                                    'Saldo : ${numberCurrency.format(profileProvider.loggedUserData.saldo ?? 0)}',
+                                    'Saldo : ${numberCurrency.format(profileProvider.loggedUserData!.saldo ?? 0)}',
                                   ),
                                 ],
                               ),
@@ -227,8 +248,8 @@ class _ProfileState extends State<Profile> {
                 },
               ),
               Visibility(
-                visible: profileProvider.loggedUserData.isSeller == false &&
-                    profileProvider.loggedUserData.isAdmin == false,
+                visible: profileProvider.loggedUserData?.isSeller == false &&
+                    profileProvider.loggedUserData!.isAdmin == false,
                 child: ListTile(
                   leading: SvgPicture.asset(
                     'assets/icons/edit.svg',
@@ -270,8 +291,10 @@ class _ProfileState extends State<Profile> {
                                       margin: const EdgeInsets.fromLTRB(
                                           16, 16, 16, 16),
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          handleBar,
+                                          Center(child: handleBar),
                                           formSpacer,
                                           TextFormField(
                                             controller: nimC,
@@ -317,6 +340,59 @@ class _ProfileState extends State<Profile> {
                                             },
                                           ),
                                           formSpacer,
+                                          const Text('Pilih Kota :'),
+                                          DropdownSearch<CityModel>(
+                                            asyncItems: (String filter) async {
+                                              final response = await Dio().get(
+                                                "https://api.rajaongkir.com/starter/city",
+                                                options: Options(headers: {
+                                                  'key': rajaOngkirKey
+                                                }),
+                                              );
+                                              final list =
+                                                  response.data['rajaongkir']
+                                                      ['results'] as List;
+                                              List<CityModel> data = list
+                                                  .map((e) =>
+                                                      CityModel.fromJson(e))
+                                                  .toList();
+                                              print(response);
+                                              return data;
+                                            },
+                                            onChanged: (CityModel? data) {
+                                              cityIdC?.text = data!.city_id!;
+                                              cityNameC?.text =
+                                                  data!.city_name!;
+                                              cityTypeC?.text = data!.type!;
+                                              print(data);
+                                            },
+                                            selectedItem: CityModel(
+                                              city_id: profileProvider
+                                                      .loggedUserData!
+                                                      .address
+                                                      ?.city_id ??
+                                                  '',
+                                              city_name: cityNameC?.text ?? '',
+                                              type: cityTypeC?.text ?? '',
+                                            ),
+                                            dropdownBuilder:
+                                                (context, selectedItem) {
+                                              return Text(
+                                                '${selectedItem?.type} ${selectedItem?.city_name}',
+                                              );
+                                            },
+                                            itemAsString: (item) =>
+                                                '${item.type} ${item.city_name!}',
+                                            popupProps: const PopupProps.dialog(
+                                              showSearchBox: true,
+                                              searchFieldProps: TextFieldProps(
+                                                decoration: InputDecoration(
+                                                    hintText: 'Cari Kota...'),
+                                              ),
+                                            ),
+                                            dropdownButtonProps:
+                                                const DropdownButtonProps(),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -327,14 +403,13 @@ class _ProfileState extends State<Profile> {
                                         onPressed: () async {
                                           try {
                                             if (_formKey.currentState!
-                                                .validate()) {
+                                                    .validate() &&
+                                                cityIdC!.text != '' &&
+                                                cityNameC!.text != '' &&
+                                                cityTypeC!.text != '') {
                                               final check =
                                                   await sellerRequestProvider
-                                                      .checkIfHasRequested(
-                                                nimC.text,
-                                                phoneC.text,
-                                                addressC.text,
-                                              );
+                                                      .checkIfHasRequested();
                                               if (check == true) {
                                                 Navigator.pop(context);
                                                 snackbar(
@@ -343,12 +418,40 @@ class _ProfileState extends State<Profile> {
                                                   Colors.red,
                                                 );
                                               } else {
+                                                isLoading = true;
+                                                showGeneralDialog(
+                                                  context: context,
+                                                  pageBuilder: (context,
+                                                          animation,
+                                                          secondaryAnimation) =>
+                                                      loadingIndicator,
+                                                );
                                                 await sellerRequestProvider
                                                     .submitRequest(
                                                   nim: nimC.text,
                                                   phone: phoneC.text,
-                                                  address: addressC.text,
+                                                  alamat: addressC.text,
+                                                  cityId: cityIdC!.text,
+                                                  cityName: cityNameC!.text,
+                                                  type: cityTypeC!.text,
                                                 );
+                                                await profileProvider
+                                                    .updateProfileData(
+                                                  username: profileProvider
+                                                      .loggedUserData!
+                                                      .username!,
+                                                  email: profileProvider
+                                                      .loggedUserData!.email!,
+                                                  phone: phoneC.text,
+                                                  alamat: addressC.text,
+                                                  cityId: cityIdC!.text,
+                                                  cityName: cityNameC!.text,
+                                                  cityType: cityTypeC!.text,
+                                                );
+                                                isLoading = false;
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop();
                                                 Navigator.pop(context);
                                                 snackbar(
                                                   context,
@@ -356,6 +459,24 @@ class _ProfileState extends State<Profile> {
                                                   Colors.green,
                                                 );
                                               }
+                                            } else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    const AlertDialog(
+                                                  content: SizedBox(
+                                                    width: 100,
+                                                    height: 100,
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Harap isi semua data!',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
                                             }
                                           } catch (e) {
                                             Navigator.pop(context);
@@ -381,7 +502,7 @@ class _ProfileState extends State<Profile> {
               ),
               //Untuk Admin, Perbaiki dan Implementasi Nanti!
               Visibility(
-                visible: profileProvider.loggedUserData.isAdmin == true,
+                visible: profileProvider.loggedUserData?.isAdmin == true,
                 child: ListTile(
                   leading: SvgPicture.asset(
                     'assets/icons/list-check.svg',
@@ -409,9 +530,8 @@ class _ProfileState extends State<Profile> {
                   },
                 ),
               ),
-              //Kalau Tidak Ada Login, Redirect Ke Login Page
               Visibility(
-                visible: profileProvider.loggedUserData.isSeller == true,
+                visible: profileProvider.loggedUserData?.isSeller == true,
                 child: ListTile(
                   leading: SvgPicture.asset(
                     'assets/icons/shop.svg',
@@ -419,6 +539,36 @@ class _ProfileState extends State<Profile> {
                     height: 20,
                   ),
                   title: const Text('Kelola Toko'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    //Kalau Tidak Ada Login, Redirect Ke Login Page
+                    if (authProvider.unAuthorized == true) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Login(),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Store(),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Visibility(
+                visible: profileProvider.loggedUserData?.isAdmin == true,
+                child: ListTile(
+                  leading: SvgPicture.asset(
+                    'assets/icons/truck-side.svg',
+                    width: 20,
+                    height: 20,
+                  ),
+                  title: const Text('Kelola Pengiriman & Resi Transaksi'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
                     if (authProvider.unAuthorized == true) {
@@ -432,7 +582,7 @@ class _ProfileState extends State<Profile> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Store(),
+                          builder: (context) => const ManageShipmentReceipt(),
                         ),
                       );
                     }
@@ -484,12 +634,20 @@ class _ProfileState extends State<Profile> {
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () async {
                     await authProvider.logout();
-                    Navigator.pushReplacement(
+                    await Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const Login(),
                       ),
+                      (route) => true,
                     );
+                    setState(() {});
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const Login(),
+                    //   ),
+                    // );
                   },
                 ),
               ),

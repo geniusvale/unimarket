@@ -14,8 +14,13 @@ part 'seller_request_model.g.dart';
 class SellerRequestModel with _$SellerRequestModel {
   const factory SellerRequestModel({
     required int id,
-    ProfileModel? profiles,
     String? nim,
+    String? phone,
+    String? alamat,
+    String? city_id,
+    String? city_name,
+    String? type,
+    ProfileModel? profiles,
   }) = _SellerRequestModel;
 
   factory SellerRequestModel.fromJson(Map<String, Object?> json) =>

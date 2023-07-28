@@ -13,7 +13,7 @@ part 'cart_items_model.g.dart';
 @freezed
 class CartItemsModel with _$CartItemsModel {
   const factory CartItemsModel({
-    required int id,
+    int? id,
     int? cart_id,
     int? product_id,
     ProductModel? products,

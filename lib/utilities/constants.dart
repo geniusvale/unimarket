@@ -10,6 +10,7 @@ final xendit = Xendit(
   apiKey:
       'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
 );
+const rajaOngkirKey = 'e51c5143ac92cde5f3e4298a67824ab3';
 
 // final appTheme = ThemeData(
 //   useMaterial3: true,
@@ -98,14 +99,5 @@ modal(BuildContext context) {
           // height: 50,
           );
     },
-  );
-}
-
-snackbar(BuildContext context, String title, Color color) {
-  return ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(title),
-      backgroundColor: color,
-    ),
   );
 }

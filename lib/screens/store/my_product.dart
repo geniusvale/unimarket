@@ -43,8 +43,21 @@ class _MyProductState extends State<MyProduct> {
       body: FutureBuilder<List<ProductModel>>(
         future: productProvider.getMyStoreProduct(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text('Anda Belum Memiliki Produk'),
+            );
+          } else {
             return MasonryGridView.builder(
+              padding: const EdgeInsets.all(16),
               shrinkWrap: true,
               physics: const ScrollPhysics(),
               itemCount: snapshot.data?.length ?? 0,
@@ -100,9 +113,7 @@ class _MyProductState extends State<MyProduct> {
                                   topRight: Radius.circular(8)),
                               child: CachedNetworkImage(
                                 fit: BoxFit.fill,
-                                imageUrl:
-                                    // 'https://picsum.photos/id/${index + randomNumber}/200/200',
-                                    '${snapshot.data?[index].img_url}',
+                                imageUrl: '${snapshot.data?[index].img_url}',
                                 progressIndicatorBuilder:
                                     (context, url, downloadProgress) {
                                   return CircularProgressIndicator(
@@ -131,7 +142,6 @@ class _MyProductState extends State<MyProduct> {
                         Padding(
                           padding: formPadding,
                           child: Text(
-                            // 'Rp ${snapshot.data![index].price}',
                             numberCurrency.format(snapshot.data![index].price),
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -143,8 +153,6 @@ class _MyProductState extends State<MyProduct> {
                 );
               },
             );
-          } else {
-            return loadingIndicator;
           }
         },
       ),
