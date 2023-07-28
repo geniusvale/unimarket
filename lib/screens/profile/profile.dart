@@ -76,6 +76,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
+          await profileProvider.getProfileDataFromAuth();
           setState(() {});
         },
         child: SingleChildScrollView(

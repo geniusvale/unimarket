@@ -140,6 +140,8 @@ class _RegisterState extends State<Register> {
                               );
                             }
                           } catch (e) {
+                            isLoading = false;
+                            Navigator.of(context, rootNavigator: true).pop();
                             snackbar(context, e.toString(), Colors.black);
                           }
                         },

@@ -14,11 +14,12 @@ class StoreProvider extends ChangeNotifier {
   Future<List<TransactionModel>> getMyOrder() async {
     final result = await supabase
         .from('transactions')
-        .select(
-            '*, profiles:users_id(*), address(*), transactions_item(*, products!inner(*, profiles(*)))')
-        .eq('transactions_item.products.seller_id',
-            supabase.auth.currentUser!.id)
-        .order('created_at');
+        .select<List<Map<String, dynamic>>>(
+            '*, profiles:users_id(*), address(*), transactions_item!inner(*, products!inner(*, profiles(*)))')
+        .eq(
+          'transactions_item.products.seller_id',
+          supabase.auth.currentUser!.id,
+        );
     final data = result
         .map<TransactionModel>((e) => TransactionModel.fromJson(e))
         .toList();
