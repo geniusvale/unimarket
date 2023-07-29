@@ -21,7 +21,7 @@ class _AddProductState extends State<AddProduct> {
   final nameC = TextEditingController();
   final priceC = TextEditingController();
   final descC = TextEditingController();
-  final weightC = TextEditingController();
+  TextEditingController? weightC = TextEditingController();
   File? pickedPhoto;
   String? pickedPhotoName;
   File? pickedFile;
@@ -36,6 +36,12 @@ class _AddProductState extends State<AddProduct> {
     'Produk Fisik'
   ];
   String selKategori = 'Pilih Kategori Produk';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -268,7 +274,7 @@ class _AddProductState extends State<AddProduct> {
                             name: nameC.text,
                             desc: descC.text,
                             price: int.parse(priceC.text),
-                            weight: int.parse(weightC.text),
+                            weight: int.tryParse(weightC!.text) ?? 0,
                             category: selKategori,
                             userId: supabase.auth.currentUser!.id,
                             yourPhoto: pickedPhoto,
@@ -277,7 +283,7 @@ class _AddProductState extends State<AddProduct> {
                           nameC.clear();
                           priceC.clear();
                           descC.clear();
-                          weightC.clear();
+                          weightC?.clear();
                           isLoading = false;
                           Navigator.of(context, rootNavigator: true).pop();
                           Navigator.pop(context);
