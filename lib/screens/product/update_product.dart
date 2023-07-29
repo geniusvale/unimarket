@@ -292,11 +292,12 @@ class _UpdateProductState extends State<UpdateProduct> {
                       print(pickedFileName);
                       print(pickedFile);
                       await productProvider.updateProduct(
+                        productId: widget.snapshot.data![widget.index].id,
                         currentName: nameC.text,
                         currentDesc: descC.text,
                         currentPrice: int.parse(priceC.text),
+                        currentWeight: int.tryParse(weightC.text),
                         currentCategory: selKategori,
-                        productId: widget.snapshot.data![widget.index].id,
                         newFile: pickedFile,
                         newFileName: pickedFileName,
                         currentFileName:
