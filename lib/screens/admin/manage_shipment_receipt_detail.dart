@@ -151,7 +151,10 @@ class _ManageShipmentReceiptDetailState
                                   );
                                 }
                               },
-                              child: const Text('Hubungi Penjual'),
+                              child: Text(
+                                'Hubungi Penjual\n ${snapshot.transactionItems![index].products!.profiles!.phone  ?? 'Nomor Tidak Tersedia'}',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                             // const Divider(height: 1),
                           ],
@@ -217,7 +220,7 @@ class _ManageShipmentReceiptDetailState
                       const Text('Tanggal Pembelian : '),
                       Text(
                         DateFormat('d MMMM, yyyy - h:mm a').format(
-                          DateTime.parse(snapshot.createdAt!),
+                          DateTime.parse(snapshot.createdAt!).toLocal(),
                         ),
                       )
                     ],

@@ -15,6 +15,7 @@ class CartProvider extends ChangeNotifier {
   // subtotal = newSubtotal;
   List<CartItemsModel> filteredCartItemData = [];
 
+  int biayaLayanan = 5000;
   int currentOngkirVal = 0;
   String? currentShipmentService;
   CourierModel? currentCourierData;
@@ -226,7 +227,7 @@ class CartProvider extends ChangeNotifier {
             'INV-${transactionId['id']}-${userData.username}-$formattedDateTime',
         'amount': subtotal,
         'payer_email': supabase.auth.currentUser!.email,
-        'description': "Invoice #123",
+        'description': "INV-${transactionId['id']}-${userData.username}-$formattedDateTime",
         'customer': {
           'given_names': userData.username,
           'email': supabase.auth.currentUser!.email,

@@ -55,9 +55,10 @@ class _HomePageState extends State<HomePage> {
     print('Status unAuthorized ${authProvider.unAuthorized.toString()}');
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        title: const Text('UniMarket.', style: TextStyle(fontSize: 24)),
+        title: Image.asset('assets/icons/unimarketLogo.png', height: 100),
         leading: IconButton(
           onPressed: () {
             showSearch(

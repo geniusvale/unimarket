@@ -196,7 +196,7 @@ class _MyOrdersDetailState extends State<MyOrdersDetail> {
                       const Text('Tanggal Pembelian : '),
                       Text(
                         DateFormat('d MMMM, yyyy - h:mm a').format(
-                          DateTime.parse(snapshot.createdAt!),
+                          DateTime.parse(snapshot.createdAt!).toLocal(),
                         ),
                       )
                     ],
@@ -260,7 +260,10 @@ class _MyOrdersDetailState extends State<MyOrdersDetail> {
                               );
                             }
                           },
-                          child: const Text('Hubungi Pembeli'),
+                          child: Text(
+                            'Hubungi Pembeli\n ${snapshot.profiles!.phone ?? 'Nomor Tidak Tersedia'}',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ],

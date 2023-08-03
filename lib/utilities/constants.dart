@@ -8,7 +8,8 @@ final supabase = Supabase.instance.client;
 final dio = Dio();
 final xendit = Xendit(
   apiKey:
-      'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
+      'xnd_production_WVjvrtUZHTI5mQ6IDhidBEj8Tal0YZseBx6kqhv1X2ftcwrzPcqKXWl4XY5NnoBT',
+  // 'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
 );
 const rajaOngkirKey = 'e51c5143ac92cde5f3e4298a67824ab3';
 
@@ -41,6 +42,18 @@ String capitalizeOnlyFirstLetter(String text) {
   return "${text[0].toUpperCase()}${text.substring(1)}";
 }
 
+hargaValidator(String value) {
+  final n = int.tryParse(value);
+
+  if (value.isEmpty) {
+    return 'Harga Tidak Boleh Kosong';
+  } else if (n == null || n < 10000) {
+    return 'Harga Minimal 10,000';
+  } else {
+    return null;
+  }
+}
+
 final handleBar = Container(
   width: 50,
   height: 5,
@@ -65,16 +78,20 @@ final giantHeader = SizedBox(
   width: 400,
   height: 250,
   child: Column(
-    mainAxisAlignment: MainAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.start,
     children: [
-      const Text(
-        'UniMarket.',
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      SizedBox(
+        width: 150,
+        height: 130,
+        child: Image.asset(
+          'assets/icons/unimarketLogo.png',
+          fit: BoxFit.cover,
+        ),
       ),
-      formSpacer,
       const Text('by'),
       formSpacer,
-      Image.asset('assets/images/ucic.png', width: 150),
+      formSpacer,
+      Image.asset('assets/images/ucic.png', width: 100),
     ],
   ),
 );

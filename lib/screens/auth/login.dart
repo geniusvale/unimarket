@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unimarket/controller/auth_provider.dart';
 import 'package:unimarket/screens/auth/forgot_password.dart';
 import 'package:unimarket/screens/auth/register.dart';
-import 'package:unimarket/screens/auth/reset_password.dart';
 import 'package:unimarket/screens/homepage.dart';
 import 'package:unimarket/utilities/constants.dart';
 
@@ -140,7 +139,7 @@ class _LoginState extends State<Login> {
                             await profileProvider.getProfileDataFromAuth();
                             isLoading = false;
                             Navigator.of(context, rootNavigator: true).pop();
-                            await homeProvider.changePage(1);
+                            await homeProvider.changePage(0);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(

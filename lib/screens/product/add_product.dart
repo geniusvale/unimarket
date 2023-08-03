@@ -173,12 +173,7 @@ class _AddProductState extends State<AddProduct> {
                 controller: priceC,
                 keyboardType: TextInputType.number,
                 decoration: formDecor(hint: 'Harga'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Harga Tidak Boleh Kosong!';
-                  }
-                  return null;
-                },
+                validator: (value) => hargaValidator(value!),
               ),
               formSpacer,
               Visibility(

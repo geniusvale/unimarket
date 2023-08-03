@@ -169,7 +169,8 @@ class _DetailProductState extends State<DetailProduct> {
                       width: 15,
                       height: 15,
                     ),
-                    label: const Text('Hubungi Penjual'),
+                    label: Text(
+                        'Hubungi Penjual - ${widget.snapshot.data![widget.index].profiles!.phone ?? 'Nomor Tidak Tersedia'}'),
                   ),
                   formSpacer,
                   const Text(
@@ -312,25 +313,39 @@ class _DetailProductState extends State<DetailProduct> {
                           );
                         } else {
                           await cartProvider.checkIfHasCart(context);
-                          final isSameProduct =
-                              await cartProvider.checkIfHasSameCartItems(
-                            productId: widget.snapshot.data![widget.index].id!,
-                            sellerId:
-                                widget.snapshot.data![widget.index].seller_id!,
-                            productCategory:
-                                widget.snapshot.data![widget.index].category,
-                            context: context,
-                          );
-                          print('isSameProduct $isSameProduct');
-                          if (isSameProduct == true) {
+                          try {
+                            await cartProvider.addToCart(
+                              productId:
+                                  widget.snapshot.data![widget.index].id ?? 0,
+                              usersId: supabase.auth.currentUser!.id,
+                            );
                             isLoading = false;
                             Navigator.of(context, rootNavigator: true).pop();
-                            snackbar(
-                              context,
-                              'Sudah Ada di Keranjang!',
-                              Colors.black,
-                            );
+                            snackbar(context, 'Berhasil Menambah ke Keranjang!',
+                                Colors.black);
+                          } catch (e) {
+                            rethrow;
                           }
+                          // await cartProvider.checkIfHasCart(context);
+                          // final isSameProduct =
+                          //     await cartProvider.checkIfHasSameCartItems(
+                          //   productId: widget.snapshot.data![widget.index].id!,
+                          //   sellerId:
+                          //       widget.snapshot.data![widget.index].seller_id!,
+                          //   productCategory:
+                          //       widget.snapshot.data![widget.index].category,
+                          //   context: context,
+                          // );
+                          // print('isSameProduct $isSameProduct');
+                          // if (isSameProduct == true) {
+                          //   isLoading = false;
+                          //   Navigator.of(context, rootNavigator: true).pop();
+                          //   snackbar(
+                          //     context,
+                          //     'Sudah Ada di Keranjang!',
+                          //     Colors.black,
+                          //   );
+                          // }
                           // else if (isSameProduct == false &&
                           //     widget.snapshot.data![widget.index].category ==
                           //         'Produk Fisik') {
@@ -350,23 +365,9 @@ class _DetailProductState extends State<DetailProduct> {
                           //     );
                           //   }
                           // }
-                          else {
-                            try {
-                              await cartProvider.addToCart(
-                                productId:
-                                    widget.snapshot.data![widget.index].id ?? 0,
-                                usersId: supabase.auth.currentUser!.id,
-                              );
-                              isLoading = false;
-                              Navigator.of(context, rootNavigator: true).pop();
-                              snackbar(
-                                  context,
-                                  'Berhasil Menambah ke Keranjang!',
-                                  Colors.black);
-                            } catch (e) {
-                              rethrow;
-                            }
-                          }
+                          // else {
+
+                          // }
                         }
                       } catch (e) {
                         rethrow;
