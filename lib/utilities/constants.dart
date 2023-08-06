@@ -8,8 +8,8 @@ final supabase = Supabase.instance.client;
 final dio = Dio();
 final xendit = Xendit(
   apiKey:
-      'xnd_production_WVjvrtUZHTI5mQ6IDhidBEj8Tal0YZseBx6kqhv1X2ftcwrzPcqKXWl4XY5NnoBT',
-  // 'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
+      // 'xnd_production_WVjvrtUZHTI5mQ6IDhidBEj8Tal0YZseBx6kqhv1X2ftcwrzPcqKXWl4XY5NnoBT',
+  'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
 );
 const rajaOngkirKey = 'e51c5143ac92cde5f3e4298a67824ab3';
 
