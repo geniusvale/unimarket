@@ -139,8 +139,7 @@ class _ManageShipmentReceiptDetailState
                               onPressed: () async {
                                 try {
                                   await launchUrlString(
-                                    'whatsapp://send?phone=${snapshot.transactionItems![index].products!.profiles!.phone}&text=${Uri.parse('message')}',
-                                    // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.transactionItems![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                                    'whatsapp://send?phone=+62${snapshot.transactionItems![index].products!.profiles!.phone}',
                                     mode: LaunchMode.externalApplication,
                                   );
                                 } catch (e) {

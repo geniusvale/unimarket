@@ -19,15 +19,19 @@ class TransactionProvider extends ChangeNotifier {
         result.map((e) => TransactionModel.fromJson(e)).toList();
     //UPDATE STATUS DARI XENDIT
     for (var transactionData in transaction) {
-      final res = await xendit.getInvoice(
-        invoice_id: transactionData.invoicesId!,
-      );
-      // print(res);
-      await supabase.from('transactions').update({
-        'status': res['status'],
-      }).match({
-        'id': transactionData.id,
-      });
+      try {
+        final res = await xendit.getInvoice(
+          invoice_id: transactionData.invoicesId!,
+        );
+        // print(res);
+        await supabase.from('transactions').update({
+          'status': res['status'],
+        }).match({
+          'id': transactionData.id,
+        });
+      } catch (e) {
+        print(e.toString());
+      }
     }
     notifyListeners();
     return transaction;

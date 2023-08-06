@@ -156,7 +156,7 @@ class _DetailProductState extends State<DetailProduct> {
                     onPressed: () async {
                       try {
                         await launchUrlString(
-                          'whatsapp://send?phone=${widget.snapshot.data![widget.index].profiles!.phone!}&text=${Uri.parse('message')}',
+                          'whatsapp://send?phone=+62${widget.snapshot.data![widget.index].profiles!.phone!}',
                           // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.data![widget.index].profiles!.phone!.replaceAll('0', '')}',
                           mode: LaunchMode.externalApplication,
                         );

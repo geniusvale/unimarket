@@ -376,8 +376,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     onPressed: () async {
                                       try {
                                         await launchUrlString(
-                                          'whatsapp://send?phone=62${snapshot.data![index].products!.profiles!.phone}&text=${Uri.parse('message')}',
-                                          // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.data![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                                          'whatsapp://send?phone=+62${snapshot.data![index].products!.profiles!.phone}',
                                           mode: LaunchMode.externalApplication,
                                         );
                                       } catch (e) {
