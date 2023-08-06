@@ -27,7 +27,7 @@ class AuthProvider extends ChangeNotifier {
       final Session? session = res.session;
       final User? user = res.user;
       //Memanggil Function Masukkan Data Ke Tabel Profiles(Public)
-      insertToProfilesTable(username);
+      await insertToProfilesTable(username);
       unAuthorized = false;
       notifyListeners();
     } catch (error) {

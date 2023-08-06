@@ -92,7 +92,7 @@ class _CheckoutState extends State<Checkout> {
             ),
           ),
           Flexible(
-            flex: 1,
+            flex: 2,
             fit: FlexFit.tight,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -132,6 +132,19 @@ class _CheckoutState extends State<Checkout> {
                 ),
                 //Jika ada barang fisik, maka hitung ongkos kirim nya! Buat fungsi IF nanti.
                 Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Biaya Layanan : '),
+                      Text(
+                        numberCurrency.format(cartProvider.biayaLayanan),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,7 +167,9 @@ class _CheckoutState extends State<Checkout> {
                       ),
                       Text(
                         numberCurrency.format(
-                          widget.subtotal! + cartProvider.currentOngkirVal,
+                          widget.subtotal! +
+                              cartProvider.currentOngkirVal +
+                              cartProvider.biayaLayanan,
                         ),
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
@@ -180,8 +195,9 @@ class _CheckoutState extends State<Checkout> {
                         userData: profileProvider.loggedUserData!,
                         ongkir: cartProvider.currentOngkirVal,
                         shippingInfo: cartProvider.currentShipmentService ?? '',
-                        subtotal:
-                            widget.subtotal! + cartProvider.currentOngkirVal,
+                        subtotal: widget.subtotal! +
+                            cartProvider.currentOngkirVal +
+                            cartProvider.biayaLayanan,
                       );
                       isLoading = false;
                       Navigator.of(context, rootNavigator: true).pop();

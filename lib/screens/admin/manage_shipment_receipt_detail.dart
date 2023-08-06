@@ -139,8 +139,7 @@ class _ManageShipmentReceiptDetailState
                               onPressed: () async {
                                 try {
                                   await launchUrlString(
-                                    'whatsapp://send?phone=${snapshot.transactionItems![index].products!.profiles!.phone}&text=${Uri.parse('message')}',
-                                    // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.transactionItems![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                                    'whatsapp://send?phone=+62${snapshot.transactionItems![index].products!.profiles!.phone}',
                                     mode: LaunchMode.externalApplication,
                                   );
                                 } catch (e) {
@@ -151,7 +150,10 @@ class _ManageShipmentReceiptDetailState
                                   );
                                 }
                               },
-                              child: const Text('Hubungi Penjual'),
+                              child: Text(
+                                'Hubungi Penjual\n ${snapshot.transactionItems![index].products!.profiles!.phone  ?? 'Nomor Tidak Tersedia'}',
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                             // const Divider(height: 1),
                           ],
@@ -217,7 +219,7 @@ class _ManageShipmentReceiptDetailState
                       const Text('Tanggal Pembelian : '),
                       Text(
                         DateFormat('d MMMM, yyyy - h:mm a').format(
-                          DateTime.parse(snapshot.createdAt!),
+                          DateTime.parse(snapshot.createdAt!).toLocal(),
                         ),
                       )
                     ],

@@ -376,8 +376,7 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                     onPressed: () async {
                                       try {
                                         await launchUrlString(
-                                          'whatsapp://send?phone=62${snapshot.data![index].products!.profiles!.phone}&text=${Uri.parse('message')}',
-                                          // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.data![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                                          'whatsapp://send?phone=+62${snapshot.data![index].products!.profiles!.phone}',
                                           mode: LaunchMode.externalApplication,
                                         );
                                       } catch (e) {
@@ -388,7 +387,10 @@ class _TransactionDetailState extends State<TransactionDetail> {
                                         );
                                       }
                                     },
-                                    child: const Text('Hubungi Penjual'),
+                                    child: Text(
+                                      'Hubungi Penjual\n ${snapshot.data![index].products!.profiles!.phone  ?? 'Nomor Tidak Tersedia'}',
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
                                   // const Divider(height: 1),
                                 ],
@@ -436,15 +438,37 @@ class _TransactionDetailState extends State<TransactionDetail> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            const Text('Total Harga : '),
+                            Text(
+                              numberCurrency
+                                  .format(widget.transactionData.total_price),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Ongkos Kirim : '),
+                            Text(
+                              numberCurrency
+                                  .format(widget.transactionData.ongkir),
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             const Text('Tanggal Pembelian : '),
                             Text(
                               DateFormat('d MMMM, yyyy - h:mm a').format(
                                 DateTime.parse(
-                                    widget.transactionData.createdAt!),
+                                        widget.transactionData.createdAt!)
+                                    .toLocal(),
                               ),
                             )
                           ],
                         ),
+                        formSpacer,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -453,6 +477,36 @@ class _TransactionDetailState extends State<TransactionDetail> {
                             Expanded(
                               child: Text(
                                 formattedUserAlamat,
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Expanded(
+                                child: Text('Informasi Pengiriman : ')),
+                            Expanded(
+                              child: Text(
+                                widget.transactionData.shippingInfo ??
+                                    'Informasi Tidak Tersedia',
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
+                        ),
+                        formSpacer,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Expanded(child: Text('Nomor Resi : ')),
+                            Expanded(
+                              child: Text(
+                                widget.transactionData.resi ??
+                                    'Resi Tidak Tersedia',
                                 textAlign: TextAlign.right,
                               ),
                             ),

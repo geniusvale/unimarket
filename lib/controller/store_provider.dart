@@ -78,11 +78,15 @@ class StoreProvider extends ChangeNotifier {
     final data = res.map((e) => WithdrawModel.fromJson(e)).toList();
 
     for (var withdraw in data) {
-      final newInfo = await xendit.getPayOutLink(id: withdraw.payout_id!);
-      // print(newInfo);
-      await supabase.from('withdraw').update({
-        'status': newInfo['status'],
-      }).eq('id', withdraw.id);
+      try {
+        final newInfo = await xendit.getPayOutLink(id: withdraw.payout_id!);
+        // print(newInfo);
+        await supabase.from('withdraw').update({
+          'status': newInfo['status'],
+        }).eq('id', withdraw.id);
+      } catch (e) {
+        print(e.toString());
+      }
     }
     notifyListeners();
     return data;

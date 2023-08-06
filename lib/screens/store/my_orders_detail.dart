@@ -196,7 +196,7 @@ class _MyOrdersDetailState extends State<MyOrdersDetail> {
                       const Text('Tanggal Pembelian : '),
                       Text(
                         DateFormat('d MMMM, yyyy - h:mm a').format(
-                          DateTime.parse(snapshot.createdAt!),
+                          DateTime.parse(snapshot.createdAt!).toLocal(),
                         ),
                       )
                     ],
@@ -248,8 +248,7 @@ class _MyOrdersDetailState extends State<MyOrdersDetail> {
                           onPressed: () async {
                             try {
                               await launchUrlString(
-                                'whatsapp://send?phone=62${snapshot.profiles!.phone}&text=${Uri.parse('message')}',
-                                // 'https://api.whatsapp.com/send?phone=62${widget.snapshot.transactionItems![widget.index].profiles!.phone!.replaceAll('0', '')}',
+                                'whatsapp://send?phone=+62${snapshot.profiles!.phone}',
                                 mode: LaunchMode.externalApplication,
                               );
                             } catch (e) {
@@ -260,7 +259,10 @@ class _MyOrdersDetailState extends State<MyOrdersDetail> {
                               );
                             }
                           },
-                          child: const Text('Hubungi Pembeli'),
+                          child: Text(
+                            'Hubungi Pembeli\n ${snapshot.profiles!.phone ?? 'Nomor Tidak Tersedia'}',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ],

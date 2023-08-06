@@ -362,7 +362,7 @@ class _CartState extends State<Cart> {
                               profileProvider.loggedUserData!.address == null) {
                             return snackbar(
                               context,
-                              'Cek Ongkir & Isi Alamat Terlebih Dahulu!',
+                              'Cek Ongkir / Isi Alamat Terlebih Dahulu!',
                               Colors.red,
                             );
                           } else {
@@ -384,11 +384,6 @@ class _CartState extends State<Cart> {
               ],
             );
           }
-          // if (snapshot.connectionState == ConnectionState.done) {
-
-          // } else {
-          //   return loadingIndicator;
-          // }
         },
       ),
     );

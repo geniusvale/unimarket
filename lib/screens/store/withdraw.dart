@@ -73,9 +73,9 @@ class _WithdrawState extends State<Withdraw> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                          'Anda akan menarik saldo sejumlah :\n${numberCurrency.format(profileProvider.loggedUserData!.saldo! - 2500)}'),
+                                          'Anda akan menarik saldo sejumlah :\n${numberCurrency.format(profileProvider.loggedUserData!.saldo! - 6000)}'),
                                       Text(
-                                          'Biaya penarikan : ${numberCurrency.format(2500)}'),
+                                          'Biaya penarikan : ${numberCurrency.format(6000)}'),
                                       formSpacer,
                                       const Text(
                                           'Harap Cek Email untuk Secret Password saat Penarikan Dana!!'),
@@ -108,7 +108,7 @@ class _WithdrawState extends State<Withdraw> {
                                               .loggedUserData!.username!,
                                           amount: profileProvider
                                                   .loggedUserData!.saldo! -
-                                              2500,
+                                              6000,
                                         );
                                         await profileProvider
                                             .getProfileDataFromAuth();

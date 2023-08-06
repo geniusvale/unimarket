@@ -618,6 +618,26 @@ class _ProfileState extends State<Profile> {
                   },
                 ),
               ),
+              ListTile(
+                leading: Image.asset(
+                  'assets/icons/headset.png',
+                  width: 25,
+                  height: 20,
+                ),
+                title: const Text('Butuh Bantuan? Hubungi Admin'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const AlertDialog(
+                      content: Text(
+                        'Email : unimarketbyucic@gmail.com',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                },
+              ),
               //Kalau Tidak Ada Login, Hide Widgetnya
               Visibility(
                 visible: authProvider.unAuthorized
