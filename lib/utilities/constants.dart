@@ -9,9 +9,32 @@ final dio = Dio();
 final xendit = Xendit(
   apiKey:
       // 'xnd_production_WVjvrtUZHTI5mQ6IDhidBEj8Tal0YZseBx6kqhv1X2ftcwrzPcqKXWl4XY5NnoBT',
-  'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
+      'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
 );
 const rajaOngkirKey = 'e51c5143ac92cde5f3e4298a67824ab3';
+
+Map<String, dynamic> templateParams(
+    {String? namaPembeli, namaPenjual, emailPembeli, emailPenjual}) {
+  return {
+    'from_name': namaPembeli,
+    'to_name': namaPenjual,
+    'message': 'Silahkan Cek Aplikasi Anda Untuk Melihat Detail Pesanan',
+    'penjual_email': emailPenjual,
+    'pembeli_email': emailPembeli,
+  };
+}
+
+Map<String, dynamic> adminShipmentTemplateParams(
+    {String? namaPembeli, namaPenjual, emailPembeli, emailAdmin}) {
+  return {
+    'from_name': namaPembeli,
+    'to_name': namaPenjual,
+    'message':
+        'Silahkan Cek Aplikasi Anda Untuk Melihat Detail Pesanan Untuk Dikirim',
+    'admin_email': emailAdmin,
+    'pembeli_email': emailPembeli,
+  };
+}
 
 // final appTheme = ThemeData(
 //   useMaterial3: true,

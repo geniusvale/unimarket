@@ -1,3 +1,4 @@
+import 'package:emailjs/emailjs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:unimarket/controller/profile_provider.dart';

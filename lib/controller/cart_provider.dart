@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:emailjs/emailjs.dart' as emailJs;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:unimarket/models/cart/cart_items/cart_items_model.dart';
@@ -233,6 +234,48 @@ class CartProvider extends ChangeNotifier {
         'products_id': '${cartItems.product_id}',
         'transactions_id': '${transactionId['id']}',
       });
+      //KIRIM NOTIF MELALUI EMAIL
+      try {
+        await emailJs.EmailJS.send(
+          'service_mzp1eji',
+          'template_ajcpfnk',
+          templateParams(
+            namaPembeli: userData.username!,
+            namaPenjual: cartItems.products!.profiles!.username,
+            emailPembeli: userData.email,
+            emailPenjual: cartItems.products!.profiles!.email,
+          ),
+          const emailJs.Options(
+            publicKey: 'p5w5kqnbdl8_HmwaW',
+            privateKey: 'cwBtPu4oSJWPpjzTbusSr',
+          ),
+        );
+        print('SUCCESS SEND EMAIL');
+      } catch (e) {
+        print(e.toString());
+      }
+      //KIRIM NOTIF MELALUI EMAIL U/ Produk Fisik Ke Admin
+      if (cartItems.products!.category == 'Produk Fisik') {
+        try {
+          await emailJs.EmailJS.send(
+            'service_mzp1eji',
+            'template_ajcpfnk',
+            adminShipmentTemplateParams(
+              namaPembeli: userData.username!,
+              namaPenjual: cartItems.products!.profiles!.username,
+              emailPembeli: userData.email,
+              emailAdmin: 'unimarketbyucic@gmail.com',
+            ),
+            const emailJs.Options(
+              publicKey: 'p5w5kqnbdl8_HmwaW',
+              privateKey: 'cwBtPu4oSJWPpjzTbusSr',
+            ),
+          );
+          print('SUCCESS SEND EMAIL TO ADMIN');
+        } catch (e) {
+          print(e.toString());
+        }
+      }
     }
     //After adding, delete every cartItems in DB!
     for (var delCartItems in snapshotData) {
