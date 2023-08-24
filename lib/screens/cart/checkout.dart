@@ -199,6 +199,7 @@ class _CheckoutState extends State<Checkout> {
                             cartProvider.currentOngkirVal +
                             cartProvider.biayaLayanan,
                       );
+                      await cartProvider.getCartItemBubbleCount();
                       isLoading = false;
                       Navigator.of(context, rootNavigator: true).pop();
                       cartProvider.currentCourierData == null;

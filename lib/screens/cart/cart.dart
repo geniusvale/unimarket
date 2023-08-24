@@ -179,6 +179,8 @@ class _CartState extends State<Cart> {
                                         await cartProvider.deleteCartItems(
                                           product.id!,
                                         );
+                                        await cartProvider
+                                            .getCartItemBubbleCount();
                                         setState(() {});
                                       },
                                       backgroundColor: Colors.red,

@@ -638,6 +638,32 @@ class _ProfileState extends State<Profile> {
                   );
                 },
               ),
+              ListTile(
+                leading: Image.asset(
+                  'assets/icons/info.png',
+                  width: 25,
+                  height: 20,
+                ),
+                title: const Text('Tentang Kami'),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: () {
+                  showAboutDialog(
+                    context: context,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Marketplace ini merupakan satu wadah yang memfasilitasi penjualan produk kreatif mahasiswa UCIC agar lebih mudah menjual karya kreatifnya dan meningkatkan kreativitas juga inovasi mereka.',
+                          ),
+                          formSpacer,
+                          Text('© Ariiq Valerian Romero')
+                        ],
+                      )
+                    ],
+                  );
+                },
+              ),
               //Kalau Tidak Ada Login, Hide Widgetnya
               Visibility(
                 visible: authProvider.unAuthorized

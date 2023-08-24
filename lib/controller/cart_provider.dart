@@ -20,6 +20,22 @@ class CartProvider extends ChangeNotifier {
   String? currentShipmentService;
   CourierModel? currentCourierData;
 
+  int cartItemBubble = 0;
+
+  getCartItemBubbleCount() async {
+    try {
+      final result = await supabase
+          .from('cart_items')
+          .select<List<Map>>('*')
+          .eq('user_id', supabase.auth.currentUser!.id);
+      print(result.length);
+      cartItemBubble = result.length;
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<bool> checkIfHasCart(BuildContext context) async {
     bool? hasCart;
     //Cek user sudah punya keranjang atau belum
@@ -35,6 +51,13 @@ class CartProvider extends ChangeNotifier {
             .from('cart')
             .insert({'users_id': supabase.auth.currentUser!.id});
         hasCart = true;
+        final getCartId =
+            await supabase.from('cart').select<List<Map>>('id').match(
+          {'users_id': supabase.auth.currentUser!.id},
+        );
+        print('CART ID $getCartId');
+        final cartId = getCartId[0]['id'];
+        currentCartId = cartId;
         notifyListeners();
       } else {
         print('Sudah Punya Cart!');
@@ -227,7 +250,8 @@ class CartProvider extends ChangeNotifier {
             'INV-${transactionId['id']}-${userData.username}-$formattedDateTime',
         'amount': subtotal,
         'payer_email': supabase.auth.currentUser!.email,
-        'description': "INV-${transactionId['id']}-${userData.username}-$formattedDateTime",
+        'description':
+            "INV-${transactionId['id']}-${userData.username}-$formattedDateTime",
         'customer': {
           'given_names': userData.username,
           'email': supabase.auth.currentUser!.email,

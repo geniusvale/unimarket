@@ -13,6 +13,7 @@ import 'package:unimarket/models/product/product_model.dart';
 import 'package:unimarket/screens/auth/login.dart';
 import 'package:unimarket/utilities/constants.dart';
 import 'package:provider/provider.dart' as providers;
+import 'package:badges/badges.dart' as badges;
 
 import '../controller/auth_provider.dart';
 import '../controller/profile_provider.dart';
@@ -78,30 +79,39 @@ class _HomePageState extends State<HomePage> {
           //     height: 20,
           //   ),
           // ),
-          IconButton(
-            onPressed: () {
-              if (authProvider.unAuthorized == true) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Login(),
-                  ),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Cart(),
-                  ),
-                );
-              }
-            },
-            icon: SvgPicture.asset(
-              'assets/icons/cart.svg',
-              width: 20,
-              height: 20,
-            ),
-          ),
+          providers.Consumer<CartProvider>(builder: (context, cartData, child) {
+            return IconButton(
+              onPressed: () {
+                if (authProvider.unAuthorized == true) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Login(),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Cart(),
+                    ),
+                  );
+                }
+              },
+              icon: badges.Badge(
+                showBadge: authProvider.unAuthorized == true ? false : true,
+                badgeContent: Text(
+                  cartData.cartItemBubble.toString(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                child: SvgPicture.asset(
+                  'assets/icons/cart.svg',
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+            );
+          }),
         ],
       ),
       // appBarz,
