@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:emailjs/emailjs.dart' as emailJs;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:unimarket/models/cart/cart_items/cart_items_model.dart';
@@ -20,6 +21,22 @@ class CartProvider extends ChangeNotifier {
   String? currentShipmentService;
   CourierModel? currentCourierData;
 
+  int cartItemBubble = 0;
+
+  getCartItemBubbleCount() async {
+    try {
+      final result = await supabase
+          .from('cart_items')
+          .select<List<Map>>('*')
+          .eq('user_id', supabase.auth.currentUser!.id);
+      print(result.length);
+      cartItemBubble = result.length;
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<bool> checkIfHasCart(BuildContext context) async {
     bool? hasCart;
     //Cek user sudah punya keranjang atau belum
@@ -35,6 +52,13 @@ class CartProvider extends ChangeNotifier {
             .from('cart')
             .insert({'users_id': supabase.auth.currentUser!.id});
         hasCart = true;
+        final getCartId =
+            await supabase.from('cart').select<List<Map>>('id').match(
+          {'users_id': supabase.auth.currentUser!.id},
+        );
+        print('CART ID $getCartId');
+        final cartId = getCartId[0]['id'];
+        currentCartId = cartId;
         notifyListeners();
       } else {
         print('Sudah Punya Cart!');
@@ -210,6 +234,48 @@ class CartProvider extends ChangeNotifier {
         'products_id': '${cartItems.product_id}',
         'transactions_id': '${transactionId['id']}',
       });
+      //KIRIM NOTIF MELALUI EMAIL
+      try {
+        await emailJs.EmailJS.send(
+          'service_mzp1eji',
+          'template_ajcpfnk',
+          templateParams(
+            namaPembeli: userData.username!,
+            namaPenjual: cartItems.products!.profiles!.username,
+            emailPembeli: userData.email,
+            emailPenjual: cartItems.products!.profiles!.email,
+          ),
+          const emailJs.Options(
+            publicKey: 'p5w5kqnbdl8_HmwaW',
+            privateKey: 'cwBtPu4oSJWPpjzTbusSr',
+          ),
+        );
+        print('SUCCESS SEND EMAIL');
+      } catch (e) {
+        print(e.toString());
+      }
+      //KIRIM NOTIF MELALUI EMAIL U/ Produk Fisik Ke Admin
+      if (cartItems.products!.category == 'Produk Fisik') {
+        try {
+          await emailJs.EmailJS.send(
+            'service_mzp1eji',
+            'template_ajcpfnk',
+            adminShipmentTemplateParams(
+              namaPembeli: userData.username!,
+              namaPenjual: cartItems.products!.profiles!.username,
+              emailPembeli: userData.email,
+              emailAdmin: 'unimarketbyucic@gmail.com',
+            ),
+            const emailJs.Options(
+              publicKey: 'p5w5kqnbdl8_HmwaW',
+              privateKey: 'cwBtPu4oSJWPpjzTbusSr',
+            ),
+          );
+          print('SUCCESS SEND EMAIL TO ADMIN');
+        } catch (e) {
+          print(e.toString());
+        }
+      }
     }
     //After adding, delete every cartItems in DB!
     for (var delCartItems in snapshotData) {
@@ -227,7 +293,8 @@ class CartProvider extends ChangeNotifier {
             'INV-${transactionId['id']}-${userData.username}-$formattedDateTime',
         'amount': subtotal,
         'payer_email': supabase.auth.currentUser!.email,
-        'description': "INV-${transactionId['id']}-${userData.username}-$formattedDateTime",
+        'description':
+            "INV-${transactionId['id']}-${userData.username}-$formattedDateTime",
         'customer': {
           'given_names': userData.username,
           'email': supabase.auth.currentUser!.email,

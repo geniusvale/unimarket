@@ -1,3 +1,4 @@
+import 'package:emailjs/emailjs.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as providers;
 import 'package:unimarket/controller/profile_provider.dart';
@@ -199,6 +200,7 @@ class _CheckoutState extends State<Checkout> {
                             cartProvider.currentOngkirVal +
                             cartProvider.biayaLayanan,
                       );
+                      await cartProvider.getCartItemBubbleCount();
                       isLoading = false;
                       Navigator.of(context, rootNavigator: true).pop();
                       cartProvider.currentCourierData == null;

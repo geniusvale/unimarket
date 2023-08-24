@@ -319,6 +319,7 @@ class _DetailProductState extends State<DetailProduct> {
                                   widget.snapshot.data![widget.index].id ?? 0,
                               usersId: supabase.auth.currentUser!.id,
                             );
+                            await cartProvider.getCartItemBubbleCount();
                             isLoading = false;
                             Navigator.of(context, rootNavigator: true).pop();
                             snackbar(context, 'Berhasil Menambah ke Keranjang!',

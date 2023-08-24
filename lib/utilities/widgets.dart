@@ -93,7 +93,9 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(
                     width: 5,
                   ),
-                  Text(snapshot.data![index].profiles!.username!)
+                  Expanded(
+                    child: Text(snapshot.data![index].profiles!.username!),
+                  )
                 ],
               ),
             ),
