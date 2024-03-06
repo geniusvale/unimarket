@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:unimarket/env/env.dart';
 import 'package:xendit/xendit.dart';
 import 'package:dio/dio.dart';
 
 final supabase = Supabase.instance.client;
 final dio = Dio();
 final xendit = Xendit(
-  apiKey:
-      // 'xnd_production_WVjvrtUZHTI5mQ6IDhidBEj8Tal0YZseBx6kqhv1X2ftcwrzPcqKXWl4XY5NnoBT',
-      'xnd_development_Zu6sLVTEzhrTvB2qRyyVAwgPeBWXZ9nhemidkhLtYoQtR9u1jmB3wRJuDOraR',
+  apiKey: Env.xndDevKey,
 );
-const rajaOngkirKey = 'e51c5143ac92cde5f3e4298a67824ab3';
+const rajaOngkirKey = Env.rajaOngkirKey;
 
 Map<String, dynamic> templateParams(
     {String? namaPembeli, namaPenjual, emailPembeli, emailPenjual}) {
@@ -35,20 +34,6 @@ Map<String, dynamic> adminShipmentTemplateParams(
     'pembeli_email': emailPembeli,
   };
 }
-
-// final appTheme = ThemeData(
-//   useMaterial3: true,
-//   textTheme: GoogleFonts.poppinsTextTheme(),
-//   // primaryColor: Colors.blue[900],
-//   // primarySwatch: Colors.blue[900],
-//   appBarTheme: const AppBarTheme(
-//     centerTitle: true,
-//     titleTextStyle: TextStyle(
-//       color: Colors.black,
-//       fontWeight: FontWeight.bold,
-//     ),
-//   ),
-// );
 
 const formPadding = EdgeInsets.symmetric(vertical: 0, horizontal: 16);
 const formSpacer = SizedBox(width: 16, height: 16);

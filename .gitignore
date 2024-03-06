@@ -31,6 +31,8 @@
 .pub/
 pubspec.lock
 /build/
+.env
+/lib/env/
 
 # Web related
 lib/generated_plugin_registrant.dart

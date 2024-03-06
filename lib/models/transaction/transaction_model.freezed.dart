@@ -63,28 +63,22 @@ abstract class $TransactionModelCopyWith<$Res> {
       {int id,
       String? userId,
       ProfileModel? profiles,
-      @JsonKey(name: 'address_id')
-          int? addressId,
+      @JsonKey(name: 'address_id') int? addressId,
       String? phone,
       String? email,
-      @JsonKey(name: 'invoices_id')
-          String? invoicesId,
-      @JsonKey(name: 'external_id')
-          String? externalId,
+      @JsonKey(name: 'invoices_id') String? invoicesId,
+      @JsonKey(name: 'external_id') String? externalId,
       int? quantity,
       int? ongkir,
-      @JsonKey(name: 'shipping_info')
-          String? shippingInfo,
+      @JsonKey(name: 'shipping_info') String? shippingInfo,
       int? total_price,
       String? payment_url,
       String? resi,
       AddressModel? address,
-      @JsonKey(name: 'status')
-          String? transactionStatus,
-      @JsonKey(name: 'created_at')
-          String? createdAt,
+      @JsonKey(name: 'status') String? transactionStatus,
+      @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'transactions_item')
-          List<TransactionItemsModel>? transactionItems});
+      List<TransactionItemsModel>? transactionItems});
 
   $ProfileModelCopyWith<$Res>? get profiles;
   $AddressModelCopyWith<$Res>? get address;
@@ -235,28 +229,22 @@ abstract class _$$_TransactionModelCopyWith<$Res>
       {int id,
       String? userId,
       ProfileModel? profiles,
-      @JsonKey(name: 'address_id')
-          int? addressId,
+      @JsonKey(name: 'address_id') int? addressId,
       String? phone,
       String? email,
-      @JsonKey(name: 'invoices_id')
-          String? invoicesId,
-      @JsonKey(name: 'external_id')
-          String? externalId,
+      @JsonKey(name: 'invoices_id') String? invoicesId,
+      @JsonKey(name: 'external_id') String? externalId,
       int? quantity,
       int? ongkir,
-      @JsonKey(name: 'shipping_info')
-          String? shippingInfo,
+      @JsonKey(name: 'shipping_info') String? shippingInfo,
       int? total_price,
       String? payment_url,
       String? resi,
       AddressModel? address,
-      @JsonKey(name: 'status')
-          String? transactionStatus,
-      @JsonKey(name: 'created_at')
-          String? createdAt,
+      @JsonKey(name: 'status') String? transactionStatus,
+      @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'transactions_item')
-          List<TransactionItemsModel>? transactionItems});
+      List<TransactionItemsModel>? transactionItems});
 
   @override
   $ProfileModelCopyWith<$Res>? get profiles;
@@ -380,28 +368,22 @@ class _$_TransactionModel
       {required this.id,
       this.userId,
       this.profiles,
-      @JsonKey(name: 'address_id')
-          this.addressId,
+      @JsonKey(name: 'address_id') this.addressId,
       this.phone,
       this.email,
-      @JsonKey(name: 'invoices_id')
-          this.invoicesId,
-      @JsonKey(name: 'external_id')
-          this.externalId,
+      @JsonKey(name: 'invoices_id') this.invoicesId,
+      @JsonKey(name: 'external_id') this.externalId,
       this.quantity,
       this.ongkir,
-      @JsonKey(name: 'shipping_info')
-          this.shippingInfo,
+      @JsonKey(name: 'shipping_info') this.shippingInfo,
       this.total_price,
       this.payment_url,
       this.resi,
       this.address,
-      @JsonKey(name: 'status')
-          this.transactionStatus,
-      @JsonKey(name: 'created_at')
-          this.createdAt,
+      @JsonKey(name: 'status') this.transactionStatus,
+      @JsonKey(name: 'created_at') this.createdAt,
       @JsonKey(name: 'transactions_item')
-          final List<TransactionItemsModel>? transactionItems})
+      final List<TransactionItemsModel>? transactionItems})
       : _transactionItems = transactionItems;
 
   factory _$_TransactionModel.fromJson(Map<String, dynamic> json) =>
@@ -567,28 +549,22 @@ abstract class _TransactionModel implements TransactionModel {
           {required final int id,
           final String? userId,
           final ProfileModel? profiles,
-          @JsonKey(name: 'address_id')
-              final int? addressId,
+          @JsonKey(name: 'address_id') final int? addressId,
           final String? phone,
           final String? email,
-          @JsonKey(name: 'invoices_id')
-              final String? invoicesId,
-          @JsonKey(name: 'external_id')
-              final String? externalId,
+          @JsonKey(name: 'invoices_id') final String? invoicesId,
+          @JsonKey(name: 'external_id') final String? externalId,
           final int? quantity,
           final int? ongkir,
-          @JsonKey(name: 'shipping_info')
-              final String? shippingInfo,
+          @JsonKey(name: 'shipping_info') final String? shippingInfo,
           final int? total_price,
           final String? payment_url,
           final String? resi,
           final AddressModel? address,
-          @JsonKey(name: 'status')
-              final String? transactionStatus,
-          @JsonKey(name: 'created_at')
-              final String? createdAt,
+          @JsonKey(name: 'status') final String? transactionStatus,
+          @JsonKey(name: 'created_at') final String? createdAt,
           @JsonKey(name: 'transactions_item')
-              final List<TransactionItemsModel>? transactionItems}) =
+          final List<TransactionItemsModel>? transactionItems}) =
       _$_TransactionModel;
 
   factory _TransactionModel.fromJson(Map<String, dynamic> json) =
